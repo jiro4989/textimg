@@ -24,35 +24,6 @@ func init() {
 	colorRe = regexp.MustCompile(`[34][0-7]`)
 }
 
-func getColorPos(s string) (text string, pos int) {
-	var matchCnt int
-	var found bool
-	for i, v := range s {
-		if matchCnt == 0 && v == '\x1b' {
-			found = true
-			matchCnt += 1
-			text += string(v)
-			continue
-		}
-		if matchCnt == 1 && v == '[' {
-			matchCnt += 1
-			text += string(v)
-			continue
-		}
-		if matchCnt == 2 && v == 'm' {
-			text += string(v)
-			pos = i
-			return
-		}
-		text += string(v)
-	}
-	if !found {
-		return "", -1
-	}
-	pos = len(s)
-	return
-}
-
 // parseText はテキストを解析しエスケープシーケンスにマッチした箇所と色を返す
 // マッチするものが存在しなかった場合は、次のエスケープシーケンスが出現する場所ま
 // での文字列を返す。
