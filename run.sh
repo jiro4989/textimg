@@ -9,4 +9,6 @@ echo -e "\x1b[34mUNKO\x1b[0m" | ./bin/txtimg out/blue.png
 echo -e "\x1b[35mUNKO\x1b[0m" | ./bin/txtimg out/magenta.png
 echo -e "\x1b[36mUNKO\x1b[0m" | ./bin/txtimg out/syan.png
 echo -e "\x1b[37mUNKO\x1b[0m" | ./bin/txtimg out/white.png
+echo -e "\x1b[31mRed\x1b[32mGreen\x1b[34mBlue\x1b[0m" | ./bin/txtimg out/rgb.png
+echo -e "\x1b[31m赤\x1b[32m緑\x1b[34m青\x1b[0m" | ./bin/txtimg out/rgb_ja.png
 echo Test | grep --color=always Te | ./bin/txtimg out/grep.png
