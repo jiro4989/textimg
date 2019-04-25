@@ -45,12 +45,17 @@ var rgbMap = map[string]color.RGBA{
 }
 
 func main() {
+	// 標準入力から文字列を取得
 	inputStr := readStdin()[0]
 	fmt.Println(inputStr)
 	outFile := os.Args[1]
 
+	// 色コード以外のエスケープコードを削除
+	inputStr = removeNotColorEscapeSequences(inputStr)
+
 	img := image.NewRGBA(image.Rect(0, 0, 300, 100))
 	for inputStr != "" {
+		// 色文字列の句切れごとに画像に色指定して書き込む
 		col, matched, suffix := parseText(inputStr)
 		addLabel(img, 20, 30, matched, rgbMap[col])
 		inputStr = suffix
