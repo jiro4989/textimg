@@ -1,15 +1,15 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"image"
 	"image/color"
 	"image/png"
+	"io/ioutil"
 	"os"
 
+	"github.com/golang/freetype/truetype"
 	"golang.org/x/image/font"
-	"golang.org/x/image/font/basicfont"
 	"golang.org/x/image/math/fixed"
 )
 
@@ -44,6 +44,33 @@ var rgbMap = map[string]color.RGBA{
 	colorBlue:  color.RGBA{0, 0, 255, 255},
 }
 
+var face font.Face
+
+func init() {
+	// 日本語が使えるフォントのデフォルトとして指定
+	fontData, err := ioutil.ReadFile("/usr/share/fonts/truetype/fonts-japanese-gothic.ttf")
+	// fontData, err := ioutil.ReadFile("/usr/share/fonts/truetype/noto/NotoSansJavanese-Regular.ttf")
+	// fontData, err := ioutil.ReadFile("/usr/share/fonts/truetype/ubuntu/UbuntuMono-R.ttf")
+	if err != nil {
+		panic(err)
+	}
+
+	// ft, err := truetype.Parse(gobold.TTF)
+	ft, err := truetype.Parse(fontData)
+	if err != nil {
+		panic(err)
+	}
+	opt := truetype.Options{
+		Size:              64,
+		DPI:               0,
+		Hinting:           0,
+		GlyphCacheEntries: 0,
+		SubPixelsX:        0,
+		SubPixelsY:        0,
+	}
+	face = truetype.NewFace(ft, &opt)
+}
+
 func main() {
 	// 標準入力から文字列を取得
 	inputStr := readStdin()[0]
@@ -53,12 +80,16 @@ func main() {
 	// 色コード以外のエスケープコードを削除
 	inputStr = removeNotColorEscapeSequences(inputStr)
 
+	const charWidth = 20
+
+	posX := 0
 	img := image.NewRGBA(image.Rect(0, 0, 300, 100))
 	for inputStr != "" {
 		// 色文字列の句切れごとに画像に色指定して書き込む
 		col, matched, suffix := parseText(inputStr)
-		addLabel(img, 20, 30, matched, rgbMap[col])
+		addLabel(img, posX, 60, matched, rgbMap[col])
 		inputStr = suffix
+		posX += len(matched) * charWidth
 	}
 
 	f, err := os.Create(outFile)
@@ -71,26 +102,15 @@ func main() {
 	}
 }
 
-func readStdin() (ret []string) {
-	sc := bufio.NewScanner(os.Stdin)
-	for sc.Scan() {
-		line := sc.Text()
-		ret = append(ret, line)
-	}
-	if err := sc.Err(); err != nil {
-		panic(err)
-	}
-	return
-}
-
 func addLabel(img *image.RGBA, x, y int, label string, col color.RGBA) {
 	point := fixed.Point26_6{fixed.Int26_6(x * 64), fixed.Int26_6(y * 64)}
 
 	d := &font.Drawer{
 		Dst:  img,
 		Src:  image.NewUniform(col),
-		Face: basicfont.Face7x13,
-		Dot:  point,
+		Face: face,
+		// Face: basicfont.Face7x13,
+		Dot: point,
 	}
 	d.DrawString(label)
 }
