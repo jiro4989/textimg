@@ -34,4 +34,4 @@ i=0
 while read -r line; do
   echo -e "$line" | sed -r 's/.*/\x1b['"${colors[$((i%8))]}"'m&\x1b[m/g'
   i=$((i+1))
-done <<< "$(seq 32)" | ./bin/coltoi -b white -o testdata/out/rainbow.png
+done <<< "$(seq 8 | xargs -I@ echo TEST)" | ./bin/coltoi -b 50,100,12,255 -o testdata/out/rainbow.png

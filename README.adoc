@@ -2,7 +2,9 @@
 :toc: left
 :sectnums:
 
-coltoi is command to convert from ANSI colored text to image.
+coltoi is command to convert from ANSI colored text to image. +
+This command draws image from ANSI color text.
+Drawn image keeps having colors of ANSI escape sequence.
 
 == Development
 
@@ -10,12 +12,29 @@ coltoi is command to convert from ANSI colored text to image.
 
 == Usage examples
 
+=== Simple examples
+
 [source,bash]
 coltoi $'\x1b[31mRED\x1b[0m' -o out.png
 echo -e '\x1b[31mRED\x1b[0m' | coltoi -o out.png
 echo -e '\x1b[31mRED\x1b[0m' | coltoi --background 0,255,255,255 -o out.png
 echo -e '\x1b[31mRED\x1b[0m' | coltoi --background black -o out.png
-echo -e '\x1b[31mRED\x1b[0m' | coltoi --scale 100x100 -o out.png
+
+=== Rainbow examples
+
+[source,bash]
+----
+colors=(30 31 32 33 34 35 36 37)
+i=0
+while read -r line; do
+  echo -e "$line" | sed -r 's/.*/\x1b['"${colors[$((i%8))]}"'m&\x1b[m/g'
+  i=$((i+1))
+done <<< "$(seq 8 | xargs -I@ echo TEST)" | coltoi -b 50,100,12,255 -o testdata/out/rainbow.png
+----
+
+Output is here.
+
+image:img/rainbow.png["Rainbow example"]
 
 == Install
 
@@ -30,28 +49,21 @@ Download binary from https://github.com/jiro4989/coltoi/releases[Releases].
 
 [source]
 ----
-align is text align command.
-align [left|center|right]-justify text files.
-or does stdin too.
-
-Repository: https://github.com/jiro4989/align
-    Author: jiro4989
+coltoi is command to convert from ANSI colored text to image.
 
 Usage:
-  align [command]
+  coltoi [flags]
 
 Examples:
-align right README.md
-
-Available Commands:
-  center      Align center command from file or stdin
-  help        Help about any command
-  left        Align left command from file or stdin
-  right       Align right command from file or stdin
+coltoi $'\x1b[31mRED\x1b[0m' -o out.png
 
 Flags:
-  -h, --help      help for align
-      --version   version for align
-
-Use "align [command] --help" for more information about a command.
+  -b, --background string   background color.
+                            format is [black|red|green|yellow|blue|magenta|cyan|white]
+                            or (R,G,B,A(0~255)) (default "black")
+  -f, --fontfile string     font file path (default "/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf")
+  -F, --fontsize int        font size (default 64)
+  -h, --help                help for coltoi
+  -o, --out string          output image file path
+      --version             version for coltoi
 ----
