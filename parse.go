@@ -66,20 +66,18 @@ func (cs ClassifiedStrings) onlyText() (ret string) {
 func parseText(s string) (string, string, string) {
 	col := getOnlyColorEscapeSequence(s)
 	// エスケープ文字自体は返す文字列に含めないため削除する
-	headPos := 0
-	if col != colorEscapeSequenceNone {
-		headPos = len(col)
-	}
-	s = s[headPos:]
+	// headPos := 0
+	// if col != colorEscapeSequenceNone {
+	// 	headPos = len(col)
+	// }
+	s = s[len(col):]
+	// s = s[headPos:]
 
 	// 次のエスケープシーケンスが見つかるまでをmatchedとする
 	// 何も見つからなければ全部を返す
-	// _, idx := getColorPos(s)
-	for _, searchWord := range []string{"\x1b[3", "\x1b[4", "\x1b[0", "\x1b[m"} {
-		idx := strings.Index(s, searchWord)
-		if idx != -1 {
-			return col, s[:idx], s[idx:]
-		}
+	idx := strings.Index(s, "\x1b[")
+	if idx != -1 {
+		return col, s[:idx], s[idx:]
 	}
 	return col, s, ""
 }
