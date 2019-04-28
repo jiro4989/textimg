@@ -22,7 +22,7 @@ func TestParseText(t *testing.T) {
 		{desc: "colorYellowを取得", s: "\x1b[33mtest\x1b[0m", col: colorYellow, matched: "test", suffix: "\x1b[0m"},
 		{desc: "colorBlueを取得", s: "\x1b[34mtest\x1b[0m", col: colorBlue, matched: "test", suffix: "\x1b[0m"},
 		{desc: "colorMagentaを取得", s: "\x1b[35mtest\x1b[0m", col: colorMagenta, matched: "test", suffix: "\x1b[0m"},
-		{desc: "colorSyanを取得", s: "\x1b[36mtest\x1b[0m", col: colorSyan, matched: "test", suffix: "\x1b[0m"},
+		{desc: "colorCyanを取得", s: "\x1b[36mtest\x1b[0m", col: colorCyan, matched: "test", suffix: "\x1b[0m"},
 		{desc: "colorWhiteを取得", s: "\x1b[37mtest\x1b[0m", col: colorWhite, matched: "test", suffix: "\x1b[0m"},
 		{desc: "途中で色が変わる", s: "\x1b[30mBlack\x1b[31mRed\x1b[0m", col: colorBlack, matched: "Black", suffix: "\x1b[31mRed\x1b[0m"},
 		// 前提として色と直接関係のないエスケープ文字は削除していないといけない
@@ -99,7 +99,7 @@ func TestClassifyString(t *testing.T) {
 	type TestData struct {
 		desc   string
 		s      string
-		expect []ClassifiedString
+		expect ClassifiedStrings
 	}
 	tds := []TestData{
 		{

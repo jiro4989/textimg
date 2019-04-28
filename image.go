@@ -138,3 +138,14 @@ func drawLabel(img *image.RGBA, x, y int, label string, col color.RGBA, face fon
 	}
 	d.DrawString(label)
 }
+
+func maxStringWidth(s []string) (max int) {
+	for _, v := range s {
+		text := classifyString(v).OnlyText()
+		width := runewidth.StringWidth(text)
+		if max < width {
+			max = width
+		}
+	}
+	return
+}
