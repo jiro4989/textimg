@@ -2,8 +2,7 @@
 :toc: left
 :sectnums:
 
-coltoi is command to convert from ANSI colored text to image. +
-This command draws image from ANSI color text.
+coltoi is command to convert from ANSI color text to image. +
 Drawn image keeps having colors of ANSI escape sequence.
 
 == Development
