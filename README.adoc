@@ -1,0 +1,57 @@
+= coltoi
+:toc: left
+:sectnums:
+
+coltoi is command to convert from ANSI colored text to image.
+
+== Development
+
+ go version go1.12 linux/amd64
+
+== Usage examples
+
+[source,bash]
+coltoi $'\x1b[31mRED\x1b[0m' -o out.png
+echo -e '\x1b[31mRED\x1b[0m' | coltoi -o out.png
+echo -e '\x1b[31mRED\x1b[0m' | coltoi --background 0,255,255,255 -o out.png
+echo -e '\x1b[31mRED\x1b[0m' | coltoi --background black -o out.png
+echo -e '\x1b[31mRED\x1b[0m' | coltoi --scale 100x100 -o out.png
+
+== Install
+
+[source,bash]
+go get -u github.com/jiro4989/coltoi
+
+or
+
+Download binary from https://github.com/jiro4989/coltoi/releases[Releases].
+
+== Help
+
+[source]
+----
+align is text align command.
+align [left|center|right]-justify text files.
+or does stdin too.
+
+Repository: https://github.com/jiro4989/align
+    Author: jiro4989
+
+Usage:
+  align [command]
+
+Examples:
+align right README.md
+
+Available Commands:
+  center      Align center command from file or stdin
+  help        Help about any command
+  left        Align left command from file or stdin
+  right       Align right command from file or stdin
+
+Flags:
+  -h, --help      help for align
+      --version   version for align
+
+Use "align [command] --help" for more information about a command.
+----
