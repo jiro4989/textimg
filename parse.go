@@ -66,12 +66,7 @@ func (cs ClassifiedStrings) onlyText() (ret string) {
 func parseText(s string) (string, string, string) {
 	col := getOnlyColorEscapeSequence(s)
 	// エスケープ文字自体は返す文字列に含めないため削除する
-	// headPos := 0
-	// if col != colorEscapeSequenceNone {
-	// 	headPos = len(col)
-	// }
 	s = s[len(col):]
-	// s = s[headPos:]
 
 	// 次のエスケープシーケンスが見つかるまでをmatchedとする
 	// 何も見つからなければ全部を返す
