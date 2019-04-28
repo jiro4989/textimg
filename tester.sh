@@ -1,5 +1,5 @@
 #!/bin/bash
-# vim: set tw=0 nowrap:
+# vim: tw=0 nowrap:
 
 set -eu
 
@@ -27,3 +27,11 @@ echo Test | grep --color=always Te | ./bin/coltoi -o testdata/out/grep.png
 echo normal | ./bin/coltoi -o testdata/out/normal.png
 echo -e "\x1b[31mRED\x1b[0mWhite" | ./bin/coltoi -o testdata/out/red_white.png
 echo -e "\x1b[31mRED\x1b[0mWhite" | ./bin/coltoi -b red -o testdata/out/red_bg.png
+echo -e "あいうえおかきくけこ" | sed -r 's/[^　]/\x1b[31m&\x1b[0m/g' | ./bin/coltoi -b white -o testdata/out/hiragana.png
+
+colors=(30 31 32 33 34 35 36 37)
+i=0
+while read -r line; do
+  echo -e "$line" | sed -r 's/.*/\x1b['"${colors[$((i%8))]}"'m&\x1b[m/g'
+  i=$((i+1))
+done <<< "$(seq 32)" | ./bin/coltoi -b white -o testdata/out/rainbow.png
