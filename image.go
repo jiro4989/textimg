@@ -26,55 +26,51 @@ const (
 	colorWhite   = "\x1b[37m"
 )
 
-var colorMap = map[string]color.RGBA{
-	colorBlack:   color.RGBA{0, 0, 0, 255},
-	colorRed:     color.RGBA{255, 0, 0, 255},
-	colorGreen:   color.RGBA{0, 255, 0, 255},
-	colorYellow:  color.RGBA{255, 255, 0, 255},
-	colorBlue:    color.RGBA{0, 0, 255, 255},
-	colorMagenta: color.RGBA{255, 0, 255, 255},
-	colorCyan:    color.RGBA{0, 255, 255, 255},
-	colorWhite:   color.RGBA{255, 255, 255, 255},
-}
+var (
+	colorRGBABlack   = color.RGBA{0, 0, 0, 255}
+	colorRGBARed     = color.RGBA{255, 0, 0, 255}
+	colorRGBAGreen   = color.RGBA{0, 255, 0, 255}
+	colorRGBAYellow  = color.RGBA{255, 255, 0, 255}
+	colorRGBABlue    = color.RGBA{0, 0, 255, 255}
+	colorRGBAMagenta = color.RGBA{255, 0, 255, 255}
+	colorRGBACyan    = color.RGBA{0, 255, 255, 255}
+	colorRGBAWhite   = color.RGBA{255, 255, 255, 255}
 
-var face font.Face
-
-func init() {
-	// 日本語が使えるフォントのデフォルトとして指定
-	fontData, err := ioutil.ReadFile("/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf")
-	if err != nil {
-		panic(err)
+	colorMap = map[string]color.RGBA{
+		colorNone:    colorRGBAWhite,
+		colorBlack:   colorRGBABlack,
+		colorRed:     colorRGBARed,
+		colorGreen:   colorRGBAGreen,
+		colorYellow:  colorRGBAYellow,
+		colorBlue:    colorRGBABlue,
+		colorMagenta: colorRGBAMagenta,
+		colorCyan:    colorRGBACyan,
+		colorWhite:   colorRGBAWhite,
 	}
 
-	// ft, err := truetype.Parse(gobold.TTF)
-	ft, err := truetype.Parse(fontData)
-	if err != nil {
-		panic(err)
+	colorStringMap = map[string]color.RGBA{
+		"black":   colorRGBABlack,
+		"red":     colorRGBARed,
+		"green":   colorRGBAGreen,
+		"yellow":  colorRGBAYellow,
+		"blue":    colorRGBABlue,
+		"magenta": colorRGBAMagenta,
+		"cyan":    colorRGBACyan,
+		"white":   colorRGBAWhite,
 	}
-	opt := truetype.Options{
-		Size:              64,
-		DPI:               0,
-		Hinting:           0,
-		GlyphCacheEntries: 0,
-		SubPixelsX:        0,
-		SubPixelsY:        0,
-	}
-	face = truetype.NewFace(ft, &opt)
-}
+)
 
-func writeImage(texts []string, w io.Writer) {
-	const (
-		charWidth  = 32
-		charHeight = 64
-	)
+func writeImage(texts []string, w io.Writer, appconf applicationConfig) {
 	var (
+		charWidth   = appconf.fontsize / 2
+		charHeight  = appconf.fontsize
 		imageWidth  = maxStringWidth(texts) * charWidth
 		imageHeight = len(texts) * charHeight
 		img         = image.NewRGBA(image.Rect(0, 0, imageWidth, imageHeight))
+		face        = readFace(appconf.fontfile, float64(appconf.fontsize))
 	)
 
-	// TODO 入力におうじて変更する
-	drawBackground(img, color.RGBA{R: 0, G: 0, B: 0, A: 255})
+	drawBackground(img, appconf.background)
 
 	posY := charHeight
 	for _, line := range texts {
@@ -84,7 +80,7 @@ func writeImage(texts []string, w io.Writer) {
 		for line != "" {
 			// 色文字列の句切れごとに画像に色指定して書き込む
 			col, matched, suffix := parseText(line)
-			drawLabel(img, posX, posY, matched, colorMap[col])
+			drawLabel(img, posX, posY, matched, colorMap[col], face)
 			// 処理されなかった残りで次の処理対象を上書き
 			// 空になるまでループ
 			line = suffix
@@ -98,17 +94,25 @@ func writeImage(texts []string, w io.Writer) {
 	}
 }
 
-func drawLabel(img *image.RGBA, x, y int, label string, col color.RGBA) {
-	point := fixed.Point26_6{fixed.Int26_6(x * 64), fixed.Int26_6(y * 64)}
-
-	d := &font.Drawer{
-		Dst:  img,
-		Src:  image.NewUniform(col),
-		Face: face,
-		// Face: basicfont.Face7x13,
-		Dot: point,
+func readFace(fontPath string, fontSize float64) font.Face {
+	fontData, err := ioutil.ReadFile(fontPath)
+	if err != nil {
+		panic(err)
 	}
-	d.DrawString(label)
+	ft, err := truetype.Parse(fontData)
+	if err != nil {
+		panic(err)
+	}
+	opt := truetype.Options{
+		Size:              fontSize,
+		DPI:               0,
+		Hinting:           0,
+		GlyphCacheEntries: 0,
+		SubPixelsX:        0,
+		SubPixelsY:        0,
+	}
+	face := truetype.NewFace(ft, &opt)
+	return face
 }
 
 func drawBackground(img *image.RGBA, bg color.RGBA) {
@@ -122,4 +126,15 @@ func drawBackground(img *image.RGBA, bg color.RGBA) {
 			img.Set(x, y, bg)
 		}
 	}
+}
+
+func drawLabel(img *image.RGBA, x, y int, label string, col color.RGBA, face font.Face) {
+	point := fixed.Point26_6{fixed.Int26_6(x * 64), fixed.Int26_6(y * 64)}
+	d := &font.Drawer{
+		Dst:  img,
+		Src:  image.NewUniform(col),
+		Face: face,
+		Dot:  point,
+	}
+	d.DrawString(label)
 }
