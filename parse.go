@@ -6,13 +6,6 @@ import (
 	"strings"
 )
 
-type ClassString int
-
-type ClassifiedString struct {
-	class ClassString
-	text  string
-}
-
 const (
 	classEscape ClassString = iota
 	classText
@@ -20,8 +13,26 @@ const (
 
 var colorRe *regexp.Regexp
 
+type (
+	ClassString      int
+	ClassifiedString struct {
+		class ClassString
+		text  string
+	}
+	ClassifiedStrings []ClassifiedString
+)
+
 func init() {
 	colorRe = regexp.MustCompile(`[34][0-7]`)
+}
+
+func (cs ClassifiedStrings) OnlyText() (ret string) {
+	for _, v := range cs {
+		if v.class == classText {
+			ret += v.text
+		}
+	}
+	return
 }
 
 // parseText はテキストを解析しエスケープシーケンスにマッチした箇所と色を返す
@@ -107,7 +118,7 @@ func removeNotColorEscapeSequences(s string) (ret string) {
 // 不要な色コード以外のエスケープシーケンスを削除する
 // 前: ["\x1b[01;31m", "Red", "\x1b[0m", "\x1b[0Km", "Bold"]
 // 後: ["\x1b[31m", "Red", "\x1b[0m", "", "Bold"]
-func classifyString(s string) (ret []ClassifiedString) {
+func classifyString(s string) (ret ClassifiedStrings) {
 	var matchCnt int
 	var text string
 	for _, v := range s {

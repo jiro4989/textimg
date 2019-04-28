@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"github.com/golang/freetype/truetype"
+	"github.com/mattn/go-runewidth"
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
 )
@@ -48,7 +49,8 @@ var face font.Face
 
 func init() {
 	// 日本語が使えるフォントのデフォルトとして指定
-	fontData, err := ioutil.ReadFile("/usr/share/fonts/truetype/fonts-japanese-gothic.ttf")
+	fontData, err := ioutil.ReadFile("/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf")
+	// fontData, err := ioutil.ReadFile("/usr/share/fonts/truetype/fonts-japanese-gothic.ttf")
 	// fontData, err := ioutil.ReadFile("/usr/share/fonts/truetype/noto/NotoSansJavanese-Regular.ttf")
 	// fontData, err := ioutil.ReadFile("/usr/share/fonts/truetype/ubuntu/UbuntuMono-R.ttf")
 	if err != nil {
@@ -80,16 +82,18 @@ func main() {
 	// 色コード以外のエスケープコードを削除
 	inputStr = removeNotColorEscapeSequences(inputStr)
 
-	const charWidth = 20
+	const charWidth = 32
+	const charHeight = 32
 
 	posX := 0
-	img := image.NewRGBA(image.Rect(0, 0, 300, 100))
+	imageWidth := runewidth.StringWidth(classifyString(inputStr).OnlyText()) * charWidth
+	img := image.NewRGBA(image.Rect(0, 0, imageWidth, 100))
 	for inputStr != "" {
 		// 色文字列の句切れごとに画像に色指定して書き込む
 		col, matched, suffix := parseText(inputStr)
 		addLabel(img, posX, 60, matched, rgbMap[col])
 		inputStr = suffix
-		posX += len(matched) * charWidth
+		posX += runewidth.StringWidth(matched) * charWidth
 	}
 
 	f, err := os.Create(outFile)
