@@ -47,6 +47,7 @@ lint: ## 静的解析をかける
 
 test: ## テストコードを実行する
 	go test -cover ./...
+	./tester.sh
 
 clean: ## バイナリ、配布物ディレクトリを削除する
 	-rm -rf bin
