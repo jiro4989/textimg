@@ -27,7 +27,7 @@ func TestParseText(t *testing.T) {
 		{desc: "途中で色が変わる", s: "\x1b[30mBlack\x1b[31mRed\x1b[0m", col: colorEscapeSequenceBlack, matched: "Black", suffix: "\x1b[31mRed\x1b[0m"},
 		// 前提として色と直接関係のないエスケープ文字は削除していないといけない
 		// ので、このテストケースは不要
-		// {desc: "混合文字からcolorRedを取得", s: "\x1b[01;31m\x1b[Kmtest\x1b[m\x1b[Km", col: colorRed, matched: "test", suffix: "\x1b[m\x1b[Km"},
+		// {desc: "混合文字からcolorRedを取得", s: "\x1b[01;31m\x1b[Ktest\x1b[m\x1b[K", col: colorRed, matched: "test", suffix: "\x1b[m\x1b[K"},
 	}
 	for i, v := range tds {
 		col, matched, suffix := parseText(v.s)
@@ -81,9 +81,15 @@ func TestRemoveNotColorEscapeSequences(t *testing.T) {
 	tds := []TestData{
 		{desc: "消すものが何もない", s: "\x1b[31mRed\x1b[0m", expect: "\x1b[31mRed\x1b[0m"},
 		{desc: "赤文字の直前に別色がわりこむ", s: "\x1b[01;31mRed\x1b[0m", expect: "\x1b[31mRed\x1b[0m"},
-		{desc: "ボールドわりこみ", s: "\x1b[01;31m\x1b[KmRed\x1b[0m", expect: "\x1b[31mRed\x1b[0m"},
-		{desc: "途中で色がきりかわる(末尾にリセット色がない)", s: "\x1b[01;31m\x1b[KmRed\x1b[32mGreen", expect: "\x1b[31mRed\x1b[32mGreen"},
-		{desc: "途中で色がきりかわる(末尾にリセット色がある)", s: "\x1b[01;31m\x1b[KmRed\x1b[32mGreen\x1b[0m", expect: "\x1b[31mRed\x1b[32mGreen\x1b[0m"},
+		{desc: "ボールドわりこみ", s: "\x1b[01;31m\x1b[KRed\x1b[0m", expect: "\x1b[31mRed\x1b[0m"},
+		{desc: "途中で色がきりかわる(末尾にリセット色がない)", s: "\x1b[01;31m\x1b[KRed\x1b[32mGreen", expect: "\x1b[31mRed\x1b[32mGreen"},
+		{desc: "途中で色がきりかわる(末尾にリセット色がある)", s: "\x1b[01;31m\x1b[KRed\x1b[32mGreen\x1b[0m", expect: "\x1b[31mRed\x1b[32mGreen\x1b[0m"},
+		{desc: "出力消去文字  J", s: "\x1b[JTest", expect: "Test"},
+		{desc: "出力消去文字 0J", s: "\x1b[0JTest", expect: "Test"},
+		{desc: "出力消去文字 1J", s: "\x1b[1JTest", expect: "Test"},
+		{desc: "出力消去文字  K", s: "\x1b[KTest", expect: "Test"},
+		{desc: "出力消去文字 0K", s: "\x1b[0KTest", expect: "Test"},
+		{desc: "出力消去文字 1K", s: "\x1b[1KTest", expect: "Test"},
 	}
 	for i, v := range tds {
 		got := removeNotColorEscapeSequences(v.s)
@@ -103,9 +109,9 @@ func TestClassifyString(t *testing.T) {
 	}
 	tds := []TestData{
 		{
-			desc: "通常ケース", s: "\x1b[31m\x1b[KmRed\x1b[0m", expect: []ClassifiedString{
+			desc: "通常ケース", s: "\x1b[31m\x1b[KRed\x1b[0m", expect: []ClassifiedString{
 				{class: classEscape, text: "\x1b[31m"},
-				{class: classEscape, text: "\x1b[Km"},
+				{class: classEscape, text: "\x1b[K"},
 				{class: classText, text: "Red"},
 				{class: classEscape, text: "\x1b[0m"},
 			},
@@ -115,6 +121,20 @@ func TestClassifyString(t *testing.T) {
 				{class: classEscape, text: "\x1b[01;31m"},
 				{class: classText, text: "Red"},
 				{class: classEscape, text: "\x1b[0m"},
+			},
+		},
+		{
+			desc: "出力消去文字", s: "\x1b[KTest\x1b[0KTest\x1b[1KTest\x1b[JTest\x1b[1JTest", expect: []ClassifiedString{
+				{class: classEscape, text: "\x1b[K"},
+				{class: classText, text: "Test"},
+				{class: classEscape, text: "\x1b[0K"},
+				{class: classText, text: "Test"},
+				{class: classEscape, text: "\x1b[1K"},
+				{class: classText, text: "Test"},
+				{class: classEscape, text: "\x1b[J"},
+				{class: classText, text: "Test"},
+				{class: classEscape, text: "\x1b[1J"},
+				{class: classText, text: "Test"},
 			},
 		},
 	}

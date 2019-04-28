@@ -141,7 +141,7 @@ func classifyString(s string) (ret ClassifiedStrings) {
 			text += string(v)
 			continue
 		}
-		if matchCnt == 2 && v == 'm' {
+		if matchCnt == 2 && (v == 'm' || v == 'K' || v == 'J') {
 			text += string(v)
 			ret = append(ret, ClassifiedString{class: classEscape, text: text})
 			text = ""
