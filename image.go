@@ -14,16 +14,16 @@ import (
 )
 
 const (
-	colorNone    = ""
-	colorReset   = "\x1b[0m"
-	colorBlack   = "\x1b[30m"
-	colorRed     = "\x1b[31m"
-	colorGreen   = "\x1b[32m"
-	colorYellow  = "\x1b[33m"
-	colorBlue    = "\x1b[34m"
-	colorMagenta = "\x1b[35m"
-	colorCyan    = "\x1b[36m"
-	colorWhite   = "\x1b[37m"
+	colorEscapeSequenceNone    = ""
+	colorEscapeSequenceReset   = "\x1b[0m"
+	colorEscapeSequenceBlack   = "\x1b[30m"
+	colorEscapeSequenceRed     = "\x1b[31m"
+	colorEscapeSequenceGreen   = "\x1b[32m"
+	colorEscapeSequenceYellow  = "\x1b[33m"
+	colorEscapeSequenceBlue    = "\x1b[34m"
+	colorEscapeSequenceMagenta = "\x1b[35m"
+	colorEscapeSequenceCyan    = "\x1b[36m"
+	colorEscapeSequenceWhite   = "\x1b[37m"
 )
 
 var (
@@ -36,16 +36,16 @@ var (
 	colorRGBACyan    = color.RGBA{0, 255, 255, 255}
 	colorRGBAWhite   = color.RGBA{255, 255, 255, 255}
 
-	colorMap = map[string]color.RGBA{
-		colorNone:    colorRGBAWhite,
-		colorBlack:   colorRGBABlack,
-		colorRed:     colorRGBARed,
-		colorGreen:   colorRGBAGreen,
-		colorYellow:  colorRGBAYellow,
-		colorBlue:    colorRGBABlue,
-		colorMagenta: colorRGBAMagenta,
-		colorCyan:    colorRGBACyan,
-		colorWhite:   colorRGBAWhite,
+	colorEscapeSequenceMap = map[string]color.RGBA{
+		colorEscapeSequenceNone:    colorRGBAWhite,
+		colorEscapeSequenceBlack:   colorRGBABlack,
+		colorEscapeSequenceRed:     colorRGBARed,
+		colorEscapeSequenceGreen:   colorRGBAGreen,
+		colorEscapeSequenceYellow:  colorRGBAYellow,
+		colorEscapeSequenceBlue:    colorRGBABlue,
+		colorEscapeSequenceMagenta: colorRGBAMagenta,
+		colorEscapeSequenceCyan:    colorRGBACyan,
+		colorEscapeSequenceWhite:   colorRGBAWhite,
 	}
 
 	colorStringMap = map[string]color.RGBA{
@@ -60,7 +60,9 @@ var (
 	}
 )
 
-func writeImage(texts []string, w io.Writer, appconf applicationConfig) {
+// writeImage はテキストのEscapeSequenceから色情報などを読み取り、
+// wに書き込む。
+func writeImage(w io.Writer, texts []string, appconf applicationConfig) {
 	var (
 		charWidth   = appconf.fontsize / 2
 		charHeight  = appconf.fontsize
@@ -80,7 +82,7 @@ func writeImage(texts []string, w io.Writer, appconf applicationConfig) {
 		for line != "" {
 			// 色文字列の句切れごとに画像に色指定して書き込む
 			col, matched, suffix := parseText(line)
-			drawLabel(img, posX, posY, matched, colorMap[col], face)
+			drawLabel(img, posX, posY, matched, colorEscapeSequenceMap[col], face)
 			// 処理されなかった残りで次の処理対象を上書き
 			// 空になるまでループ
 			line = suffix
@@ -94,6 +96,7 @@ func writeImage(texts []string, w io.Writer, appconf applicationConfig) {
 	}
 }
 
+// readFace はfontPathのフォントファイルからfaceを返す。
 func readFace(fontPath string, fontSize float64) font.Face {
 	fontData, err := ioutil.ReadFile(fontPath)
 	if err != nil {
@@ -115,6 +118,7 @@ func readFace(fontPath string, fontSize float64) font.Face {
 	return face
 }
 
+// drawBackground はimgにbgを背景色として描画する。
 func drawBackground(img *image.RGBA, bg color.RGBA) {
 	var (
 		bounds = img.Bounds().Max
@@ -128,6 +132,7 @@ func drawBackground(img *image.RGBA, bg color.RGBA) {
 	}
 }
 
+// drawLabel はimgにラベルを描画する。
 func drawLabel(img *image.RGBA, x, y int, label string, col color.RGBA, face font.Face) {
 	point := fixed.Point26_6{fixed.Int26_6(x * 64), fixed.Int26_6(y * 64)}
 	d := &font.Drawer{
@@ -139,9 +144,10 @@ func drawLabel(img *image.RGBA, x, y int, label string, col color.RGBA, face fon
 	d.DrawString(label)
 }
 
+// maxStringWidth は表示上のテキストの最も幅の長い長さを返却する。
 func maxStringWidth(s []string) (max int) {
 	for _, v := range s {
-		text := classifyString(v).OnlyText()
+		text := classifyString(v).onlyText()
 		width := runewidth.StringWidth(text)
 		if max < width {
 			max = width

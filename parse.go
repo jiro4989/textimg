@@ -7,11 +7,13 @@ import (
 )
 
 const (
+	// classEscape はテキストに付与されているエスケープシーケンス
 	classEscape ClassString = iota
+	// classText はただのテキスト
 	classText
 )
 
-var colorRe *regexp.Regexp
+var reANSIColorEscapeSequence *regexp.Regexp
 
 type (
 	ClassString      int
@@ -23,10 +25,11 @@ type (
 )
 
 func init() {
-	colorRe = regexp.MustCompile(`[34][0-7]`)
+	reANSIColorEscapeSequence = regexp.MustCompile(`[34][0-7]`)
 }
 
-func (cs ClassifiedStrings) OnlyText() (ret string) {
+// onlyText はcs.textのみを結合して返却する。
+func (cs ClassifiedStrings) onlyText() (ret string) {
 	for _, v := range cs {
 		if v.class == classText {
 			ret += v.text
@@ -46,7 +49,7 @@ func parseText(s string) (string, string, string) {
 	col := getOnlyColorEscapeSequence(s)
 	// エスケープ文字自体は返す文字列に含めないため削除する
 	headPos := 0
-	if col != colorNone {
+	if col != colorEscapeSequenceNone {
 		headPos = len(col)
 	}
 	s = s[headPos:]
@@ -63,6 +66,8 @@ func parseText(s string) (string, string, string) {
 	return col, s, ""
 }
 
+// getOnlyColorEscapeSequence はエスケープ文字のうち、色に関連のあるエスケープ文
+// 字と通常のテキストのみを残して返却する。
 func getOnlyColorEscapeSequence(s string) string {
 	const pref = "\x1b["
 	if !strings.HasPrefix(s, pref) {
@@ -78,14 +83,14 @@ func getOnlyColorEscapeSequence(s string) string {
 	}
 
 	for _, v := range strings.Split(esc, ";") {
-		if colorRe.MatchString(v) {
+		if reANSIColorEscapeSequence.MatchString(v) {
 			return fmt.Sprintf("\x1b[%sm", v)
 		}
 	}
 
 	for _, v := range strings.Split(esc, ";") {
 		if v == "0" || v == "01" {
-			return colorReset
+			return colorEscapeSequenceReset
 		}
 	}
 

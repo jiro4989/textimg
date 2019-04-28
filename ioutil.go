@@ -5,6 +5,7 @@ import (
 	"os"
 )
 
+// readStdin は標準入力を文字列の配列として返す。
 func readStdin() (ret []string) {
 	sc := bufio.NewScanner(os.Stdin)
 	for sc.Scan() {

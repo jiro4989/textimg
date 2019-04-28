@@ -81,7 +81,7 @@ var RootCommand = &cobra.Command{
 			defer w.Close()
 		}
 
-		writeImage(texts, w, appconf)
+		writeImage(w, texts, appconf)
 	},
 }
 

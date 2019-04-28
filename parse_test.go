@@ -16,15 +16,15 @@ func TestParseText(t *testing.T) {
 		suffix  string
 	}
 	tds := []TestData{
-		{desc: "colorBlackを取得", s: "\x1b[30mtest\x1b[0m", col: colorBlack, matched: "test", suffix: "\x1b[0m"},
-		{desc: "colorRedを取得", s: "\x1b[31mtest\x1b[0m", col: colorRed, matched: "test", suffix: "\x1b[0m"},
-		{desc: "colorGreenを取得", s: "\x1b[32mtest\x1b[0m", col: colorGreen, matched: "test", suffix: "\x1b[0m"},
-		{desc: "colorYellowを取得", s: "\x1b[33mtest\x1b[0m", col: colorYellow, matched: "test", suffix: "\x1b[0m"},
-		{desc: "colorBlueを取得", s: "\x1b[34mtest\x1b[0m", col: colorBlue, matched: "test", suffix: "\x1b[0m"},
-		{desc: "colorMagentaを取得", s: "\x1b[35mtest\x1b[0m", col: colorMagenta, matched: "test", suffix: "\x1b[0m"},
-		{desc: "colorCyanを取得", s: "\x1b[36mtest\x1b[0m", col: colorCyan, matched: "test", suffix: "\x1b[0m"},
-		{desc: "colorWhiteを取得", s: "\x1b[37mtest\x1b[0m", col: colorWhite, matched: "test", suffix: "\x1b[0m"},
-		{desc: "途中で色が変わる", s: "\x1b[30mBlack\x1b[31mRed\x1b[0m", col: colorBlack, matched: "Black", suffix: "\x1b[31mRed\x1b[0m"},
+		{desc: "colorBlackを取得", s: "\x1b[30mtest\x1b[0m", col: colorEscapeSequenceBlack, matched: "test", suffix: "\x1b[0m"},
+		{desc: "colorRedを取得", s: "\x1b[31mtest\x1b[0m", col: colorEscapeSequenceRed, matched: "test", suffix: "\x1b[0m"},
+		{desc: "colorGreenを取得", s: "\x1b[32mtest\x1b[0m", col: colorEscapeSequenceGreen, matched: "test", suffix: "\x1b[0m"},
+		{desc: "colorYellowを取得", s: "\x1b[33mtest\x1b[0m", col: colorEscapeSequenceYellow, matched: "test", suffix: "\x1b[0m"},
+		{desc: "colorBlueを取得", s: "\x1b[34mtest\x1b[0m", col: colorEscapeSequenceBlue, matched: "test", suffix: "\x1b[0m"},
+		{desc: "colorMagentaを取得", s: "\x1b[35mtest\x1b[0m", col: colorEscapeSequenceMagenta, matched: "test", suffix: "\x1b[0m"},
+		{desc: "colorCyanを取得", s: "\x1b[36mtest\x1b[0m", col: colorEscapeSequenceCyan, matched: "test", suffix: "\x1b[0m"},
+		{desc: "colorWhiteを取得", s: "\x1b[37mtest\x1b[0m", col: colorEscapeSequenceWhite, matched: "test", suffix: "\x1b[0m"},
+		{desc: "途中で色が変わる", s: "\x1b[30mBlack\x1b[31mRed\x1b[0m", col: colorEscapeSequenceBlack, matched: "Black", suffix: "\x1b[31mRed\x1b[0m"},
 		// 前提として色と直接関係のないエスケープ文字は削除していないといけない
 		// ので、このテストケースは不要
 		// {desc: "混合文字からcolorRedを取得", s: "\x1b[01;31m\x1b[Kmtest\x1b[m\x1b[Km", col: colorRed, matched: "test", suffix: "\x1b[m\x1b[Km"},
@@ -57,10 +57,10 @@ func TestGetOnlyColorEscapeSequence(t *testing.T) {
 		expect string
 	}
 	tds := []TestData{
-		{desc: "赤文字を取得", s: "\x1b[31mte", expect: colorRed},
-		{desc: "緑文字を取得", s: "\x1b[32mte", expect: colorGreen},
-		{desc: "リセット文字を取得", s: "\x1b[0mte", expect: colorReset},
-		{desc: "余計な文字が混じっていても取得", s: "\x1b[01;31mte", expect: colorRed},
+		{desc: "赤文字を取得", s: "\x1b[31mte", expect: colorEscapeSequenceRed},
+		{desc: "緑文字を取得", s: "\x1b[32mte", expect: colorEscapeSequenceGreen},
+		{desc: "リセット文字を取得", s: "\x1b[0mte", expect: colorEscapeSequenceReset},
+		{desc: "余計な文字が混じっていても取得", s: "\x1b[01;31mte", expect: colorEscapeSequenceRed},
 	}
 	for i, v := range tds {
 		got := getOnlyColorEscapeSequence(v.s)
