@@ -19,8 +19,10 @@ type applicationConfig struct {
 
 func init() {
 	cobra.OnInitialize()
-	RootCommand.Flags().StringP("background", "b", "black", "background color")
-	RootCommand.Flags().StringP("out", "o", "", "output path")
+	RootCommand.Flags().StringP("background", "b", "black", `background color.
+format is [black|red|green|yellow|blue|magenta|cyan|white]
+or (R,G,B,A(0~255))`)
+	RootCommand.Flags().StringP("out", "o", "", "output image file path")
 	RootCommand.Flags().StringP("fontfile", "f", "/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf", "font file path")
 	RootCommand.Flags().IntP("fontsize", "F", 64, "font size")
 }
