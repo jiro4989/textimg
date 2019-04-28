@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -11,7 +12,8 @@ func init() {
 	RootCommand.Flags().StringP("background", "b", "black", "background color")
 	RootCommand.Flags().StringP("scale", "s", "auto", "scale size")
 	RootCommand.Flags().StringP("out", "o", "", "output path")
-	RootCommand.Flags().StringP("font", "f", "", "font file path")
+	RootCommand.Flags().StringP("fontfile", "f", "", "font file path")
+	RootCommand.Flags().IntP("fontsize", "F", 64, "font size")
 }
 
 var RootCommand = &cobra.Command{
@@ -37,11 +39,34 @@ var RootCommand = &cobra.Command{
 			panic(err)
 		}
 
-		fontpath, err := f.GetString("font")
+		fontpath, err := f.GetString("fontfile")
 		if err != nil {
 			panic(err)
 		}
 
 		fmt.Println(background, scale, outpath, fontpath)
+
+		// 引数にテキストの指定がなければ標準入力を使用する
+		var texts []string
+		if len(args) < 1 {
+			texts = readStdin()
+		} else {
+			texts = args
+		}
+
+		// 出力先画像の指定がなければ標準出力を出力先にする
+		var w *os.File
+		if outpath == "" {
+			w = os.Stdout
+		} else {
+			var err error
+			w, err = os.Create(outpath)
+			if err != nil {
+				panic(err)
+			}
+			defer w.Close()
+		}
+
+		writeImage(texts, w)
 	},
 }

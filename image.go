@@ -3,10 +3,12 @@ package main
 import (
 	"image"
 	"image/color"
+	"image/png"
 	"io"
 	"io/ioutil"
 
 	"github.com/golang/freetype/truetype"
+	"github.com/mattn/go-runewidth"
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
 )
@@ -60,8 +62,40 @@ func init() {
 	face = truetype.NewFace(ft, &opt)
 }
 
-func writeImage(texts []string, w *io.Writer) {
+func writeImage(texts []string, w io.Writer) {
+	const (
+		charWidth  = 32
+		charHeight = 64
+	)
+	var (
+		imageWidth  = maxStringWidth(texts) * charWidth
+		imageHeight = len(texts) * charHeight
+		img         = image.NewRGBA(image.Rect(0, 0, imageWidth, imageHeight))
+	)
 
+	// TODO 入力におうじて変更する
+	drawBackground(img, color.RGBA{R: 0, G: 0, B: 0, A: 255})
+
+	posY := charHeight
+	for _, line := range texts {
+		posX := 0
+		// 色コード以外のエスケープコードを削除
+		line = removeNotColorEscapeSequences(line)
+		for line != "" {
+			// 色文字列の句切れごとに画像に色指定して書き込む
+			col, matched, suffix := parseText(line)
+			drawLabel(img, posX, posY, matched, colorMap[col])
+			// 処理されなかった残りで次の処理対象を上書き
+			// 空になるまでループ
+			line = suffix
+			posX += runewidth.StringWidth(matched) * charWidth
+		}
+		posY += charHeight
+	}
+
+	if err := png.Encode(w, img); err != nil {
+		panic(err)
+	}
 }
 
 func drawLabel(img *image.RGBA, x, y int, label string, col color.RGBA) {
