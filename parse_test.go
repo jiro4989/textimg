@@ -25,6 +25,8 @@ func TestParseText(t *testing.T) {
 		{desc: "colorCyanを取得", s: "\x1b[36mtest\x1b[0m", col: colorEscapeSequenceCyan, matched: "test", suffix: "\x1b[0m"},
 		{desc: "colorWhiteを取得", s: "\x1b[37mtest\x1b[0m", col: colorEscapeSequenceWhite, matched: "test", suffix: "\x1b[0m"},
 		{desc: "途中で色が変わる", s: "\x1b[30mBlack\x1b[31mRed\x1b[0m", col: colorEscapeSequenceBlack, matched: "Black", suffix: "\x1b[31mRed\x1b[0m"},
+		{desc: "リセット文字", s: "\x1b[0mReset\x1b[m", col: colorEscapeSequenceReset, matched: "Reset", suffix: "\x1b[m"},
+		// TODO {desc: "省略リセット文字", s: "\x1b[mReset\x1b[m", col: colorEscapeSequenceWhite, matched: "Reset", suffix: "\x1b[m"},
 		// 前提として色と直接関係のないエスケープ文字は削除していないといけない
 		// ので、このテストケースは不要
 		// {desc: "混合文字からcolorRedを取得", s: "\x1b[01;31m\x1b[Ktest\x1b[m\x1b[K", col: colorRed, matched: "test", suffix: "\x1b[m\x1b[K"},
@@ -60,7 +62,10 @@ func TestGetOnlyColorEscapeSequence(t *testing.T) {
 		{desc: "赤文字を取得", s: "\x1b[31mte", expect: colorEscapeSequenceRed},
 		{desc: "緑文字を取得", s: "\x1b[32mte", expect: colorEscapeSequenceGreen},
 		{desc: "リセット文字を取得", s: "\x1b[0mte", expect: colorEscapeSequenceReset},
+		{desc: "省略リセット文字を取得", s: "\x1b[mte", expect: colorEscapeSequenceResetShort},
+		{desc: "余計な文字が混じっていても取得", s: "\x1b[0;31mte", expect: colorEscapeSequenceRed},
 		{desc: "余計な文字が混じっていても取得", s: "\x1b[01;31mte", expect: colorEscapeSequenceRed},
+		{desc: "先頭がエスケープシーケンス以外で開始", s: "test", expect: colorEscapeSequenceNone},
 	}
 	for i, v := range tds {
 		got := getOnlyColorEscapeSequence(v.s)
@@ -114,6 +119,12 @@ func TestClassifyString(t *testing.T) {
 				{class: classEscape, text: "\x1b[K"},
 				{class: classText, text: "Red"},
 				{class: classEscape, text: "\x1b[0m"},
+			},
+		},
+		{
+			desc: "省略記法", s: "\x1b[mTest", expect: []ClassifiedString{
+				{class: classEscape, text: "\x1b[m"},
+				{class: classText, text: "Test"},
 			},
 		},
 		{

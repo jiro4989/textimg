@@ -75,7 +75,7 @@ func parseText(s string) (string, string, string) {
 	// 次のエスケープシーケンスが見つかるまでをmatchedとする
 	// 何も見つからなければ全部を返す
 	// _, idx := getColorPos(s)
-	for _, searchWord := range []string{"\x1b[3", "\x1b[4", "\x1b[0"} {
+	for _, searchWord := range []string{"\x1b[3", "\x1b[4", "\x1b[0", "\x1b[m"} {
 		idx := strings.Index(s, searchWord)
 		if idx != -1 {
 			return col, s[:idx], s[idx:]
@@ -89,12 +89,16 @@ func parseText(s string) (string, string, string) {
 func getOnlyColorEscapeSequence(s string) string {
 	const pref = "\x1b["
 	if !strings.HasPrefix(s, pref) {
-		return ""
+		return colorEscapeSequenceNone
 	}
 
 	var esc string
 	for _, v := range s[len(pref):] {
 		if v == 'm' {
+			// \x1b[m省略記法 と一致したときはReset
+			if esc == "" {
+				return colorEscapeSequenceResetShort
+			}
 			break
 		}
 		esc += string(v)
@@ -112,13 +116,13 @@ func getOnlyColorEscapeSequence(s string) string {
 		}
 	}
 
-	return ""
+	return colorEscapeSequenceNone
 }
 
 // 色エスケープシーケンス以外のエスケープシーケンスは不要なので削除して返す
 func removeNotColorEscapeSequences(s string) (ret string) {
 	// エスケースシーケンス部とテキスト部のスライスに分割する
-	// 例: ["\x1b[01;31m", "Red", "\x1b[0m", "\x1b[0Km", "Bold"]
+	// 例: ["\x1b[01;31m", "Red", "\x1b[0m", "\x1b[0K", "Bold"]
 	cs := classifyString(s)
 
 	// 不要な色コード以外のエスケープシーケンスを削除する
@@ -139,7 +143,7 @@ func removeNotColorEscapeSequences(s string) (ret string) {
 }
 
 // 不要な色コード以外のエスケープシーケンスを削除する
-// 前: ["\x1b[01;31m", "Red", "\x1b[0m", "\x1b[0Km", "Bold"]
+// 前: ["\x1b[01;31m", "Red", "\x1b[0m", "\x1b[0K", "Bold"]
 // 後: ["\x1b[31m", "Red", "\x1b[0m", "", "Bold"]
 func classifyString(s string) (ret ClassifiedStrings) {
 	var matchCnt int
@@ -174,6 +178,8 @@ func classifyString(s string) (ret ClassifiedStrings) {
 	return
 }
 
+// isIgnoreRune はignoreRunesのいずれかと一致したときにtrueを返す。(OR判定)
+// いずれにもマッチしない場合はfalseを返す。
 func isIgnoreRune(r rune) bool {
 	for _, v := range ignoreRunes {
 		if v == r {

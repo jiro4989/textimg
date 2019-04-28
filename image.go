@@ -14,16 +14,17 @@ import (
 )
 
 const (
-	colorEscapeSequenceNone    = ""
-	colorEscapeSequenceReset   = "\x1b[0m"
-	colorEscapeSequenceBlack   = "\x1b[30m"
-	colorEscapeSequenceRed     = "\x1b[31m"
-	colorEscapeSequenceGreen   = "\x1b[32m"
-	colorEscapeSequenceYellow  = "\x1b[33m"
-	colorEscapeSequenceBlue    = "\x1b[34m"
-	colorEscapeSequenceMagenta = "\x1b[35m"
-	colorEscapeSequenceCyan    = "\x1b[36m"
-	colorEscapeSequenceWhite   = "\x1b[37m"
+	colorEscapeSequenceNone       = ""
+	colorEscapeSequenceResetShort = "\x1b[m"
+	colorEscapeSequenceReset      = "\x1b[0m"
+	colorEscapeSequenceBlack      = "\x1b[30m"
+	colorEscapeSequenceRed        = "\x1b[31m"
+	colorEscapeSequenceGreen      = "\x1b[32m"
+	colorEscapeSequenceYellow     = "\x1b[33m"
+	colorEscapeSequenceBlue       = "\x1b[34m"
+	colorEscapeSequenceMagenta    = "\x1b[35m"
+	colorEscapeSequenceCyan       = "\x1b[36m"
+	colorEscapeSequenceWhite      = "\x1b[37m"
 )
 
 var (
@@ -37,15 +38,17 @@ var (
 	colorRGBAWhite   = color.RGBA{255, 255, 255, 255}
 
 	colorEscapeSequenceMap = map[string]color.RGBA{
-		colorEscapeSequenceNone:    colorRGBAWhite,
-		colorEscapeSequenceBlack:   colorRGBABlack,
-		colorEscapeSequenceRed:     colorRGBARed,
-		colorEscapeSequenceGreen:   colorRGBAGreen,
-		colorEscapeSequenceYellow:  colorRGBAYellow,
-		colorEscapeSequenceBlue:    colorRGBABlue,
-		colorEscapeSequenceMagenta: colorRGBAMagenta,
-		colorEscapeSequenceCyan:    colorRGBACyan,
-		colorEscapeSequenceWhite:   colorRGBAWhite,
+		colorEscapeSequenceNone:       colorRGBAWhite,
+		colorEscapeSequenceResetShort: colorRGBAWhite,
+		colorEscapeSequenceReset:      colorRGBAWhite,
+		colorEscapeSequenceBlack:      colorRGBABlack,
+		colorEscapeSequenceRed:        colorRGBARed,
+		colorEscapeSequenceGreen:      colorRGBAGreen,
+		colorEscapeSequenceYellow:     colorRGBAYellow,
+		colorEscapeSequenceBlue:       colorRGBABlue,
+		colorEscapeSequenceMagenta:    colorRGBAMagenta,
+		colorEscapeSequenceCyan:       colorRGBACyan,
+		colorEscapeSequenceWhite:      colorRGBAWhite,
 	}
 
 	colorStringMap = map[string]color.RGBA{
