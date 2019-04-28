@@ -26,3 +26,4 @@ echo -e "$(repeat 3 "\x1b[31m赤\x1b[32m緑\x1b[34m青\n\x1b[31mRR\x1b[32mGG\x1b
 echo Test | grep --color=always Te | ./bin/coltoi -o testdata/out/grep.png
 echo normal | ./bin/coltoi -o testdata/out/normal.png
 echo -e "\x1b[31mRED\x1b[0mWhite" | ./bin/coltoi -o testdata/out/red_white.png
+echo -e "\x1b[31mRED\x1b[0mWhite" | ./bin/coltoi -b red -o testdata/out/red_bg.png
