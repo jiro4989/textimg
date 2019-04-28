@@ -13,7 +13,25 @@ const (
 	classText
 )
 
-var reANSIColorEscapeSequence *regexp.Regexp
+var (
+	reANSIColorEscapeSequence *regexp.Regexp
+	ignoreRunes               = []rune{
+		'A', // カーソル移動
+		'B', // カーソル移動
+		'C', // カーソル移動
+		'D', // カーソル移動
+		'E', // カーソル移動
+		'F', // カーソル移動
+		'G', // カーソル移動
+		'H', // カーソル移動
+		'f', // カーソル移動
+		'J', // 出力消去
+		'K', // 出力消去
+		'm',
+		'S', // コンソールスクロール
+		'T', // コンソールスクロール
+	}
+)
 
 type (
 	ClassString      int
@@ -141,7 +159,7 @@ func classifyString(s string) (ret ClassifiedStrings) {
 			text += string(v)
 			continue
 		}
-		if matchCnt == 2 && (v == 'm' || v == 'K' || v == 'J') {
+		if matchCnt == 2 && isIgnoreRune(v) {
 			text += string(v)
 			ret = append(ret, ClassifiedString{class: classEscape, text: text})
 			text = ""
@@ -154,4 +172,13 @@ func classifyString(s string) (ret ClassifiedStrings) {
 		ret = append(ret, ClassifiedString{class: classText, text: text})
 	}
 	return
+}
+
+func isIgnoreRune(r rune) bool {
+	for _, v := range ignoreRunes {
+		if v == r {
+			return true
+		}
+	}
+	return false
 }

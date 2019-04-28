@@ -137,6 +137,25 @@ func TestClassifyString(t *testing.T) {
 				{class: classText, text: "Test"},
 			},
 		},
+		{
+			desc: "カーソル移動", s: "\x1b[1A\x1b[1B\x1b[1C\x1b[1D\x1b[1E\x1b[1F\x1b[1G\x1b[1;2H\x1b[1;2f", expect: []ClassifiedString{
+				{class: classEscape, text: "\x1b[1A"},
+				{class: classEscape, text: "\x1b[1B"},
+				{class: classEscape, text: "\x1b[1C"},
+				{class: classEscape, text: "\x1b[1D"},
+				{class: classEscape, text: "\x1b[1E"},
+				{class: classEscape, text: "\x1b[1F"},
+				{class: classEscape, text: "\x1b[1G"},
+				{class: classEscape, text: "\x1b[1;2H"},
+				{class: classEscape, text: "\x1b[1;2f"},
+			},
+		},
+		{
+			desc: "スクロール", s: "\x1b[1S\x1b[2T", expect: []ClassifiedString{
+				{class: classEscape, text: "\x1b[1S"},
+				{class: classEscape, text: "\x1b[2T"},
+			},
+		},
 	}
 	for _, v := range tds {
 		got := classifyString(v.s)
