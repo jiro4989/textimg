@@ -24,7 +24,7 @@ const (
 	colorYellow  = "\x1b[33m"
 	colorBlue    = "\x1b[34m"
 	colorMagenta = "\x1b[35m"
-	colorSyan    = "\x1b[36m"
+	colorCyan    = "\x1b[36m"
 	colorWhite   = "\x1b[37m"
 )
 
@@ -36,14 +36,19 @@ var colors = []string{
 	colorYellow,
 	colorBlue,
 	colorMagenta,
-	colorSyan,
+	colorCyan,
 	colorWhite,
 }
 
-var rgbMap = map[string]color.RGBA{
-	colorRed:   color.RGBA{255, 0, 0, 255},
-	colorGreen: color.RGBA{0, 255, 0, 255},
-	colorBlue:  color.RGBA{0, 0, 255, 255},
+var colorMap = map[string]color.RGBA{
+	colorBlack:   color.RGBA{0, 0, 0, 255},
+	colorRed:     color.RGBA{255, 0, 0, 255},
+	colorGreen:   color.RGBA{0, 255, 0, 255},
+	colorYellow:  color.RGBA{255, 255, 0, 255},
+	colorBlue:    color.RGBA{0, 0, 255, 255},
+	colorMagenta: color.RGBA{255, 0, 255, 255},
+	colorCyan:    color.RGBA{0, 255, 255, 255},
+	colorWhite:   color.RGBA{255, 255, 255, 255},
 }
 
 var face font.Face
@@ -90,12 +95,13 @@ func main() {
 	imageWidth := maxStringWidth(inputStr) * charWidth
 	imageHeight := len(strings.Split(inputStr, "\n")) * charHeight
 	img := image.NewRGBA(image.Rect(0, 0, imageWidth, imageHeight))
+	drawBackground(img, color.RGBA{R: 0, G: 0, B: 0, A: 255})
 	for _, line := range strings.Split(inputStr, "\n") {
 		posX := 0
 		for line != "" {
 			// 色文字列の句切れごとに画像に色指定して書き込む
 			col, matched, suffix := parseText(line)
-			addLabel(img, posX, posY, matched, rgbMap[col])
+			addLabel(img, posX, posY, matched, colorMap[col])
 			line = suffix
 			posX += runewidth.StringWidth(matched) * charWidth
 		}
@@ -123,6 +129,19 @@ func addLabel(img *image.RGBA, x, y int, label string, col color.RGBA) {
 		Dot: point,
 	}
 	d.DrawString(label)
+}
+
+func drawBackground(img *image.RGBA, bg color.RGBA) {
+	var (
+		bounds = img.Bounds().Max
+		width  = bounds.X
+		height = bounds.Y
+	)
+	for x := 0; x < width; x++ {
+		for y := 0; y < height; y++ {
+			img.Set(x, y, bg)
+		}
+	}
 }
 
 func maxStringWidth(s string) (max int) {
