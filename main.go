@@ -7,6 +7,7 @@ import (
 	"image/png"
 	"io/ioutil"
 	"os"
+	"strings"
 
 	"github.com/golang/freetype/truetype"
 	"github.com/mattn/go-runewidth"
@@ -75,7 +76,7 @@ func init() {
 
 func main() {
 	// 標準入力から文字列を取得
-	inputStr := readStdin()[0]
+	inputStr := strings.Join(readStdin(), "\n")
 	fmt.Println(inputStr)
 	outFile := os.Args[1]
 
@@ -83,17 +84,22 @@ func main() {
 	inputStr = removeNotColorEscapeSequences(inputStr)
 
 	const charWidth = 32
-	const charHeight = 32
+	const charHeight = 64
 
-	posX := 0
-	imageWidth := runewidth.StringWidth(classifyString(inputStr).OnlyText()) * charWidth
-	img := image.NewRGBA(image.Rect(0, 0, imageWidth, 100))
-	for inputStr != "" {
-		// 色文字列の句切れごとに画像に色指定して書き込む
-		col, matched, suffix := parseText(inputStr)
-		addLabel(img, posX, 60, matched, rgbMap[col])
-		inputStr = suffix
-		posX += runewidth.StringWidth(matched) * charWidth
+	posY := charHeight
+	imageWidth := maxStringWidth(inputStr) * charWidth
+	imageHeight := len(strings.Split(inputStr, "\n")) * charHeight
+	img := image.NewRGBA(image.Rect(0, 0, imageWidth, imageHeight))
+	for _, line := range strings.Split(inputStr, "\n") {
+		posX := 0
+		for line != "" {
+			// 色文字列の句切れごとに画像に色指定して書き込む
+			col, matched, suffix := parseText(line)
+			addLabel(img, posX, posY, matched, rgbMap[col])
+			line = suffix
+			posX += runewidth.StringWidth(matched) * charWidth
+		}
+		posY += charHeight
 	}
 
 	f, err := os.Create(outFile)
@@ -117,4 +123,16 @@ func addLabel(img *image.RGBA, x, y int, label string, col color.RGBA) {
 		Dot: point,
 	}
 	d.DrawString(label)
+}
+
+func maxStringWidth(s string) (max int) {
+	list := strings.Split(s, "\n")
+	for _, v := range list {
+		text := classifyString(v).OnlyText()
+		width := runewidth.StringWidth(text)
+		if max < width {
+			max = width
+		}
+	}
+	return
 }

@@ -17,4 +17,6 @@ echo -e "\x1b[31mRed\x1b[32mGreen\x1b[34mBlue\x1b[0m" | ./bin/txtimg out/rgb.png
 echo -e "$(repeat 10 "\x1b[31mR\x1b[32mG\x1b[34mB")\x1b[0m" | ./bin/txtimg out/rgb2.png
 echo -e "$(repeat 10 "\x1b[31m赤\x1b[32m緑\x1b[34m青")\x1b[0m" | ./bin/txtimg out/rgb_ja.png
 echo -e "$(repeat 10 "\x1b[31mあか\x1b[32mみどり\x1b[34mあお")\x1b[0m" | ./bin/txtimg out/rgb2_ja.png
+echo ---------
+echo -e "$(repeat 5 "\x1b[31m赤\x1b[32m緑\x1b[34m青\n")" | ./bin/txtimg out/rgblf_ja.png
 echo Test | grep --color=always Te | ./bin/txtimg out/grep.png
