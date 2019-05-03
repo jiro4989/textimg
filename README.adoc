@@ -2,8 +2,8 @@
 :toc: left
 :sectnums:
 
-textimg is command to convert from ANSI color text to image. +
-Drawn image keeps having colors of ANSI escape sequence.
+textimg is command to convert from ANSI color or 256 color text to image. +
+Drawn image keeps having colors of escape sequence.
 
 == Development
 
@@ -21,6 +21,8 @@ echo -e '\x1b[31mRED\x1b[0m' | textimg --background black -o out.png
 
 === Rainbow examples
 
+==== From ANSI color
+
 [source,bash]
 ----
 colors=(30 31 32 33 34 35 36 37)
@@ -35,6 +37,38 @@ Output is here.
 
 image:img/rainbow.png["Rainbow example"]
 
+==== From 256 color (Foreground)
+
+[source,bash]
+----
+seq 0 255 | while read -r i; do
+  echo -ne "\x1b[38;5;${i}m$(printf %03d $i)"
+  if [ $(((i+1) % 50)) -eq 0 ]; then
+    echo
+  fi
+done | textimg -o testdata/out/256_fg.png
+----
+
+Output is here.
+
+==== From 256 color (Background)
+
+image:img/256_fg.png["256 foreground example"]
+
+[source,bash]
+----
+seq 0 255 | while read -r i; do
+  echo -ne "\x1b[48;5;${i}m$(printf %03d $i)"
+  if [ $(((i+1) % 50)) -eq 0 ]; then
+    echo
+  fi
+done | textimg -o testdata/out/256_bg.png
+----
+
+Output is here.
+
+image:img/256_bg.png["256 background example"]
+
 == Install
 
 [source,bash]
@@ -48,7 +82,7 @@ Download binary from https://github.com/jiro4989/textimg/releases[Releases].
 
 [source]
 ----
-textimg is command to convert from ANSI colored text to image.
+textimg is command to convert from colored text (ANSI or 256) to image.
 
 Usage:
   textimg [flags]

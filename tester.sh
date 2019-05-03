@@ -30,18 +30,16 @@ echo -e "\x1b[31mRED\x1b[0mWhite" | ./bin/textimg -b red -o testdata/out/red_bg.
 echo -e "あいうえおかきくけこ" | sed -r 's/[^　]/\x1b[31m&\x1b[0m/g' | ./bin/textimg -b white -o testdata/out/hiragana.png
 echo -e "\x1b[41mR\x1b[31mR\x1b[42mG\x1b[32mG\x1b[44mB\x1b[34mB\x1b[0m\nR\x1b[31mRG\x1b[32mGB\x1b[34mB\x1b[0m" | ./bin/textimg -b white -o testdata/out/bg.png
 
-seq 25 | while read -r i; do
-  n=$((i*10))
-  echo -ne "\x1b[38;5;${n}m$(printf %03d $n)"
-  if [ $((i % 10)) -eq 0 ]; then
+seq 0 255 | while read -r i; do
+  echo -ne "\x1b[38;5;${i}m$(printf %03d $i)"
+  if [ $(((i+1) % 50)) -eq 0 ]; then
     echo
   fi
 done | ./bin/textimg -o testdata/out/256_fg.png
 
-seq 25 | while read -r i; do
-  n=$((i*10))
-  echo -ne "\x1b[48;5;${n}m$(printf %03d $n)"
-  if [ $((i % 10)) -eq 0 ]; then
+seq 0 255 | while read -r i; do
+  echo -ne "\x1b[48;5;${i}m$(printf %03d $i)"
+  if [ $(((i+1) % 50)) -eq 0 ]; then
     echo
   fi
 done | ./bin/textimg -o testdata/out/256_bg.png

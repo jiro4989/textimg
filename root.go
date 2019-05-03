@@ -29,7 +29,7 @@ or (R,G,B,A(0~255))`)
 
 var RootCommand = &cobra.Command{
 	Use:     "textimg",
-	Short:   "textimg is command to convert from ANSI colored text to image.",
+	Short:   "textimg is command to convert from colored text (ANSI or 256) to image.",
 	Example: `textimg $'\x1b[31mRED\x1b[0m' -o out.png`,
 	Version: Version,
 	Run: func(cmd *cobra.Command, args []string) {
