@@ -9,14 +9,14 @@ repeat() {
 
 make build
 mkdir -p testdata/out
-echo -e "\x1b[30mUNKO\x1b[0m" | ./bin/textimg -o testdata/out/black.png
-echo -e "\x1b[31mUNKO\x1b[0m" | ./bin/textimg -o testdata/out/red.png
-echo -e "\x1b[32mUNKO\x1b[0m" | ./bin/textimg -o testdata/out/green.png
-echo -e "\x1b[33mUNKO\x1b[0m" | ./bin/textimg -o testdata/out/yellow.png
-echo -e "\x1b[34mUNKO\x1b[0m" | ./bin/textimg -o testdata/out/blue.png
-echo -e "\x1b[35mUNKO\x1b[0m" | ./bin/textimg -o testdata/out/magenta.png
-echo -e "\x1b[36mUNKO\x1b[0m" | ./bin/textimg -o testdata/out/syan.png
-echo -e "\x1b[37mUNKO\x1b[0m" | ./bin/textimg -o testdata/out/white.png
+echo -e "\x1b[30mTESO\x1b[0m" | ./bin/textimg -o testdata/out/black.png
+echo -e "\x1b[31mTESO\x1b[0m" | ./bin/textimg -o testdata/out/red.png
+echo -e "\x1b[32mTESO\x1b[0m" | ./bin/textimg -o testdata/out/green.png
+echo -e "\x1b[33mTESO\x1b[0m" | ./bin/textimg -o testdata/out/yellow.png
+echo -e "\x1b[34mTESO\x1b[0m" | ./bin/textimg -o testdata/out/blue.png
+echo -e "\x1b[35mTESO\x1b[0m" | ./bin/textimg -o testdata/out/magenta.png
+echo -e "\x1b[36mTESO\x1b[0m" | ./bin/textimg -o testdata/out/syan.png
+echo -e "\x1b[37mTESO\x1b[0m" | ./bin/textimg -o testdata/out/white.png
 echo -e "\x1b[31mRed\x1b[32mGreen\x1b[34mBlue\x1b[0m" | ./bin/textimg -o testdata/out/rgb.png
 echo -e "$(repeat 10 "\x1b[31mR\x1b[32mG\x1b[34mB")\x1b[0m" | ./bin/textimg -o testdata/out/rgb2.png
 echo -e "$(repeat 10 "\x1b[31m赤\x1b[32m緑\x1b[34m青")\x1b[0m" | ./bin/textimg -o testdata/out/rgb_kan.png
