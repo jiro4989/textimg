@@ -4,7 +4,29 @@ import (
 	"image/color"
 )
 
-var Terminal256ColorMap = map[int]color.RGBA{
+const (
+	colorEscapeSequenceNone       = ""
+	colorEscapeSequenceResetShort = "\x1b[m"
+	colorEscapeSequenceReset      = "\x1b[0m"
+	colorEscapeSequenceBlack      = "\x1b[30m"
+	colorEscapeSequenceRed        = "\x1b[31m"
+	colorEscapeSequenceGreen      = "\x1b[32m"
+	colorEscapeSequenceYellow     = "\x1b[33m"
+	colorEscapeSequenceBlue       = "\x1b[34m"
+	colorEscapeSequenceMagenta    = "\x1b[35m"
+	colorEscapeSequenceCyan       = "\x1b[36m"
+	colorEscapeSequenceWhite      = "\x1b[37m"
+	colorEscapeSequenceBGBlack    = "\x1b[40m"
+	colorEscapeSequenceBGRed      = "\x1b[41m"
+	colorEscapeSequenceBGGreen    = "\x1b[42m"
+	colorEscapeSequenceBGYellow   = "\x1b[43m"
+	colorEscapeSequenceBGBlue     = "\x1b[44m"
+	colorEscapeSequenceBGMagenta  = "\x1b[45m"
+	colorEscapeSequenceBGCyan     = "\x1b[46m"
+	colorEscapeSequenceBGWhite    = "\x1b[47m"
+)
+
+var terminal256ColorMap = map[int]color.RGBA{
 	0:   color.RGBA{0, 0, 0, 255},
 	1:   color.RGBA{128, 0, 0, 255},
 	2:   color.RGBA{0, 128, 0, 255},
@@ -262,3 +284,47 @@ var Terminal256ColorMap = map[int]color.RGBA{
 	254: color.RGBA{228, 228, 228, 255},
 	255: color.RGBA{238, 238, 238, 255},
 }
+
+var (
+	colorRGBABlack   = color.RGBA{0, 0, 0, 255}
+	colorRGBARed     = color.RGBA{255, 0, 0, 255}
+	colorRGBAGreen   = color.RGBA{0, 255, 0, 255}
+	colorRGBAYellow  = color.RGBA{255, 255, 0, 255}
+	colorRGBABlue    = color.RGBA{0, 0, 255, 255}
+	colorRGBAMagenta = color.RGBA{255, 0, 255, 255}
+	colorRGBACyan    = color.RGBA{0, 255, 255, 255}
+	colorRGBAWhite   = color.RGBA{255, 255, 255, 255}
+
+	colorEscapeSequenceMap = map[string]color.RGBA{
+		colorEscapeSequenceNone:       colorRGBAWhite,
+		colorEscapeSequenceResetShort: colorRGBAWhite,
+		colorEscapeSequenceReset:      colorRGBAWhite,
+		colorEscapeSequenceBlack:      colorRGBABlack,
+		colorEscapeSequenceRed:        colorRGBARed,
+		colorEscapeSequenceGreen:      colorRGBAGreen,
+		colorEscapeSequenceYellow:     colorRGBAYellow,
+		colorEscapeSequenceBlue:       colorRGBABlue,
+		colorEscapeSequenceMagenta:    colorRGBAMagenta,
+		colorEscapeSequenceCyan:       colorRGBACyan,
+		colorEscapeSequenceWhite:      colorRGBAWhite,
+		colorEscapeSequenceBGBlack:    colorRGBABlack,
+		colorEscapeSequenceBGRed:      colorRGBARed,
+		colorEscapeSequenceBGGreen:    colorRGBAGreen,
+		colorEscapeSequenceBGYellow:   colorRGBAYellow,
+		colorEscapeSequenceBGBlue:     colorRGBABlue,
+		colorEscapeSequenceBGMagenta:  colorRGBAMagenta,
+		colorEscapeSequenceBGCyan:     colorRGBACyan,
+		colorEscapeSequenceBGWhite:    colorRGBAWhite,
+	}
+
+	colorStringMap = map[string]color.RGBA{
+		"black":   colorRGBABlack,
+		"red":     colorRGBARed,
+		"green":   colorRGBAGreen,
+		"yellow":  colorRGBAYellow,
+		"blue":    colorRGBABlue,
+		"magenta": colorRGBAMagenta,
+		"cyan":    colorRGBACyan,
+		"white":   colorRGBAWhite,
+	}
+)

@@ -97,7 +97,10 @@ func getOnlyColorEscapeSequence(s string) string {
 		esc += string(v)
 	}
 
-	for _, v := range strings.Split(esc, ";") {
+	for i, v := range strings.Split(esc, ";") {
+		if i == 0 && (v == "38" || v == "48") {
+			return fmt.Sprintf("\x1b[%sm", esc)
+		}
 		if reANSIColorEscapeSequence.MatchString(v) {
 			return fmt.Sprintf("\x1b[%sm", v)
 		}

@@ -29,6 +29,8 @@ func TestParseText(t *testing.T) {
 		{desc: "省略リセット文字", s: "\x1b[mReset\x1b[m", col: colorEscapeSequenceResetShort, matched: "Reset", suffix: "\x1b[m"},
 		{desc: "Red to Green", s: "\x1b[31mRed\x1b[m\x1b[32mGreen\x1b[m", col: colorEscapeSequenceRed, matched: "Red", suffix: "\x1b[m\x1b[32mGreen\x1b[m"},
 		{desc: "エスケープシーケンスが連続する", s: "\x1b[m\x1b[31mRed", col: colorEscapeSequenceResetShort, matched: "", suffix: "\x1b[31mRed"},
+		{desc: "256色 FG", s: "\x1b[38;5;0mTest", col: "\x1b[38;5;0m", matched: "Test", suffix: ""},
+		{desc: "256色 BG", s: "\x1b[48;5;0mTest", col: "\x1b[48;5;0m", matched: "Test", suffix: ""},
 		// 前提として色と直接関係のないエスケープ文字は削除していないといけない
 		// ので、このテストケースは不要
 		// {desc: "混合文字からcolorRedを取得", s: "\x1b[01;31m\x1b[Ktest\x1b[m\x1b[K", col: colorRed, matched: "test", suffix: "\x1b[m\x1b[K"},
@@ -68,6 +70,8 @@ func TestGetOnlyColorEscapeSequence(t *testing.T) {
 		{desc: "余計な文字が混じっていても取得", s: "\x1b[0;31mte", expect: colorEscapeSequenceRed},
 		{desc: "余計な文字が混じっていても取得", s: "\x1b[01;31mte", expect: colorEscapeSequenceRed},
 		{desc: "先頭がエスケープシーケンス以外で開始", s: "test", expect: colorEscapeSequenceNone},
+		{desc: "256色 Foreground", s: "\x1b[38;5;0mtest", expect: "\x1b[38;5;0m"},
+		{desc: "256色 Background", s: "\x1b[48;5;0mtest", expect: "\x1b[48;5;0m"},
 	}
 	for i, v := range tds {
 		got := getOnlyColorEscapeSequence(v.s)
@@ -97,6 +101,8 @@ func TestRemoveNotColorEscapeSequences(t *testing.T) {
 		{desc: "出力消去文字  K", s: "\x1b[KTest", expect: "Test"},
 		{desc: "出力消去文字 0K", s: "\x1b[0KTest", expect: "Test"},
 		{desc: "出力消去文字 1K", s: "\x1b[1KTest", expect: "Test"},
+		{desc: "256色指定は残る(FG)", s: "\x1b[38;5;0mTest", expect: "\x1b[38;5;0mTest"},
+		{desc: "256色指定は残る(BG)", s: "\x1b[48;5;0mTest", expect: "\x1b[48;5;0mTest"},
 	}
 	for i, v := range tds {
 		got := removeNotColorEscapeSequences(v.s)
