@@ -124,6 +124,16 @@ func TestClassifyString(t *testing.T) {
 			},
 		},
 		{
+			desc: "背景色", s: "\x1b[42mGreen\x1b[31m\x1b[KRed\x1b[0m", expect: []ClassifiedString{
+				{class: classEscape, text: "\x1b[42m"},
+				{class: classText, text: "Green"},
+				{class: classEscape, text: "\x1b[31m"},
+				{class: classEscape, text: "\x1b[K"},
+				{class: classText, text: "Red"},
+				{class: classEscape, text: "\x1b[0m"},
+			},
+		},
+		{
 			desc: "省略記法", s: "\x1b[mTest\x1b[31mRed\x1b[0m", expect: []ClassifiedString{
 				{class: classEscape, text: "\x1b[m"},
 				{class: classText, text: "Test"},

@@ -6,6 +6,7 @@ import (
 	"image/png"
 	"io"
 	"io/ioutil"
+	"strings"
 
 	"github.com/golang/freetype/truetype"
 	"github.com/mattn/go-runewidth"
@@ -25,6 +26,14 @@ const (
 	colorEscapeSequenceMagenta    = "\x1b[35m"
 	colorEscapeSequenceCyan       = "\x1b[36m"
 	colorEscapeSequenceWhite      = "\x1b[37m"
+	colorEscapeSequenceBGBlack    = "\x1b[40m"
+	colorEscapeSequenceBGRed      = "\x1b[41m"
+	colorEscapeSequenceBGGreen    = "\x1b[42m"
+	colorEscapeSequenceBGYellow   = "\x1b[43m"
+	colorEscapeSequenceBGBlue     = "\x1b[44m"
+	colorEscapeSequenceBGMagenta  = "\x1b[45m"
+	colorEscapeSequenceBGCyan     = "\x1b[46m"
+	colorEscapeSequenceBGWhite    = "\x1b[47m"
 )
 
 var (
@@ -49,6 +58,14 @@ var (
 		colorEscapeSequenceMagenta:    colorRGBAMagenta,
 		colorEscapeSequenceCyan:       colorRGBACyan,
 		colorEscapeSequenceWhite:      colorRGBAWhite,
+		colorEscapeSequenceBGBlack:    colorRGBABlack,
+		colorEscapeSequenceBGRed:      colorRGBARed,
+		colorEscapeSequenceBGGreen:    colorRGBAGreen,
+		colorEscapeSequenceBGYellow:   colorRGBAYellow,
+		colorEscapeSequenceBGBlue:     colorRGBABlue,
+		colorEscapeSequenceBGMagenta:  colorRGBAMagenta,
+		colorEscapeSequenceBGCyan:     colorRGBACyan,
+		colorEscapeSequenceBGWhite:    colorRGBAWhite,
 	}
 
 	colorStringMap = map[string]color.RGBA{
@@ -75,17 +92,31 @@ func writeImage(w io.Writer, texts []string, appconf applicationConfig) {
 		face        = readFace(appconf.fontfile, float64(appconf.fontsize))
 	)
 
-	drawBackground(img, appconf.background)
+	drawBackgroundAll(img, appconf.background)
 
 	posY := charHeight
 	for _, line := range texts {
 		posX := 0
+		fgCol := colorRGBAWhite
+		bgCol := appconf.background
 		// 色コード以外のエスケープコードを削除
 		line = removeNotColorEscapeSequences(line)
 		for line != "" {
 			// 色文字列の句切れごとに画像に色指定して書き込む
 			col, matched, suffix := parseText(line)
-			drawLabel(img, posX, posY, matched, colorEscapeSequenceMap[col], face)
+			if strings.HasPrefix(col, "\x1b[4") {
+				// 色が背景色指定の場合
+				bgCol = colorEscapeSequenceMap[col]
+			} else if strings.HasPrefix(col, "\x1b[3") {
+				fgCol = colorEscapeSequenceMap[col]
+			}
+			switch col {
+			case colorEscapeSequenceReset, colorEscapeSequenceResetShort:
+				bgCol = appconf.background
+				fgCol = colorRGBAWhite
+			}
+			drawBackground(img, posX, posY-charHeight, matched, bgCol, charWidth, charHeight)
+			drawLabel(img, posX, posY, matched, fgCol, face)
 			// 処理されなかった残りで次の処理対象を上書き
 			// 空になるまでループ
 			line = suffix
@@ -121,8 +152,8 @@ func readFace(fontPath string, fontSize float64) font.Face {
 	return face
 }
 
-// drawBackground はimgにbgを背景色として描画する。
-func drawBackground(img *image.RGBA, bg color.RGBA) {
+// drawBackgroundAll はimgにbgを背景色として描画する。
+func drawBackgroundAll(img *image.RGBA, bg color.RGBA) {
 	var (
 		bounds = img.Bounds().Max
 		width  = bounds.X
@@ -145,6 +176,19 @@ func drawLabel(img *image.RGBA, x, y int, label string, col color.RGBA, face fon
 		Dot:  point,
 	}
 	d.DrawString(label)
+}
+
+func drawBackground(img *image.RGBA, posX, posY int, label string, col color.RGBA, charWidth, charHeight int) {
+	var (
+		tw     = runewidth.StringWidth(label)
+		width  = tw * charWidth
+		height = charHeight
+	)
+	for x := posX; x < posX+width; x++ {
+		for y := posY; y < posY+height; y++ {
+			img.Set(x, y, col)
+		}
+	}
 }
 
 // maxStringWidth は表示上のテキストの最も幅の長い長さを返却する。

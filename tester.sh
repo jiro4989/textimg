@@ -28,6 +28,7 @@ echo normal | ./bin/textimg -o testdata/out/normal.png
 echo -e "\x1b[31mRED\x1b[0mWhite" | ./bin/textimg -o testdata/out/red_white.png
 echo -e "\x1b[31mRED\x1b[0mWhite" | ./bin/textimg -b red -o testdata/out/red_bg.png
 echo -e "あいうえおかきくけこ" | sed -r 's/[^　]/\x1b[31m&\x1b[0m/g' | ./bin/textimg -b white -o testdata/out/hiragana.png
+echo -e "\x1b[41mR\x1b[31mR\x1b[42mG\x1b[32mG\x1b[44mB\x1b[34mB\x1b[0m" | ./bin/textimg -o testdata/out/bg.png
 
 colors=(30 31 32 33 34 35 36 37)
 i=0
