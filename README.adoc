@@ -1,8 +1,8 @@
-= tttimg (TexT To IMaGe)
+= textimg (TexT To IMaGe)
 :toc: left
 :sectnums:
 
-tttimg is command to convert from ANSI color text to image. +
+textimg is command to convert from ANSI color text to image. +
 Drawn image keeps having colors of ANSI escape sequence.
 
 == Development
@@ -14,10 +14,10 @@ Drawn image keeps having colors of ANSI escape sequence.
 === Simple examples
 
 [source,bash]
-tttimg $'\x1b[31mRED\x1b[0m' -o out.png
-echo -e '\x1b[31mRED\x1b[0m' | tttimg -o out.png
-echo -e '\x1b[31mRED\x1b[0m' | tttimg --background 0,255,255,255 -o out.png
-echo -e '\x1b[31mRED\x1b[0m' | tttimg --background black -o out.png
+textimg $'\x1b[31mRED\x1b[0m' -o out.png
+echo -e '\x1b[31mRED\x1b[0m' | textimg -o out.png
+echo -e '\x1b[31mRED\x1b[0m' | textimg --background 0,255,255,255 -o out.png
+echo -e '\x1b[31mRED\x1b[0m' | textimg --background black -o out.png
 
 === Rainbow examples
 
@@ -28,7 +28,7 @@ i=0
 while read -r line; do
   echo -e "$line" | sed -r 's/.*/\x1b['"${colors[$((i%8))]}"'m&\x1b[m/g'
   i=$((i+1))
-done <<< "$(seq 8 | xargs -I@ echo TEST)" | tttimg -b 50,100,12,255 -o testdata/out/rainbow.png
+done <<< "$(seq 8 | xargs -I@ echo TEST)" | textimg -b 50,100,12,255 -o testdata/out/rainbow.png
 ----
 
 Output is here.
@@ -38,23 +38,23 @@ image:img/rainbow.png["Rainbow example"]
 == Install
 
 [source,bash]
-go get -u github.com/jiro4989/tttimg
+go get -u github.com/jiro4989/textimg
 
 or
 
-Download binary from https://github.com/jiro4989/tttimg/releases[Releases].
+Download binary from https://github.com/jiro4989/textimg/releases[Releases].
 
 == Help
 
 [source]
 ----
-tttimg is command to convert from ANSI colored text to image.
+textimg is command to convert from ANSI colored text to image.
 
 Usage:
-  tttimg [flags]
+  textimg [flags]
 
 Examples:
-tttimg $'\x1b[31mRED\x1b[0m' -o out.png
+textimg $'\x1b[31mRED\x1b[0m' -o out.png
 
 Flags:
   -b, --background string   background color.
@@ -62,7 +62,7 @@ Flags:
                             or (R,G,B,A(0~255)) (default "black")
   -f, --fontfile string     font file path (default "/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf")
   -F, --fontsize int        font size (default 64)
-  -h, --help                help for tttimg
+  -h, --help                help for textimg
   -o, --out string          output image file path
-      --version             version for tttimg
+      --version             version for textimg
 ----
