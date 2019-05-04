@@ -157,6 +157,11 @@ run_test "$(f_red RedGIF)" ansi_f_red.gif
 # 引数から指定
 $CMD "$(f_red RedArgs)" -o $OUTDIR/ansi_f_red_args.png
 
+# 全体の文字色を変更
+$CMD "Normal$(f_red Red)Normal" --foreground green -o $OUTDIR/ansi_f_changefg.png
+$CMD "Normal$(f_red Red)Normal" --foreground 255,255,0,255 -o $OUTDIR/ansi_f_changefg2.png
+$CMD "Normal$(f_red Red)Normal" --foreground 0,0,0,0 -o $OUTDIR/ansi_f_changefg3.png
+
 # ------------------------------------------------------------------------------
 #
 #     Extension 256 color

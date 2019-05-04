@@ -93,13 +93,16 @@ Examples:
 textimg $'\x1b[31mRED\x1b[0m' -o out.png
 
 Flags:
-  -b, --background string   background color.
+      --foreground string   foreground color.
                             format is [black|red|green|yellow|blue|magenta|cyan|white]
-                            or (R,G,B,A(0~255)) (default "black")
-  -f, --fontfile string     font file path (default "/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf")
-  -F, --fontsize int        font size (default 64)
-  -h, --help                help for textimg
+                            or (R,G,B,A(0~255)) (default "white")
+  -b, --background string   background color.
+                            color format is same as "foreground" option. (default "black")
   -o, --out string          output image file path
+  -s, --shellgei-imagedir   image directory path for shell gei bot (path: "/images/t.png")
+  -f, --fontfile string     font file path (default "/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf")
+  -F, --fontsize int        font size (default 20)
+  -h, --help                help for textimg
       --version             version for textimg
 ----
 

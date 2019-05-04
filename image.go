@@ -45,7 +45,7 @@ func writeImage(w io.Writer, encFmt encodeFormat, texts []string, appconf applic
 	posY := charHeight
 	for _, line := range texts {
 		posX := 0
-		fgCol := colorRGBAWhite
+		fgCol := appconf.foreground
 		bgCol := appconf.background
 		// 色コード以外のエスケープコードを削除
 		line = removeNotColorEscapeSequences(line)
@@ -104,7 +104,7 @@ func writeImage(w io.Writer, encFmt encodeFormat, texts []string, appconf applic
 			switch col {
 			case colorEscapeSequenceReset, colorEscapeSequenceResetShort:
 				bgCol = appconf.background
-				fgCol = colorRGBAWhite
+				fgCol = appconf.foreground
 			}
 			drawBackground(img, posX, posY-charHeight, matched, bgCol, charWidth, charHeight)
 			// テキストが微妙に見切れるので調整
