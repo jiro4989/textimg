@@ -1,11 +1,16 @@
 package main
 
 import (
+	"errors"
+	"fmt"
 	"image"
 	"image/color"
+	"image/gif"
+	"image/jpeg"
 	"image/png"
 	"io"
 	"io/ioutil"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -15,12 +20,20 @@ import (
 	"golang.org/x/image/math/fixed"
 )
 
+type encodeFormat int
+
+const (
+	encodeFormatPNG encodeFormat = iota
+	encodeFormatJPG
+	encodeFormatGIF
+)
+
 // writeImage はテキストのEscapeSequenceから色情報などを読み取り、
 // wに書き込む。
-func writeImage(w io.Writer, texts []string, appconf applicationConfig) {
+func writeImage(w io.Writer, encFmt encodeFormat, texts []string, appconf applicationConfig) {
 	var (
 		charWidth   = appconf.fontsize / 2
-		charHeight  = appconf.fontsize
+		charHeight  = int(float64(appconf.fontsize) * 1.1)
 		imageWidth  = maxStringWidth(texts) * charWidth
 		imageHeight = len(texts) * charHeight
 		img         = image.NewRGBA(image.Rect(0, 0, imageWidth, imageHeight))
@@ -32,7 +45,7 @@ func writeImage(w io.Writer, texts []string, appconf applicationConfig) {
 	posY := charHeight
 	for _, line := range texts {
 		posX := 0
-		fgCol := colorRGBAWhite
+		fgCol := appconf.foreground
 		bgCol := appconf.background
 		// 色コード以外のエスケープコードを削除
 		line = removeNotColorEscapeSequences(line)
@@ -41,13 +54,40 @@ func writeImage(w io.Writer, texts []string, appconf applicationConfig) {
 			col, matched, suffix := parseText(line)
 			if strings.HasPrefix(col, "\x1b[38") || strings.HasPrefix(col, "\x1b[48") {
 				spl := strings.Split(col, ";")
-				if 3 == len(spl) {
+				// TODO need refactoring
+				switch len(spl) {
+				case 3:
+					// 256 color code
 					rep := strings.Replace(spl[2], "m", "", -1)
 					colorCode, err := strconv.Atoi(rep)
 					if err != nil {
 						panic(err)
 					}
 					c := terminal256ColorMap[colorCode]
+					switch spl[0] {
+					case "\x1b[38":
+						fgCol = c
+					case "\x1b[48":
+						bgCol = c
+					}
+				case 5:
+					// RGB color code
+					// TODO too dirty
+					var r, g, b uint64
+					var err error
+					r, err = strconv.ParseUint(spl[2], 0, 8)
+					if err != nil {
+						panic(err)
+					}
+					g, err = strconv.ParseUint(spl[3], 0, 8)
+					if err != nil {
+						panic(err)
+					}
+					b, err = strconv.ParseUint(strings.Replace(spl[4], "m", "", -1), 0, 8)
+					if err != nil {
+						panic(err)
+					}
+					c := color.RGBA{R: uint8(r), G: uint8(g), B: uint8(b), A: 255}
 					switch spl[0] {
 					case "\x1b[38":
 						fgCol = c
@@ -64,10 +104,11 @@ func writeImage(w io.Writer, texts []string, appconf applicationConfig) {
 			switch col {
 			case colorEscapeSequenceReset, colorEscapeSequenceResetShort:
 				bgCol = appconf.background
-				fgCol = colorRGBAWhite
+				fgCol = appconf.foreground
 			}
 			drawBackground(img, posX, posY-charHeight, matched, bgCol, charWidth, charHeight)
-			drawLabel(img, posX, posY, matched, fgCol, face)
+			// テキストが微妙に見切れるので調整
+			drawLabel(img, posX, posY-(charHeight/5), matched, fgCol, face)
 			// 処理されなかった残りで次の処理対象を上書き
 			// 空になるまでループ
 			line = suffix
@@ -76,9 +117,42 @@ func writeImage(w io.Writer, texts []string, appconf applicationConfig) {
 		posY += charHeight
 	}
 
-	if err := png.Encode(w, img); err != nil {
+	var err error
+	switch encFmt {
+	case encodeFormatPNG:
+		err = png.Encode(w, img)
+	case encodeFormatJPG:
+		err = jpeg.Encode(w, img, nil)
+	case encodeFormatGIF:
+		err = gif.Encode(w, img, nil)
+	default:
+		err = errors.New(fmt.Sprintf("%v is not supported.", encFmt))
+	}
+	if err != nil {
 		panic(err)
 	}
+}
+
+// getEncodeFormat は画像ファイルの拡張子からエンコードフォーマットを取得する。
+// 空文字列を指定した場合はPNGを返す。
+// 他はPNG, JPG, GIFのみをサポートする。
+// それ以外の拡張子のパスが渡された場合はエラーを返す。
+func getEncodeFormat(path string) (encodeFormat, error) {
+	if path == "" {
+		return encodeFormatPNG, nil
+	}
+
+	ext := filepath.Ext(strings.ToLower(path))
+	switch ext {
+	case ".png":
+		return encodeFormatPNG, nil
+	case ".jpg", ".jpeg":
+		return encodeFormatJPG, nil
+	case ".gif":
+		return encodeFormatGIF, nil
+	}
+
+	return -1, errors.New(fmt.Sprintf("[WARN] %s is not supported", ext))
 }
 
 // readFace はfontPathのフォントファイルからfaceを返す。
