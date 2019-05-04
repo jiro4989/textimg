@@ -31,7 +31,7 @@ or (R,G,B,A(0~255))`)
 		font = "/Library/Fonts/AppleGothic.ttf"
 	}
 	RootCommand.Flags().StringP("fontfile", "f", font, "font file path")
-	RootCommand.Flags().IntP("fontsize", "F", 64, "font size")
+	RootCommand.Flags().IntP("fontsize", "F", 20, "font size")
 }
 
 var RootCommand = &cobra.Command{
