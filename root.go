@@ -12,6 +12,7 @@ import (
 )
 
 type applicationConfig struct {
+	foreground color.RGBA
 	background color.RGBA
 	outpath    string
 	fontfile   string
@@ -20,9 +21,12 @@ type applicationConfig struct {
 
 func init() {
 	cobra.OnInitialize()
-	RootCommand.Flags().StringP("background", "b", "black", `background color.
+	RootCommand.Flags().SortFlags = false
+	RootCommand.Flags().StringP("foreground", "", "white", `foreground color.
 format is [black|red|green|yellow|blue|magenta|cyan|white]
 or (R,G,B,A(0~255))`)
+	RootCommand.Flags().StringP("background", "b", "black", `background color.
+color format is same as "foreground" option.`)
 	RootCommand.Flags().StringP("out", "o", "", "output image file path")
 	RootCommand.Flags().BoolP("shellgei-imagedir", "s", false, `image directory path for shell gei bot (path: "/images/t.png")`)
 
@@ -41,6 +45,11 @@ var RootCommand = &cobra.Command{
 	Version: Version,
 	Run: func(cmd *cobra.Command, args []string) {
 		f := cmd.Flags()
+
+		foreground, err := f.GetString("foreground")
+		if err != nil {
+			panic(err)
+		}
 
 		background, err := f.GetString("background")
 		if err != nil {
@@ -70,8 +79,19 @@ var RootCommand = &cobra.Command{
 			panic(err)
 		}
 
+		confForeground, err := optionColorStringToRGBA(foreground)
+		if err != nil {
+			panic(err)
+		}
+
+		confBackground, err := optionColorStringToRGBA(background)
+		if err != nil {
+			panic(err)
+		}
+
 		appconf := applicationConfig{
-			background: optionBackgrounToRGBA(background),
+			foreground: confForeground,
+			background: confBackground,
 			outpath:    outpath,
 			fontfile:   fontpath,
 			fontsize:   fontsize,
@@ -109,19 +129,19 @@ var RootCommand = &cobra.Command{
 // 2. RGBAのカンマ区切り指定
 //    書式: R,G,B,A
 //    赤色の例: 255,0,0,255
-func optionBackgrounToRGBA(bg string) color.RGBA {
+func optionColorStringToRGBA(colstr string) (color.RGBA, error) {
 	// "black"といった色名称でマッチするものがあれば返す
-	bg = strings.ToLower(bg)
-	for k, v := range colorStringMap {
-		if bg == k {
-			return v
-		}
+	colstr = strings.ToLower(colstr)
+	col := colorStringMap[colstr]
+	zeroColor := color.RGBA{}
+	if col != zeroColor {
+		return col, nil
 	}
 
 	// カンマ区切りでの指定があれば返す
-	rgba := strings.Split(bg, ",")
+	rgba := strings.Split(colstr, ",")
 	if len(rgba) != 4 {
-		panic(errors.New("RGBA指定が不正: " + bg))
+		return zeroColor, errors.New("RGBA指定が不正: " + colstr)
 	}
 
 	var (
@@ -137,19 +157,19 @@ func optionBackgrounToRGBA(bg string) color.RGBA {
 	)
 	r, err = strconv.ParseUint(rs, 10, 8)
 	if err != nil {
-		panic(err)
+		return zeroColor, err
 	}
 	g, err = strconv.ParseUint(gs, 10, 8)
 	if err != nil {
-		panic(err)
+		return zeroColor, err
 	}
 	b, err = strconv.ParseUint(bs, 10, 8)
 	if err != nil {
-		panic(err)
+		return zeroColor, err
 	}
 	a, err = strconv.ParseUint(as, 10, 8)
 	if err != nil {
-		panic(err)
+		return zeroColor, err
 	}
 	c := color.RGBA{
 		R: uint8(r),
@@ -157,5 +177,5 @@ func optionBackgrounToRGBA(bg string) color.RGBA {
 		B: uint8(b),
 		A: uint8(a),
 	}
-	return c
+	return c, nil
 }
