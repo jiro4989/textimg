@@ -23,6 +23,7 @@ func init() {
 format is [black|red|green|yellow|blue|magenta|cyan|white]
 or (R,G,B,A(0~255))`)
 	RootCommand.Flags().StringP("out", "o", "", "output image file path")
+	RootCommand.Flags().BoolP("shellgei-imagedir", "s", false, `image directory path for shell gei bot (path: "/images/t.png")`)
 	RootCommand.Flags().StringP("fontfile", "f", "/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf", "font file path")
 	RootCommand.Flags().IntP("fontsize", "F", 64, "font size")
 }
@@ -43,6 +44,14 @@ var RootCommand = &cobra.Command{
 		outpath, err := f.GetString("out")
 		if err != nil {
 			panic(err)
+		}
+
+		useShellGeiDir, err := f.GetBool("shellgei-imagedir")
+		if err != nil {
+			panic(err)
+		}
+		if useShellGeiDir {
+			outpath = "/images/t.png"
 		}
 
 		fontpath, err := f.GetString("fontfile")
