@@ -9,6 +9,8 @@ Drawn image keeps having colors of escape sequence.
 
  go version go1.12 linux/amd64
 
+**I didn't test on Windows.**
+
 == Usage examples
 
 === Simple examples
@@ -100,3 +102,16 @@ Flags:
   -o, --out string          output image file path
       --version             version for textimg
 ----
+
+=== Fonts
+
+Default fonts that to use are below.
+
+.OS fonts
+[options="header"]
+|==============================================================
+|OS     |Font path
+|Linux  |/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf
+|MacOS  |/Library/Fonts/AppleGothic.ttf
+|Windows|Not supported (Welcome Pull Request!)
+|==============================================================
