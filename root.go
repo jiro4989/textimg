@@ -98,7 +98,9 @@ var RootCommand = &cobra.Command{
 			defer w.Close()
 		}
 
-		writeImage(w, texts, appconf)
+		encFmt, err := getEncodeFormat(outpath)
+
+		writeImage(w, encFmt, texts, appconf)
 	},
 }
 

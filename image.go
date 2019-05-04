@@ -1,11 +1,16 @@
 package main
 
 import (
+	"errors"
+	"fmt"
 	"image"
 	"image/color"
+	"image/gif"
+	"image/jpeg"
 	"image/png"
 	"io"
 	"io/ioutil"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -15,9 +20,17 @@ import (
 	"golang.org/x/image/math/fixed"
 )
 
+type encodeFormat int
+
+const (
+	encodeFormatPNG encodeFormat = iota
+	encodeFormatJPG
+	encodeFormatGIF
+)
+
 // writeImage はテキストのEscapeSequenceから色情報などを読み取り、
 // wに書き込む。
-func writeImage(w io.Writer, texts []string, appconf applicationConfig) {
+func writeImage(w io.Writer, encFmt encodeFormat, texts []string, appconf applicationConfig) {
 	var (
 		charWidth   = appconf.fontsize / 2
 		charHeight  = int(float64(appconf.fontsize) * 1.1)
@@ -104,9 +117,42 @@ func writeImage(w io.Writer, texts []string, appconf applicationConfig) {
 		posY += charHeight
 	}
 
-	if err := png.Encode(w, img); err != nil {
+	var err error
+	switch encFmt {
+	case encodeFormatPNG:
+		err = png.Encode(w, img)
+	case encodeFormatJPG:
+		err = jpeg.Encode(w, img, nil)
+	case encodeFormatGIF:
+		err = gif.Encode(w, img, nil)
+	default:
+		err = errors.New(fmt.Sprintf("%v is not supported.", encFmt))
+	}
+	if err != nil {
 		panic(err)
 	}
+}
+
+// getEncodeFormat は画像ファイルの拡張子からエンコードフォーマットを取得する。
+// 空文字列を指定した場合はPNGを返す。
+// 他はPNG, JPG, GIFのみをサポートする。
+// それ以外の拡張子のパスが渡された場合はエラーを返す。
+func getEncodeFormat(path string) (encodeFormat, error) {
+	if path == "" {
+		return encodeFormatPNG, nil
+	}
+
+	ext := filepath.Ext(strings.ToLower(path))
+	switch ext {
+	case ".png":
+		return encodeFormatPNG, nil
+	case ".jpg", ".jpeg":
+		return encodeFormatJPG, nil
+	case ".gif":
+		return encodeFormatGIF, nil
+	}
+
+	return -1, errors.New(fmt.Sprintf("[WARN] %s is not supported", ext))
 }
 
 // readFace はfontPathのフォントファイルからfaceを返す。
