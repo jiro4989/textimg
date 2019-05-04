@@ -4,6 +4,7 @@ import (
 	"errors"
 	"image/color"
 	"os"
+	"runtime"
 	"strconv"
 	"strings"
 
@@ -24,7 +25,12 @@ format is [black|red|green|yellow|blue|magenta|cyan|white]
 or (R,G,B,A(0~255))`)
 	RootCommand.Flags().StringP("out", "o", "", "output image file path")
 	RootCommand.Flags().BoolP("shellgei-imagedir", "s", false, `image directory path for shell gei bot (path: "/images/t.png")`)
-	RootCommand.Flags().StringP("fontfile", "f", "/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf", "font file path")
+
+	font := "/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf"
+	if runtime.GOOS == "darwin" {
+		font = "/Library/Fonts/AppleGothic.ttf"
+	}
+	RootCommand.Flags().StringP("fontfile", "f", font, "font file path")
 	RootCommand.Flags().IntP("fontsize", "F", 64, "font size")
 }
 
