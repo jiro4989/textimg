@@ -41,13 +41,40 @@ func writeImage(w io.Writer, texts []string, appconf applicationConfig) {
 			col, matched, suffix := parseText(line)
 			if strings.HasPrefix(col, "\x1b[38") || strings.HasPrefix(col, "\x1b[48") {
 				spl := strings.Split(col, ";")
-				if 3 == len(spl) {
+				// TODO need refactoring
+				switch len(spl) {
+				case 3:
+					// 256 color code
 					rep := strings.Replace(spl[2], "m", "", -1)
 					colorCode, err := strconv.Atoi(rep)
 					if err != nil {
 						panic(err)
 					}
 					c := terminal256ColorMap[colorCode]
+					switch spl[0] {
+					case "\x1b[38":
+						fgCol = c
+					case "\x1b[48":
+						bgCol = c
+					}
+				case 5:
+					// RGB color code
+					// TODO too dirty
+					var r, g, b uint64
+					var err error
+					r, err = strconv.ParseUint(spl[2], 0, 8)
+					if err != nil {
+						panic(err)
+					}
+					g, err = strconv.ParseUint(spl[3], 0, 8)
+					if err != nil {
+						panic(err)
+					}
+					b, err = strconv.ParseUint(strings.Replace(spl[4], "m", "", -1), 0, 8)
+					if err != nil {
+						panic(err)
+					}
+					c := color.RGBA{R: uint8(r), G: uint8(g), B: uint8(b), A: 255}
 					switch spl[0] {
 					case "\x1b[38":
 						fgCol = c

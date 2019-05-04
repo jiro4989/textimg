@@ -9,14 +9,14 @@ repeat() {
 
 make build
 mkdir -p testdata/out
-echo -e "\x1b[30mUNKO\x1b[0m" | ./bin/textimg -o testdata/out/black.png
-echo -e "\x1b[31mUNKO\x1b[0m" | ./bin/textimg -o testdata/out/red.png
-echo -e "\x1b[32mUNKO\x1b[0m" | ./bin/textimg -o testdata/out/green.png
-echo -e "\x1b[33mUNKO\x1b[0m" | ./bin/textimg -o testdata/out/yellow.png
-echo -e "\x1b[34mUNKO\x1b[0m" | ./bin/textimg -o testdata/out/blue.png
-echo -e "\x1b[35mUNKO\x1b[0m" | ./bin/textimg -o testdata/out/magenta.png
-echo -e "\x1b[36mUNKO\x1b[0m" | ./bin/textimg -o testdata/out/syan.png
-echo -e "\x1b[37mUNKO\x1b[0m" | ./bin/textimg -o testdata/out/white.png
+echo -e "\x1b[30mTESO\x1b[0m" | ./bin/textimg -o testdata/out/black.png
+echo -e "\x1b[31mTESO\x1b[0m" | ./bin/textimg -o testdata/out/red.png
+echo -e "\x1b[32mTESO\x1b[0m" | ./bin/textimg -o testdata/out/green.png
+echo -e "\x1b[33mTESO\x1b[0m" | ./bin/textimg -o testdata/out/yellow.png
+echo -e "\x1b[34mTESO\x1b[0m" | ./bin/textimg -o testdata/out/blue.png
+echo -e "\x1b[35mTESO\x1b[0m" | ./bin/textimg -o testdata/out/magenta.png
+echo -e "\x1b[36mTESO\x1b[0m" | ./bin/textimg -o testdata/out/syan.png
+echo -e "\x1b[37mTESO\x1b[0m" | ./bin/textimg -o testdata/out/white.png
 echo -e "\x1b[31mRed\x1b[32mGreen\x1b[34mBlue\x1b[0m" | ./bin/textimg -o testdata/out/rgb.png
 echo -e "$(repeat 10 "\x1b[31mR\x1b[32mG\x1b[34mB")\x1b[0m" | ./bin/textimg -o testdata/out/rgb2.png
 echo -e "$(repeat 10 "\x1b[31m赤\x1b[32m緑\x1b[34m青")\x1b[0m" | ./bin/textimg -o testdata/out/rgb_kan.png
@@ -29,6 +29,8 @@ echo -e "\x1b[31mRED\x1b[0mWhite" | ./bin/textimg -o testdata/out/red_white.png
 echo -e "\x1b[31mRED\x1b[0mWhite" | ./bin/textimg -b red -o testdata/out/red_bg.png
 echo -e "あいうえおかきくけこ" | sed -r 's/[^　]/\x1b[31m&\x1b[0m/g' | ./bin/textimg -b white -o testdata/out/hiragana.png
 echo -e "\x1b[41mR\x1b[31mR\x1b[42mG\x1b[32mG\x1b[44mB\x1b[34mB\x1b[0m\nR\x1b[31mRG\x1b[32mGB\x1b[34mB\x1b[0m" | ./bin/textimg -b white -o testdata/out/bg.png
+echo -e "\x1b[38;2;255;0;0mred\x1b[38;2;0;255;0mgreen\x1b[38;2;0;0;255mblue\x1b[0m" | ./bin/textimg -o testdata/out/extension_rgb_fg.png
+echo -e "\x1b[48;2;255;0;0mred\x1b[48;2;0;255;0mgreen\x1b[48;2;0;0;255mblue\x1b[0m" | ./bin/textimg -o testdata/out/extension_rgb_bg.png
 
 seq 0 255 | while read -r i; do
   echo -ne "\x1b[38;5;${i}m$(printf %03d $i)"
@@ -50,3 +52,24 @@ while read -r line; do
   echo -e "$line" | sed -r 's/.*/\x1b['"${colors[$((i%8))]}"'m&\x1b[m/g'
   i=$((i+1))
 done <<< "$(seq 8 | xargs -I@ echo TEST)" | ./bin/textimg -b 50,100,12,255 -o testdata/out/rainbow.png
+
+seq 0 255 | while read i; do
+  echo -ne "\x1b[38;2;${i};0;0m$(printf %03d $i)"
+  if [ $(((i+1) % 50)) -eq 0 ]; then
+    echo
+  fi
+done | ./bin/textimg -o testdata/out/extension_gradient_red.png
+
+seq 0 255 | while read i; do
+  echo -ne "\x1b[38;2;0;$i;0m$(printf %03d $i)"
+  if [ $(((i+1) % 50)) -eq 0 ]; then
+    echo
+  fi
+done | ./bin/textimg -o testdata/out/extension_gradient_green.png
+
+seq 0 255 | while read i; do
+  echo -ne "\x1b[38;2;0;0;${i}m$(printf %03d $i)"
+  if [ $(((i+1) % 50)) -eq 0 ]; then
+    echo
+  fi
+done | ./bin/textimg -o testdata/out/extension_gradient_blue.png
