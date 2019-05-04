@@ -51,6 +51,13 @@ b_magenta() { echo_color_string "$COLOR_BG_MAGENTA"  "$1"; };
 b_cyan()    { echo_color_string "$COLOR_BG_CYAN"     "$1"; };
 b_white()   { echo_color_string "$COLOR_BG_WHITE"    "$1"; };
 
+info() {
+  echo -e "$(f_green "[OK] Generated $1")"
+}
+
+err() {
+  echo -e "$(f_red "[kG] Failed to generate $1")"
+}
 
 ## 指定の文字列を指定回数繰り返した文字列を1行出力する。
 ##
@@ -67,7 +74,17 @@ repeat() {
 ## @param $1 入力文字列
 ## @param $2 出力ファイル名。出力先はtestdata/out配下で固定
 run_test() {
-  echo -e "$1" | $CMD -o "$OUTDIR/$2"
+  local outfile
+  outfile="$OUTDIR/$2"
+  echo -e "$1" | $CMD -o "$outfile"
+
+  local ret
+  ret=$?
+  if [ "$ret" -eq 0 ]; then
+    info "$outfile"
+  else
+    err "$outfile"
+  fi
 }
 
 # ==============================================================================
@@ -84,6 +101,14 @@ mkdir -p testdata/out
 #     ANSI color
 #
 # ------------------------------------------------------------------------------
+
+cat << EOS
+--------------------------------------------------------------------------------
+
+    TEST START
+
+--------------------------------------------------------------------------------
+EOS
 
 # ANSI colorのテスト
 for color in black red green yellow blue magenta cyan white; do
@@ -107,13 +132,13 @@ done
 run_test "\x1b[31mRed\x1b[32mGreen\x1b[34mBlue\x1b[0m" ansi_f_rgb2.png
 
 # grepのテスト
-echo TestAbcTest | grep --color=always Abc | $CMD -o $OUTDIR/grep.png
+run_test "$(echo TestAbcTest | grep --color=always Abc)" grep.png
 
 # 色の装飾なしのテスト
-echo no_color | $CMD -o $OUTDIR/no_color.png
+run_test no_color no_color.png
 
 # 背景色指定有りのテスト
-echo -e "あいうえおかきくけこ" | sed -r 's/[^　]/\x1b[31m&\x1b[0m/g' | $CMD -b white -o $OUTDIR/ansi_f_set_bg.png
+run_test "$(echo -e "あいうえおかきくけこ" | sed -r 's/[^　]/\x1b[31m&\x1b[0m/g')" ansi_f_set_bg.png
 
 # 背景色をRGBA指定するテスト
 colors=(30 31 32 33 34 35 36 37)
@@ -175,3 +200,11 @@ seq 0 255 | while read i; do
     echo
   fi
 done | $CMD -o $OUTDIR/extrgb_b_gradation_green.png
+
+cat << EOS
+--------------------------------------------------------------------------------
+
+    TEST SUCCESS
+
+--------------------------------------------------------------------------------
+EOS
