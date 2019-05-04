@@ -8,7 +8,7 @@ readonly OUTDIR=testdata/out
 
 readonly COLOR_RESET="\x1b[0m"
 readonly COLOR_FG_BLACK="\x1b[30m"
-readonly COLOR_FG_RED="\X1b[31m"
+readonly COLOR_FG_RED="\x1b[31m"
 readonly COLOR_FG_GREEN="\x1b[32m"
 readonly COLOR_FG_YELLOW="\x1b[33m"
 readonly COLOR_FG_BLUE="\x1b[34m"
@@ -16,7 +16,7 @@ readonly COLOR_FG_MAGENTA="\x1b[35m"
 readonly COLOR_FG_CYAN="\x1b[36m"
 readonly COLOR_FG_WHITE="\x1b[37m"
 readonly COLOR_BG_BLACK="\x1b[40m"
-readonly COLOR_BG_RED="\X1b[41m"
+readonly COLOR_BG_RED="\x1b[41m"
 readonly COLOR_BG_GREEN="\x1b[42m"
 readonly COLOR_BG_YELLOW="\x1b[43m"
 readonly COLOR_BG_BLUE="\x1b[44m"
@@ -99,7 +99,7 @@ for t in f b; do
   run_test "$(${t}_red 赤あか)$(${t}_green 緑みどり)$(${t}_blue 青あお)" ansi_${t}_rgb_ja.png
 
   # 複数行出力のテスト
-  run_test "$(repeat 10 \"$(${t}_red red)$(${t}_green green)$(${t}_blue blue)\n\")" ansi_${t}_multiline.png
+  run_test "$(repeat 10 $(${t}_red red)$(${t}_green green)$(${t}_blue blue)\\n)" ansi_${t}_multiline.png
 
   # 全角文字と半角文字の混在
   run_test "$(${t}_red 赤RR)\n$(${t}_green 緑GG)" ansi_${t}_full_half.png
