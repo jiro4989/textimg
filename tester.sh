@@ -29,8 +29,8 @@ echo -e "\x1b[31mRED\x1b[0mWhite" | ./bin/textimg -o testdata/out/red_white.png
 echo -e "\x1b[31mRED\x1b[0mWhite" | ./bin/textimg -b red -o testdata/out/red_bg.png
 echo -e "あいうえおかきくけこ" | sed -r 's/[^　]/\x1b[31m&\x1b[0m/g' | ./bin/textimg -b white -o testdata/out/hiragana.png
 echo -e "\x1b[41mR\x1b[31mR\x1b[42mG\x1b[32mG\x1b[44mB\x1b[34mB\x1b[0m\nR\x1b[31mRG\x1b[32mGB\x1b[34mB\x1b[0m" | ./bin/textimg -b white -o testdata/out/bg.png
-echo -e "\x1b[38;2;255;0;0mred\x1b[38;2;0;255;0mgreen\x1b[38;2;0;0;255mblue\x1b[0m" | ./bin/textimg -o testdata/out/extension_rgb_fg.png
-echo -e "\x1b[48;2;255;0;0mred\x1b[48;2;0;255;0mgreen\x1b[48;2;0;0;255mblue\x1b[0m" | ./bin/textimg -o testdata/out/extension_rgb_bg.png
+echo -e "\x1b[38;2;255;0;0mred\x1b[38;2;0;255;0mgreeny__\x1b[38;2;0;0;255mblue\x1b[0m" | ./bin/textimg -o testdata/out/extension_rgb_fg.png
+echo -e "\x1b[48;2;255;0;0mred\x1b[48;2;0;255;0mgreeny__\x1b[48;2;0;0;255mblue\x1b[0m" | ./bin/textimg -o testdata/out/extension_rgb_bg.png
 
 seq 0 255 | while read -r i; do
   echo -ne "\x1b[38;5;${i}m$(printf %03d $i)"
