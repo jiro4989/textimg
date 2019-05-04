@@ -123,6 +123,15 @@ while read -r line; do
   i=$((i+1))
 done <<< "$(seq 8 | xargs -I@ echo TEST)" | $CMD -b 50,100,12,255 -o $OUTDIR/ansi_f_bgopt_rgba.png
 
+# JPG出力
+run_test "$(f_red RedJPG)" ansi_f_red.jpg
+
+# GIF出力
+run_test "$(f_red RedGIF)" ansi_f_red.gif
+
+# 引数から指定
+$CMD "$(f_red RedArgs)" -o $OUTDIR/ansi_f_red_args.png
+
 # ------------------------------------------------------------------------------
 #
 #     Extension 256 color
