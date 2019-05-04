@@ -20,7 +20,7 @@ import (
 func writeImage(w io.Writer, texts []string, appconf applicationConfig) {
 	var (
 		charWidth   = appconf.fontsize / 2
-		charHeight  = appconf.fontsize
+		charHeight  = int(float64(appconf.fontsize) * 1.1)
 		imageWidth  = maxStringWidth(texts) * charWidth
 		imageHeight = len(texts) * charHeight
 		img         = image.NewRGBA(image.Rect(0, 0, imageWidth, imageHeight))
@@ -94,7 +94,8 @@ func writeImage(w io.Writer, texts []string, appconf applicationConfig) {
 				fgCol = colorRGBAWhite
 			}
 			drawBackground(img, posX, posY-charHeight, matched, bgCol, charWidth, charHeight)
-			drawLabel(img, posX, posY, matched, fgCol, face)
+			// テキストが微妙に見切れるので調整
+			drawLabel(img, posX, posY-(charHeight/5), matched, fgCol, face)
 			// 処理されなかった残りで次の処理対象を上書き
 			// 空になるまでループ
 			line = suffix
