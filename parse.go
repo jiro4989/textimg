@@ -54,37 +54,6 @@ func init() {
 	reANSIColorEscapeSequence = regexp.MustCompile(`[34][0-7]`)
 }
 
-// onlyText はcs.textのみを結合して返却する。
-func (cs ClassifiedStrings) onlyText() (ret string) {
-	for _, v := range cs {
-		if v.class == classText {
-			ret += v.text
-		}
-	}
-	return
-}
-
-// parseText はテキストを解析しエスケープシーケンスにマッチした箇所と色を返す
-// マッチするものが存在しなかった場合は、次のエスケープシーケンスが出現する場所ま
-// での文字列を返す。
-// エスケープ文字が全く出てこなければ、全部をmatchedとして返す。
-//
-// 前提として、色コードとは全く関係のない文字列は削除しておく必要がある。
-// See also: removeNotColorEscapeSequences
-func parseText(s string) (string, string, string) {
-	_, col, _ := getPrefix(s)
-	// エスケープ文字自体は返す文字列に含めないため削除する
-	s = s[len(col):]
-
-	// 次のエスケープシーケンスが見つかるまでをmatchedとする
-	// 何も見つからなければ全部を返す
-	idx := strings.Index(s, "\x1b[")
-	if idx != -1 {
-		return col, s[:idx], s[idx:]
-	}
-	return col, s, ""
-}
-
 type (
 	kind                int // エスケープシーケンスの種類
 	colorType           int // 文字色か背景色か
@@ -266,72 +235,14 @@ func getPrefix(s string) (k kind, prefix string, suffix string) {
 	return kindText, s, ""
 }
 
-// 色エスケープシーケンス以外のエスケープシーケンスは不要なので削除して返す
-func removeNotColorEscapeSequences(s string) (ret string) {
-	// エスケースシーケンス部とテキスト部のスライスに分割する
-	// 例: ["\x1b[01;31m", "Red", "\x1b[0m", "\x1b[0K", "Bold"]
-	cs := classifyString(s)
-
-	// 不要な色コード以外のエスケープシーケンスを削除する
-	// 例: ["\x1b[31m", "Red", "\x1b[0m", "", "Bold"]
-	for i := 0; i < len(cs); i++ {
-		c := cs[i]
-		if c.class == classEscape {
-			_, fixed, _ := getPrefix(c.text)
-			cs[i].text = fixed
+// getText はエスケープシーケンスを含む文字列からテキストのみを返す。
+func getText(s string) (ret string) {
+	for s != "" {
+		k, pref, suff := getPrefix(s)
+		if k == kindText {
+			ret += pref
 		}
-	}
-
-	// 文字列をすべて結合しreturn
-	for _, v := range cs {
-		ret += v.text
+		s = suff
 	}
 	return
-}
-
-// 不要な色コード以外のエスケープシーケンスを削除する
-// 前: ["\x1b[01;31m", "Red", "\x1b[0m", "\x1b[0K", "Bold"]
-// 後: ["\x1b[31m", "Red", "\x1b[0m", "", "Bold"]
-func classifyString(s string) (ret ClassifiedStrings) {
-	var matchCnt int
-	var text string
-	for _, v := range s {
-		if matchCnt == 0 && v == '\x1b' {
-			if text != "" {
-				ret = append(ret, ClassifiedString{class: classText, text: text})
-				text = ""
-			}
-			matchCnt += 1
-			text += string(v)
-			continue
-		}
-		if matchCnt == 1 && v == '[' {
-			matchCnt += 1
-			text += string(v)
-			continue
-		}
-		if matchCnt == 2 && isIgnoreRune(v) {
-			text += string(v)
-			ret = append(ret, ClassifiedString{class: classEscape, text: text})
-			text = ""
-			matchCnt = 0
-			continue
-		}
-		text += string(v)
-	}
-	if text != "" {
-		ret = append(ret, ClassifiedString{class: classText, text: text})
-	}
-	return
-}
-
-// isIgnoreRune はignoreRunesのいずれかと一致したときにtrueを返す。(OR判定)
-// いずれにもマッチしない場合はfalseを返す。
-func isIgnoreRune(r rune) bool {
-	for _, v := range ignoreRunes {
-		if v == r {
-			return true
-		}
-	}
-	return false
 }
