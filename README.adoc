@@ -54,7 +54,7 @@ seq 0 255 | while read -r i; do
   if [ $(((i+1) % 50)) -eq 0 ]; then
     echo
   fi
-done | textimg -o testdata/out/256_fg.png
+done | textimg -o 256_fg.png
 ----
 
 Output is here.
@@ -70,7 +70,7 @@ seq 0 255 | while read -r i; do
   if [ $(((i+1) % 50)) -eq 0 ]; then
     echo
   fi
-done | textimg -o testdata/out/256_bg.png
+done | textimg -o 256_bg.png
 ----
 
 Output is here.
@@ -86,7 +86,7 @@ seq 0 255 | while read i; do
   if [ $(((i+1) % 50)) -eq 0 ]; then
     echo
   fi
-done | $CMD -o $OUTDIR/extrgb_f_gradation_red.png
+done | textimg -o extrgb_f_gradation_red.png
 ----
 
 Output is here.
