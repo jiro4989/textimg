@@ -80,7 +80,7 @@ func parseColorEscapeSequence(s string) (colors colorEscapeSequences) {
 			continue
 		}
 
-		if 30 <= n && n <= 37 {
+		if (30 <= n && n <= 37) || (90 <= n && n <= 97) {
 			c := colorEscapeSequence{
 				colorType: colorTypeForeground,
 				color:     colorANSIMap[n],
@@ -89,7 +89,7 @@ func parseColorEscapeSequence(s string) (colors colorEscapeSequences) {
 			continue
 		}
 
-		if 40 <= n && n <= 47 {
+		if (40 <= n && n <= 47) || (100 <= n && n <= 107) {
 			c := colorEscapeSequence{
 				colorType: colorTypeBackground,
 				color:     colorANSIMap[n],

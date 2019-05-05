@@ -5,14 +5,22 @@ import (
 )
 
 var (
-	colorRGBABlack   = color.RGBA{0, 0, 0, 255}
-	colorRGBARed     = color.RGBA{255, 0, 0, 255}
-	colorRGBAGreen   = color.RGBA{0, 255, 0, 255}
-	colorRGBAYellow  = color.RGBA{255, 255, 0, 255}
-	colorRGBABlue    = color.RGBA{0, 0, 255, 255}
-	colorRGBAMagenta = color.RGBA{255, 0, 255, 255}
-	colorRGBACyan    = color.RGBA{0, 255, 255, 255}
-	colorRGBAWhite   = color.RGBA{255, 255, 255, 255}
+	colorRGBABlack        = color.RGBA{0, 0, 0, 255}
+	colorRGBARed          = color.RGBA{255, 0, 0, 255}
+	colorRGBAGreen        = color.RGBA{0, 255, 0, 255}
+	colorRGBAYellow       = color.RGBA{255, 255, 0, 255}
+	colorRGBABlue         = color.RGBA{0, 0, 255, 255}
+	colorRGBAMagenta      = color.RGBA{255, 0, 255, 255}
+	colorRGBACyan         = color.RGBA{0, 255, 255, 255}
+	colorRGBALightGray    = color.RGBA{211, 211, 211, 255}
+	colorRGBADarkGray     = color.RGBA{169, 169, 169, 255}
+	colorRGBALightRed     = color.RGBA{255, 144, 144, 255}
+	colorRGBALightGreen   = color.RGBA{144, 238, 144, 255}
+	colorRGBALightYellow  = color.RGBA{255, 255, 224, 255}
+	colorRGBALightBlue    = color.RGBA{173, 216, 230, 255}
+	colorRGBALightMagenta = color.RGBA{255, 224, 255, 255}
+	colorRGBALightCyan    = color.RGBA{224, 255, 255, 255}
+	colorRGBAWhite        = color.RGBA{255, 255, 255, 255}
 
 	colorStringMap = map[string]color.RGBA{
 		"black":   colorRGBABlack,
@@ -51,16 +59,32 @@ var (
 		34: colorRGBABlue,
 		35: colorRGBAMagenta,
 		36: colorRGBACyan,
-		37: colorRGBAWhite,
+		37: colorRGBALightGray,
+		90: colorRGBADarkGray,
+		91: colorRGBALightRed,
+		92: colorRGBALightGreen,
+		93: colorRGBALightYellow,
+		94: colorRGBALightBlue,
+		95: colorRGBALightMagenta,
+		96: colorRGBALightCyan,
+		97: colorRGBAWhite,
 		// 背景色
-		40: colorRGBABlack,
-		41: colorRGBARed,
-		42: colorRGBAGreen,
-		43: colorRGBAYellow,
-		44: colorRGBABlue,
-		45: colorRGBAMagenta,
-		46: colorRGBACyan,
-		47: colorRGBAWhite,
+		40:  colorRGBABlack,
+		41:  colorRGBARed,
+		42:  colorRGBAGreen,
+		43:  colorRGBAYellow,
+		44:  colorRGBABlue,
+		45:  colorRGBAMagenta,
+		46:  colorRGBACyan,
+		47:  colorRGBALightGray,
+		100: colorRGBADarkGray,
+		101: colorRGBALightRed,
+		102: colorRGBALightGreen,
+		103: colorRGBALightYellow,
+		104: colorRGBALightBlue,
+		105: colorRGBALightMagenta,
+		106: colorRGBALightCyan,
+		107: colorRGBAWhite,
 	}
 
 	// \x1b[38;5;NNNm とかの NNN に紐づくRGBA色

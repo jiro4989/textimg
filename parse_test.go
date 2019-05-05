@@ -16,10 +16,15 @@ func TestParseColorEscapeSequence(t *testing.T) {
 	tds := []TestData{
 		{desc: "ANSI 文字色 黒", s: "\x1b[30m", expect: colorEscapeSequences{{colorType: colorTypeForeground, color: colorRGBABlack}}},
 		{desc: "ANSI 文字色 赤", s: "\x1b[31m", expect: colorEscapeSequences{{colorType: colorTypeForeground, color: colorRGBARed}}},
-		{desc: "ANSI 文字色 白", s: "\x1b[37m", expect: colorEscapeSequences{{colorType: colorTypeForeground, color: colorRGBAWhite}}},
+		{desc: "ANSI 文字色 灰", s: "\x1b[37m", expect: colorEscapeSequences{{colorType: colorTypeForeground, color: colorRGBALightGray}}},
+		{desc: "ANSI 文字色 黒", s: "\x1b[90m", expect: colorEscapeSequences{{colorType: colorTypeForeground, color: colorRGBADarkGray}}},
+		{desc: "ANSI 文字色 白", s: "\x1b[97m", expect: colorEscapeSequences{{colorType: colorTypeForeground, color: colorRGBAWhite}}},
+
 		{desc: "ANSI 背景色 黒", s: "\x1b[40m", expect: colorEscapeSequences{{colorType: colorTypeBackground, color: colorRGBABlack}}},
 		{desc: "ANSI 背景色 赤", s: "\x1b[41m", expect: colorEscapeSequences{{colorType: colorTypeBackground, color: colorRGBARed}}},
-		{desc: "ANSI 背景色 白", s: "\x1b[47m", expect: colorEscapeSequences{{colorType: colorTypeBackground, color: colorRGBAWhite}}},
+		{desc: "ANSI 背景色 灰", s: "\x1b[47m", expect: colorEscapeSequences{{colorType: colorTypeBackground, color: colorRGBALightGray}}},
+		{desc: "ANSI 背景色 黒", s: "\x1b[100m", expect: colorEscapeSequences{{colorType: colorTypeBackground, color: colorRGBADarkGray}}},
+		{desc: "ANSI 背景色 白", s: "\x1b[107m", expect: colorEscapeSequences{{colorType: colorTypeBackground, color: colorRGBAWhite}}},
 		{desc: "ANSI リセット", s: "\x1b[0m", expect: colorEscapeSequences{{colorType: colorTypeReset, color: color.RGBA{}}}},
 		{desc: "ANSI リセット(省略記法)", s: "\x1b[m", expect: colorEscapeSequences{{colorType: colorTypeReset, color: color.RGBA{}}}},
 		{desc: "ANSI リセットと文字色と背景色", s: "\x1b[0;31;42;01m", expect: colorEscapeSequences{
