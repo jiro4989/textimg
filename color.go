@@ -317,6 +317,40 @@ var (
 		colorEscapeSequenceBGWhite:    colorRGBAWhite,
 	}
 
+	terminalColorAttributeMap = map[int]colorType{
+		0: colorTypeReset,
+		1: colorTypeBold,
+		2: colorTypeDim,
+		3: colorTypeItalic,
+		4: colorTypeUnderline,
+		5: colorTypeBlink,
+		6: colorTypeSpeedyBlink,
+		7: colorTypeReverse,
+		8: colorTypeHide,
+		9: colorTypeDelete,
+	}
+
+	terminalANSIColorMap = map[int]color.RGBA{
+		// 文字色
+		30: colorRGBABlack,
+		31: colorRGBARed,
+		32: colorRGBAGreen,
+		33: colorRGBAYellow,
+		34: colorRGBABlue,
+		35: colorRGBAMagenta,
+		36: colorRGBACyan,
+		37: colorRGBAWhite,
+		// 背景色
+		40: colorRGBABlack,
+		41: colorRGBARed,
+		42: colorRGBAGreen,
+		43: colorRGBAYellow,
+		44: colorRGBABlue,
+		45: colorRGBAMagenta,
+		46: colorRGBACyan,
+		47: colorRGBAWhite,
+	}
+
 	colorStringMap = map[string]color.RGBA{
 		"black":   colorRGBABlack,
 		"red":     colorRGBARed,

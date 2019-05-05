@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"image/color"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -56,30 +57,80 @@ func TestParseText(t *testing.T) {
 	}
 }
 
-func TestGetOnlyColorEscapeSequence(t *testing.T) {
+func TestParseColorEscapeSequence(t *testing.T) {
 	type TestData struct {
 		desc   string
 		s      string
-		expect string
+		expect colorEscapeSequences
 	}
 	tds := []TestData{
-		{desc: "赤文字を取得", s: "\x1b[31mte", expect: colorEscapeSequenceRed},
-		{desc: "緑文字を取得", s: "\x1b[32mte", expect: colorEscapeSequenceGreen},
-		{desc: "リセット文字を取得", s: "\x1b[0mte", expect: colorEscapeSequenceReset},
-		{desc: "省略リセット文字を取得", s: "\x1b[mte", expect: colorEscapeSequenceResetShort},
-		{desc: "余計な文字が混じっていても取得", s: "\x1b[0;31mte", expect: colorEscapeSequenceRed},
-		{desc: "余計な文字が混じっていても取得", s: "\x1b[01;31mte", expect: colorEscapeSequenceRed},
-		{desc: "先頭がエスケープシーケンス以外で開始", s: "test", expect: colorEscapeSequenceNone},
-		{desc: "256色 Foreground", s: "\x1b[38;5;0mtest", expect: "\x1b[38;5;0m"},
-		{desc: "256色 Background", s: "\x1b[48;5;0mtest", expect: "\x1b[48;5;0m"},
+		{desc: "ANSI 文字色 黒", s: "\x1b[30m", expect: colorEscapeSequences{{colorType: colorTypeForeground, color: colorRGBABlack}}},
+		{desc: "ANSI 文字色 赤", s: "\x1b[31m", expect: colorEscapeSequences{{colorType: colorTypeForeground, color: colorRGBARed}}},
+		{desc: "ANSI 文字色 白", s: "\x1b[37m", expect: colorEscapeSequences{{colorType: colorTypeForeground, color: colorRGBAWhite}}},
+		{desc: "ANSI 背景色 黒", s: "\x1b[40m", expect: colorEscapeSequences{{colorType: colorTypeBackground, color: colorRGBABlack}}},
+		{desc: "ANSI 背景色 赤", s: "\x1b[41m", expect: colorEscapeSequences{{colorType: colorTypeBackground, color: colorRGBARed}}},
+		{desc: "ANSI 背景色 白", s: "\x1b[47m", expect: colorEscapeSequences{{colorType: colorTypeBackground, color: colorRGBAWhite}}},
+		{desc: "ANSI リセット", s: "\x1b[0m", expect: colorEscapeSequences{{colorType: colorTypeReset, color: color.RGBA{}}}},
+		{desc: "ANSI リセット(省略記法)", s: "\x1b[m", expect: colorEscapeSequences{{colorType: colorTypeReset, color: color.RGBA{}}}},
+		{desc: "ANSI リセットと文字色と背景色", s: "\x1b[0;31;42;01m", expect: colorEscapeSequences{
+			{colorType: colorTypeReset, color: color.RGBA{}},
+			{colorType: colorTypeForeground, color: colorRGBARed},
+			{colorType: colorTypeBackground, color: colorRGBAGreen},
+			{colorType: colorTypeBold, color: color.RGBA{}},
+		}},
+		{desc: "拡張256色記法 文字色 赤", s: "\x1b[38;5;25m", expect: colorEscapeSequences{{colorType: colorTypeForeground, color: terminal256ColorMap[25]}}},
+		{desc: "拡張256色記法 背景色 赤", s: "\x1b[48;5;25m", expect: colorEscapeSequences{{colorType: colorTypeBackground, color: terminal256ColorMap[25]}}},
+		{desc: "拡張256色RGB記法 文字色 赤", s: "\x1b[38;2;255;0;0m", expect: colorEscapeSequences{{colorType: colorTypeForeground, color: colorRGBARed}}},
+		{desc: "拡張256色RGB記法 背景色 赤", s: "\x1b[48;2;255;0;0m", expect: colorEscapeSequences{{colorType: colorTypeBackground, color: colorRGBARed}}},
+		{desc: "拡張記法混在", s: "\x1b[38;5;25;48;2;255;0;0m", expect: colorEscapeSequences{
+			{colorType: colorTypeForeground, color: terminal256ColorMap[25]},
+			{colorType: colorTypeBackground, color: colorRGBARed},
+		}},
 	}
-	for i, v := range tds {
-		got := getOnlyColorEscapeSequence(v.s)
-		if v.expect != got {
-			t.Error(fmt.Sprintf("[%2d] NG: %s NG: expect doesn't equals. expect = %s, got = %s", i, v.desc, v.expect, got))
-			continue
-		}
-		t.Log(fmt.Sprintf("[%2d] OK: %s", i, v.desc))
+	for _, v := range tds {
+		got := parseColorEscapeSequence(v.s)
+		assert.Equal(t, v.expect, got, v.desc)
+	}
+}
+func TestGetPrefix(t *testing.T) {
+	type TestData struct {
+		desc         string
+		s            string
+		expectKind   kind
+		expectPrefix string
+		expectSuffix string
+	}
+	tds := []TestData{
+		// 色 (\x1b[Nm)
+		{desc: "赤文字", s: "\x1b[31mTest", expectKind: kindEscapeSequenceColor, expectPrefix: "\x1b[31m", expectSuffix: "Test"},
+		{desc: "緑文字", s: "\x1b[32mTest", expectKind: kindEscapeSequenceColor, expectPrefix: "\x1b[32m", expectSuffix: "Test"},
+		{desc: "リセット文字", s: "\x1b[0mTest", expectKind: kindEscapeSequenceColor, expectPrefix: "\x1b[0m", expectSuffix: "Test"},
+		{desc: "リセット文字(省略記法)", s: "\x1b[mTest", expectKind: kindEscapeSequenceColor, expectPrefix: "\x1b[m", expectSuffix: "Test"},
+		{desc: "セミコロン区切り", s: "\x1b[31;42mTest", expectKind: kindEscapeSequenceColor, expectPrefix: "\x1b[31;42m", expectSuffix: "Test"},
+		{desc: "拡張256色記法(文字色)", s: "\x1b[38;5;255mTest", expectKind: kindEscapeSequenceColor, expectPrefix: "\x1b[38;5;255m", expectSuffix: "Test"},
+		{desc: "拡張256色記法(背景色)", s: "\x1b[48;5;255mTest", expectKind: kindEscapeSequenceColor, expectPrefix: "\x1b[48;5;255m", expectSuffix: "Test"},
+		{desc: "拡張256色RGB指定記法(文字色)", s: "\x1b[38;2;1;2;3mTest", expectKind: kindEscapeSequenceColor, expectPrefix: "\x1b[38;2;1;2;3m", expectSuffix: "Test"},
+		{desc: "拡張256色RGB指定記法(背景色)", s: "\x1b[48;2;1;2;3mTest", expectKind: kindEscapeSequenceColor, expectPrefix: "\x1b[48;2;1;2;3m", expectSuffix: "Test"},
+		{desc: "いろいろ混在", s: "\x1b[5;38;5;124;48;2;1;2;3mTest", expectKind: kindEscapeSequenceColor, expectPrefix: "\x1b[5;38;5;124;48;2;1;2;3m", expectSuffix: "Test"},
+		// 色以外のエスケープシーケンス
+		{desc: "A", s: "\x1b[1ATest", expectKind: kindEscapeSequenceNotColor, expectPrefix: "\x1b[1A", expectSuffix: "Test"},
+		{desc: "H", s: "\x1b[1HTest", expectKind: kindEscapeSequenceNotColor, expectPrefix: "\x1b[1H", expectSuffix: "Test"},
+		{desc: "f", s: "\x1b[1fTest", expectKind: kindEscapeSequenceNotColor, expectPrefix: "\x1b[1f", expectSuffix: "Test"},
+		{desc: "K", s: "\x1b[1KTest", expectKind: kindEscapeSequenceNotColor, expectPrefix: "\x1b[1K", expectSuffix: "Test"},
+		// エスケープシーケンス以外
+		{desc: "エスケープシーケンス以外 空文字列", s: "", expectKind: kindEmpty, expectPrefix: "", expectSuffix: ""},
+		{desc: "エスケープシーケンス以外 通常文字列", s: "a", expectKind: kindText, expectPrefix: "a", expectSuffix: ""},
+		{desc: "エスケープシーケンス以外 通常文字列", s: "abc\x1b[31mTest", expectKind: kindText, expectPrefix: "abc", expectSuffix: "\x1b[31mTest"},
+		{desc: "エスケープシーケンス以外 エスケープシーケンスっぽい文字列", s: "x1b[31mTest", expectKind: kindText, expectPrefix: "x1b[31mTest", expectSuffix: ""},
+		{desc: "エスケープシーケンス以外 エスケープシーケンスっぽい文字列", s: "x1b[31amTest", expectKind: kindText, expectPrefix: "x1b[31amTest", expectSuffix: ""},
+		{desc: "エスケープシーケンス以外 エスケープシーケンスっぽい文字列", s: "\\x1b[31mTest", expectKind: kindText, expectPrefix: "\\x1b[31mTest", expectSuffix: ""},
+		{desc: "エスケープシーケンス以外 エスケープシーケンスっぽい文字列", s: "\x1b[31xTest", expectKind: kindText, expectPrefix: "\x1b[31xTest", expectSuffix: ""},
+	}
+	for _, v := range tds {
+		gk, gp, gs := getPrefix(v.s)
+		assert.Equal(t, v.expectKind, gk, v.desc)
+		assert.Equal(t, v.expectPrefix, gp, v.desc)
+		assert.Equal(t, v.expectSuffix, gs, v.desc)
 	}
 }
 
