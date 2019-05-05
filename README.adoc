@@ -118,3 +118,7 @@ Default fonts that to use are below.
 |MacOS  |/Library/Fonts/AppleGothic.ttf
 |Windows|Not supported (Welcome Pull Request!)
 |==============================================================
+
+== See also
+
+* https://misc.flogisoft.com/bash/tip_colors_and_formatting

@@ -162,6 +162,8 @@ $CMD "Normal$(f_red Red)Normal" --foreground green -o $OUTDIR/ansi_f_changefg.pn
 $CMD "Normal$(f_red Red)Normal" --foreground 255,255,0,255 -o $OUTDIR/ansi_f_changefg2.png
 $CMD "Normal$(f_red Red)Normal" --foreground 0,0,0,0 -o $OUTDIR/ansi_f_changefg3.png
 
+run_test "\x1b[31;42mRedGreen\x1b[7mRedGreen" ansi_fb_reverse.png
+
 # ------------------------------------------------------------------------------
 #
 #     Extension 256 color
