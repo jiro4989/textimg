@@ -84,6 +84,7 @@ func TestGetPrefix(t *testing.T) {
 		assert.Equal(t, v.expectSuffix, gs, v.desc)
 	}
 }
+
 func TestGetText(t *testing.T) {
 	type TestData struct {
 		desc   string
@@ -99,6 +100,27 @@ func TestGetText(t *testing.T) {
 	}
 	for _, v := range tds {
 		got := getText(v.s)
+		assert.Equal(t, v.expect, got, v.desc)
+	}
+}
+
+func TestMaxStringWidth(t *testing.T) {
+	type TestData struct {
+		desc   string
+		s      []string
+		expect int
+	}
+	tds := []TestData{
+		{desc: "エスケープ文字 有", s: []string{"\x1b[31mTest\x1b[0mTest2"}, expect: 9},
+		{desc: "エスケープ文字 有", s: []string{"\x1b[31mTest", "\x1b[0mTest2"}, expect: 5},
+		{desc: "エスケープ文字 無", s: []string{"TestTest2"}, expect: 9},
+		{desc: "マルチバイト文字", s: []string{"あいうえお"}, expect: 10},
+		{desc: "空文字列", s: []string{""}, expect: 0},
+		{desc: "空配列", s: []string{}, expect: 0},
+		{desc: "nil", s: nil, expect: 0},
+	}
+	for _, v := range tds {
+		got := maxStringWidth(v.s)
 		assert.Equal(t, v.expect, got, v.desc)
 	}
 }

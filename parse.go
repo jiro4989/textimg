@@ -7,6 +7,8 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/mattn/go-runewidth"
 )
 
 const (
@@ -243,6 +245,18 @@ func getText(s string) (ret string) {
 			ret += pref
 		}
 		s = suff
+	}
+	return
+}
+
+// maxStringWidth は表示上のテキストの最も幅の長い長さを返却する。
+func maxStringWidth(s []string) (max int) {
+	for _, v := range s {
+		text := getText(v)
+		width := runewidth.StringWidth(text)
+		if max < width {
+			max = width
+		}
 	}
 	return
 }
