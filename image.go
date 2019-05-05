@@ -10,8 +10,8 @@ import (
 	"image/png"
 	"io"
 	"io/ioutil"
+	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 
 	"github.com/golang/freetype/truetype"
@@ -47,72 +47,45 @@ func writeImage(w io.Writer, encFmt encodeFormat, texts []string, appconf applic
 		posX := 0
 		fgCol := appconf.foreground
 		bgCol := appconf.background
-		// 色コード以外のエスケープコードを削除
-		line = removeNotColorEscapeSequences(line)
 		for line != "" {
 			// 色文字列の句切れごとに画像に色指定して書き込む
-			col, matched, suffix := parseText(line)
-			if strings.HasPrefix(col, "\x1b[38") || strings.HasPrefix(col, "\x1b[48") {
-				spl := strings.Split(col, ";")
-				// TODO need refactoring
-				switch len(spl) {
-				case 3:
-					// 256 color code
-					rep := strings.Replace(spl[2], "m", "", -1)
-					colorCode, err := strconv.Atoi(rep)
-					if err != nil {
-						panic(err)
-					}
-					c := terminal256ColorMap[colorCode]
-					switch spl[0] {
-					case "\x1b[38":
-						fgCol = c
-					case "\x1b[48":
-						bgCol = c
-					}
-				case 5:
-					// RGB color code
-					// TODO too dirty
-					var r, g, b uint64
-					var err error
-					r, err = strconv.ParseUint(spl[2], 0, 8)
-					if err != nil {
-						panic(err)
-					}
-					g, err = strconv.ParseUint(spl[3], 0, 8)
-					if err != nil {
-						panic(err)
-					}
-					b, err = strconv.ParseUint(strings.Replace(spl[4], "m", "", -1), 0, 8)
-					if err != nil {
-						panic(err)
-					}
-					c := color.RGBA{R: uint8(r), G: uint8(g), B: uint8(b), A: 255}
-					switch spl[0] {
-					case "\x1b[38":
-						fgCol = c
-					case "\x1b[48":
-						bgCol = c
+			k, prefix, suffix := getPrefix(line)
+			switch k {
+			case kindEmpty:
+				fmt.Fprintln(os.Stderr, "[WARN] input string is empty")
+				return
+			case kindText:
+				text := prefix
+				drawBackground(img, posX, posY-charHeight, text, bgCol, charWidth, charHeight)
+				// テキストが微妙に見切れるので調整
+				drawLabel(img, posX, posY-(charHeight/5), text, fgCol, face)
+				posX += runewidth.StringWidth(prefix) * charWidth
+			case kindEscapeSequenceColor:
+				colors := parseColorEscapeSequence(prefix)
+				for _, v := range colors {
+					switch v.colorType {
+					case colorTypeReset:
+						fgCol = appconf.foreground
+						bgCol = appconf.background
+					case colorTypeReverse:
+						fgCol, bgCol = bgCol, fgCol
+					case colorTypeForeground:
+						fgCol = v.color
+					case colorTypeBackground:
+						bgCol = v.color
+					default:
+						// 未実装のcolorTypeでは何もしない
 					}
 				}
-			} else if strings.HasPrefix(col, "\x1b[4") {
-				// 色が背景色指定の場合
-				bgCol = colorEscapeSequenceMap[col]
-			} else if strings.HasPrefix(col, "\x1b[3") {
-				fgCol = colorEscapeSequenceMap[col]
+			case kindEscapeSequenceNotColor:
+				// 色出力と関係のないエスケープシーケンスの場合は何もしない
+			default:
+				// 到達しないはず
+				panic(fmt.Sprintf("Illegal kind: %v", k))
 			}
-			switch col {
-			case colorEscapeSequenceReset, colorEscapeSequenceResetShort:
-				bgCol = appconf.background
-				fgCol = appconf.foreground
-			}
-			drawBackground(img, posX, posY-charHeight, matched, bgCol, charWidth, charHeight)
-			// テキストが微妙に見切れるので調整
-			drawLabel(img, posX, posY-(charHeight/5), matched, fgCol, face)
 			// 処理されなかった残りで次の処理対象を上書き
 			// 空になるまでループ
 			line = suffix
-			posX += runewidth.StringWidth(matched) * charWidth
 		}
 		posY += charHeight
 	}
@@ -214,16 +187,4 @@ func drawBackground(img *image.RGBA, posX, posY int, label string, col color.RGB
 			img.Set(x, y, col)
 		}
 	}
-}
-
-// maxStringWidth は表示上のテキストの最も幅の長い長さを返却する。
-func maxStringWidth(s []string) (max int) {
-	for _, v := range s {
-		text := classifyString(v).onlyText()
-		width := runewidth.StringWidth(text)
-		if max < width {
-			max = width
-		}
-	}
-	return
 }

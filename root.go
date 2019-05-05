@@ -46,6 +46,7 @@ var RootCommand = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		f := cmd.Flags()
 
+		// コマンドライン引数の取得{{{
 		foreground, err := f.GetString("foreground")
 		if err != nil {
 			panic(err)
@@ -88,6 +89,7 @@ var RootCommand = &cobra.Command{
 		if err != nil {
 			panic(err)
 		}
+		// }}}
 
 		appconf := applicationConfig{
 			foreground: confForeground,
