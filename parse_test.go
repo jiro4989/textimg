@@ -28,12 +28,12 @@ func TestParseColorEscapeSequence(t *testing.T) {
 			{colorType: colorTypeBackground, color: colorRGBAGreen},
 			{colorType: colorTypeBold, color: color.RGBA{}},
 		}},
-		{desc: "拡張256色記法 文字色 赤", s: "\x1b[38;5;25m", expect: colorEscapeSequences{{colorType: colorTypeForeground, color: terminal256ColorMap[25]}}},
-		{desc: "拡張256色記法 背景色 赤", s: "\x1b[48;5;25m", expect: colorEscapeSequences{{colorType: colorTypeBackground, color: terminal256ColorMap[25]}}},
+		{desc: "拡張256色記法 文字色 赤", s: "\x1b[38;5;25m", expect: colorEscapeSequences{{colorType: colorTypeForeground, color: color256Map[25]}}},
+		{desc: "拡張256色記法 背景色 赤", s: "\x1b[48;5;25m", expect: colorEscapeSequences{{colorType: colorTypeBackground, color: color256Map[25]}}},
 		{desc: "拡張256色RGB記法 文字色 赤", s: "\x1b[38;2;255;0;0m", expect: colorEscapeSequences{{colorType: colorTypeForeground, color: colorRGBARed}}},
 		{desc: "拡張256色RGB記法 背景色 赤", s: "\x1b[48;2;255;0;0m", expect: colorEscapeSequences{{colorType: colorTypeBackground, color: colorRGBARed}}},
 		{desc: "拡張記法混在", s: "\x1b[38;5;25;48;2;255;0;0m", expect: colorEscapeSequences{
-			{colorType: colorTypeForeground, color: terminal256ColorMap[25]},
+			{colorType: colorTypeForeground, color: color256Map[25]},
 			{colorType: colorTypeBackground, color: colorRGBARed},
 		}},
 	}

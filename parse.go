@@ -11,51 +11,6 @@ import (
 	"github.com/mattn/go-runewidth"
 )
 
-const (
-	// classEscape はテキストに付与されているエスケープシーケンス
-	classEscape ClassString = iota
-	// classText はただのテキスト
-	classText
-)
-
-var (
-	reANSIColorEscapeSequence *regexp.Regexp
-	// 出力の仕方や色を制御するエスケープシーケンスにマッチする
-	reColorEscapeSequences = regexp.MustCompile(`^\x1b\[[\d;]*m`)
-	// 出力の仕方や色を制御するエスケープシーケンス以外のエスケープシーケンスに
-	// マッチする
-	reNotColorEscapeSequences = regexp.MustCompile(`^\x1b\[\d*[A-HfSTJK]`)
-	ignoreRunes               = []rune{
-		'A', // カーソル移動
-		'B', // カーソル移動
-		'C', // カーソル移動
-		'D', // カーソル移動
-		'E', // カーソル移動
-		'F', // カーソル移動
-		'G', // カーソル移動
-		'H', // カーソル移動
-		'f', // カーソル移動
-		'J', // 出力消去
-		'K', // 出力消去
-		'm',
-		'S', // コンソールスクロール
-		'T', // コンソールスクロール
-	}
-)
-
-type (
-	ClassString      int
-	ClassifiedString struct {
-		class ClassString
-		text  string
-	}
-	ClassifiedStrings []ClassifiedString
-)
-
-func init() {
-	reANSIColorEscapeSequence = regexp.MustCompile(`[34][0-7]`)
-}
-
 type (
 	kind                int // エスケープシーケンスの種類
 	colorType           int // 文字色か背景色か
@@ -86,6 +41,14 @@ const (
 	colorTypeBackground
 )
 
+var (
+	// 出力の仕方や色を制御するエスケープシーケンスにマッチする
+	reColorEscapeSequences = regexp.MustCompile(`^\x1b\[[\d;]*m`)
+	// 出力の仕方や色を制御するエスケープシーケンス以外のエスケープシーケンスに
+	// マッチする
+	reNotColorEscapeSequences = regexp.MustCompile(`^\x1b\[\d*[A-HfSTJK]`)
+)
+
 // parseColorEscapeSequence は色のエスケープシーケンスを解析してRGBAに変換する。
 func parseColorEscapeSequence(s string) (colors colorEscapeSequences) {
 	s = strings.Replace(s, "\x1b[", "", -1)
@@ -111,7 +74,7 @@ func parseColorEscapeSequence(s string) (colors colorEscapeSequences) {
 
 		if 0 <= n && n <= 9 {
 			c := colorEscapeSequence{
-				colorType: terminalColorAttributeMap[n],
+				colorType: colorAttributeMap[n],
 			}
 			colors = append(colors, c)
 			continue
@@ -120,15 +83,16 @@ func parseColorEscapeSequence(s string) (colors colorEscapeSequences) {
 		if 30 <= n && n <= 37 {
 			c := colorEscapeSequence{
 				colorType: colorTypeForeground,
-				color:     terminalANSIColorMap[n],
+				color:     colorANSIMap[n],
 			}
 			colors = append(colors, c)
 			continue
 		}
+
 		if 40 <= n && n <= 47 {
 			c := colorEscapeSequence{
 				colorType: colorTypeBackground,
-				color:     terminalANSIColorMap[n],
+				color:     colorANSIMap[n],
 			}
 			colors = append(colors, c)
 			continue
@@ -189,7 +153,7 @@ func parseColorEscapeSequence(s string) (colors colorEscapeSequences) {
 				}
 				c := colorEscapeSequence{
 					colorType: ct,
-					color:     terminal256ColorMap[c255],
+					color:     color256Map[c255],
 				}
 				colors = append(colors, c)
 				i = i + 2
