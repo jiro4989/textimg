@@ -24,12 +24,14 @@ echo -e '\x1b[31mRED\x1b[0m' | textimg --background black -o out.gif
 
 Output image format is PNG or JPG or GIF.
 File extention of `-o` option defines output image format.
-Default image format is PNG. if you write image file from `>` redirect then
+Default image format is PNG. if you write image file with `>` redirect then
 image file will be saved as PNG file.
 
 === Rainbow examples
 
 ==== From ANSI color
+
+textimg supports `\x1b[30m` notation.
 
 [source,bash]
 ----
@@ -45,7 +47,11 @@ Output is here.
 
 image:img/rainbow.png["Rainbow example"]
 
-==== From 256 color (Foreground)
+==== From 256 color
+
+textimg supports `\x1b[38;5;255m` notation.
+
+Foreground example is below.
 
 [source,bash]
 ----
@@ -61,7 +67,7 @@ Output is here.
 
 image:img/256_fg.png["256 foreground example"]
 
-==== From 256 color (Background)
+Background example is below.
 
 [source,bash]
 ----
@@ -78,6 +84,8 @@ Output is here.
 image:img/256_bg.png["256 background example"]
 
 ==== From 256 RGB color
+
+textimg supports `\x1b[38;2;255;0;0m` notation.
 
 [source,bash]
 ----
