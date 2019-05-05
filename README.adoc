@@ -2,7 +2,7 @@
 :toc: left
 :sectnums:
 
-textimg is command to convert from ANSI color or 256 color text to image. +
+textimg is command to convert from color text (ANSI or 256) to image. +
 Drawn image keeps having colors of escape sequence.
 
 == Development
