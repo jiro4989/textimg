@@ -16,10 +16,16 @@ Drawn image keeps having colors of escape sequence.
 === Simple examples
 
 [source,bash]
+textimg $'\x1b[31mRED\x1b[0m' > out.png
 textimg $'\x1b[31mRED\x1b[0m' -o out.png
 echo -e '\x1b[31mRED\x1b[0m' | textimg -o out.png
-echo -e '\x1b[31mRED\x1b[0m' | textimg --background 0,255,255,255 -o out.png
-echo -e '\x1b[31mRED\x1b[0m' | textimg --background black -o out.png
+echo -e '\x1b[31mRED\x1b[0m' | textimg --background 0,255,255,255 -o out.jpg
+echo -e '\x1b[31mRED\x1b[0m' | textimg --background black -o out.gif
+
+Output image format is PNG or JPG or GIF.
+File extention of `-o` option defines output image format.
+Default image format is PNG. if you write image file from `>` redirect then
+image file will be saved as PNG file.
 
 === Rainbow examples
 
@@ -53,9 +59,9 @@ done | textimg -o testdata/out/256_fg.png
 
 Output is here.
 
-==== From 256 color (Background)
-
 image:img/256_fg.png["256 foreground example"]
+
+==== From 256 color (Background)
 
 [source,bash]
 ----
@@ -70,6 +76,22 @@ done | textimg -o testdata/out/256_bg.png
 Output is here.
 
 image:img/256_bg.png["256 background example"]
+
+==== From 256 RGB color
+
+[source,bash]
+----
+seq 0 255 | while read i; do
+  echo -ne "\x1b[38;2;${i};0;0m$(printf %03d $i)"
+  if [ $(((i+1) % 50)) -eq 0 ]; then
+    echo
+  fi
+done | $CMD -o $OUTDIR/extrgb_f_gradation_red.png
+----
+
+Output is here.
+
+image:img/extrgb_f_gradation_red.png["RGB gradation example"]
 
 == Install
 
