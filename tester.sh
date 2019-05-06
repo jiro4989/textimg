@@ -1,10 +1,10 @@
 #!/bin/bash
 # vim: tw=0 nowrap:
 
-set -eu
-
 readonly CMD=./bin/textimg
 readonly OUTDIR=testdata/out
+
+# 色のANSIエスケープシーケンス定数 {{{
 
 readonly COLOR_RESET="\x1b[0m"
 readonly COLOR_FG_BLACK="\x1b[30m"
@@ -23,6 +23,10 @@ readonly COLOR_BG_BLUE="\x1b[44m"
 readonly COLOR_BG_MAGENTA="\x1b[45m"
 readonly COLOR_BG_CYAN="\x1b[46m"
 readonly COLOR_BG_WHITE="\x1b[47m"
+
+#}}}
+
+# ユーティリティ関数 {{{
 
 ## 色文字と文字列を合わせて出力し、色付けをリセットする。
 ##
@@ -51,13 +55,8 @@ b_magenta() { echo_color_string "$COLOR_BG_MAGENTA"  "$1"; };
 b_cyan()    { echo_color_string "$COLOR_BG_CYAN"     "$1"; };
 b_white()   { echo_color_string "$COLOR_BG_WHITE"    "$1"; };
 
-info() {
-  echo -e "$(f_green "[OK] Generated $1")"
-}
-
-err() {
-  echo -e "$(f_red "[kG] Failed to generate $1")"
-}
+info() { echo -e "$(f_green "[OK] Generated $1")"          ; };
+err()  { echo -e "$(f_red   "[NG] Failed to generate $1")" ; };
 
 ## 指定の文字列を指定回数繰り返した文字列を1行出力する。
 ##
@@ -74,18 +73,23 @@ repeat() {
 ## @param $1 入力文字列
 ## @param $2 出力ファイル名。出力先はtestdata/out配下で固定
 run_test() {
+  local inputstr
   local outfile
-  outfile="$OUTDIR/$2"
-  echo -e "$1" | $CMD -o "$outfile"
+  local exitcode
 
-  local ret
-  ret=$?
-  if [ "$ret" -eq 0 ]; then
+  inputstr="$1"
+  outfile="$OUTDIR/$2"
+  echo -e "$inputstr" | $CMD -o "$outfile"
+
+  exitcode=$?
+  if [ "$exitcode" -eq 0 ]; then
     info "$outfile"
   else
     err "$outfile"
   fi
 }
+
+#}}}
 
 # ==============================================================================
 #
@@ -93,14 +97,8 @@ run_test() {
 #
 # ==============================================================================
 
-make build
+make build || { echo "$(f_red Failed to build application)"; exit 1; };
 mkdir -p testdata/out
-
-# ------------------------------------------------------------------------------
-#
-#     ANSI color
-#
-# ------------------------------------------------------------------------------
 
 cat << EOS
 --------------------------------------------------------------------------------
@@ -110,7 +108,8 @@ cat << EOS
 --------------------------------------------------------------------------------
 EOS
 
-# ANSI colorのテスト
+# Test: ANSIカラー{{{
+
 for color in black red green yellow blue magenta cyan white; do
   run_test "$(f_$color $color)" ansi_f_$color.png
   run_test "$(b_$color $color)" ansi_b_$color.png
@@ -164,11 +163,9 @@ $CMD "Normal$(f_red Red)Normal" --foreground 0,0,0,0 -o $OUTDIR/ansi_f_changefg3
 
 run_test "\x1b[31;42mRedGreen\x1b[7mRedGreen" ansi_fb_reverse.png
 
-# ------------------------------------------------------------------------------
-#
-#     Extension 256 color
-#
-# ------------------------------------------------------------------------------
+#}}}
+
+# Test: 拡張256色 {{{
 
 # 拡張256色のテスト (foreground)
 seq 0 255 | while read -r i; do
@@ -186,11 +183,9 @@ seq 0 255 | while read -r i; do
   fi
 done | $CMD -o $OUTDIR/ext256_b_rainbow.png
 
-# ------------------------------------------------------------------------------
-#
-#     Extension RGBA color
-#
-# ------------------------------------------------------------------------------
+#}}}
+
+# Test: 拡張256色(RGB) {{{
 
 # 拡張RGB指定のテスト (foreground)
 seq 0 255 | while read i; do
@@ -207,6 +202,8 @@ seq 0 255 | while read i; do
     echo
   fi
 done | $CMD -o $OUTDIR/extrgb_b_gradation_green.png
+
+#}}}
 
 cat << EOS
 --------------------------------------------------------------------------------
