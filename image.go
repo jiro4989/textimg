@@ -17,7 +17,7 @@ import (
 	"github.com/golang/freetype/truetype"
 	"github.com/mattn/go-runewidth"
 	"golang.org/x/image/font"
-	"golang.org/x/image/font/gofont/gobold"
+	"golang.org/x/image/font/gofont/gomono"
 	"golang.org/x/image/math/fixed"
 )
 
@@ -143,7 +143,7 @@ func readFace(fontPath string, fontSize float64) font.Face {
 	} else {
 		msg := fmt.Sprintf("[WARN] %s is not found. please set font path with `-f` option", fontPath)
 		fmt.Fprintln(os.Stderr, msg)
-		fontData = gobold.TTF
+		fontData = gomono.TTF
 	}
 
 	ft, err := truetype.Parse(fontData)
