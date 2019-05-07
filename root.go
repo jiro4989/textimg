@@ -25,9 +25,10 @@ func init() {
 	RootCommand.Flags().StringP("foreground", "", "white", `foreground color.
 format is [black|red|green|yellow|blue|magenta|cyan|white]
 or (R,G,B,A(0~255))`)
-	RootCommand.Flags().StringP("background", "b", "black", `background color.
-color format is same as "foreground" option.`)
-	RootCommand.Flags().StringP("out", "o", "", "output image file path")
+	RootCommand.Flags().StringP("background", "b", "black", `ackground color.
+color format is same as "foreground" option`)
+	RootCommand.Flags().StringP("out", "o", "", `output image file path.
+available image formats are [png | jpg | gif]`)
 	RootCommand.Flags().BoolP("shellgei-imagedir", "s", false, `image directory path for shell gei bot (path: "/images/t.png")`)
 
 	font := "/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf"
