@@ -4,7 +4,13 @@ env:
   global:
     - GO111MODULE=on
 
+before_script:
+  - mkdir -p /images
+  - go build
+
 script:
   - go build
   - go test -cover ./...
   - ./tester.sh
+  - ./textimg "t.png" -s
+  - ./textimg "t.gif" -sa
