@@ -148,6 +148,21 @@ $CMD "Normal$(f_red Red)Normal" --foreground 0,0,0,0 -o $OUTDIR/ansi_f_changefg3
 
 run_test "Reverse color" "\x1b[31;42mRedGreen\x1b[7mRedGreen" ansi_fb_reverse.png
 
+echo -e '\x1b[31mText\x1b[0m
+\x1b[32mText\x1b[0m
+\x1b[33mText\x1b[0m
+\x1b[34mText\x1b[0m
+\x1b[35mText\x1b[0m
+\x1b[36mText\x1b[0m
+\x1b[37mText\x1b[0m
+\x1b[41mText\x1b[0m
+\x1b[42mText\x1b[0m' | $CMD -a -o $OUTDIR/ansi_fb_anime_1line.gif
+
+echo -e '\x1b[31mText\x1b[0m
+\x1b[32mText\x1b[0m
+\x1b[41mText\x1b[0m
+\x1b[42mText\x1b[0m' | $CMD -a -d 6 -l 2 -o $OUTDIR/ansi_fb_anime_2line.gif
+
 #}}}
 
 # Test: 拡張256色 {{{
