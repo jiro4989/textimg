@@ -14,3 +14,5 @@ script:
   - ./tester.sh
   - ./textimg "t.png" -s
   - ./textimg "t.gif" -sa
+  - [ -e /images/t.png ]
+  - [ -e /images/t.gif ]
