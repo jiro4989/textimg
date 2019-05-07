@@ -17,6 +17,7 @@ import (
 	"github.com/golang/freetype/truetype"
 	"github.com/mattn/go-runewidth"
 	"golang.org/x/image/font"
+	"golang.org/x/image/font/gofont/gobold"
 	"golang.org/x/image/math/fixed"
 )
 
@@ -130,10 +131,21 @@ func getEncodeFormat(path string) (encodeFormat, error) {
 
 // readFace はfontPathのフォントファイルからfaceを返す。
 func readFace(fontPath string, fontSize float64) font.Face {
-	fontData, err := ioutil.ReadFile(fontPath)
-	if err != nil {
-		panic(err)
+	var fontData []byte
+
+	// ファイルが存在しなければgoboldをデフォルトとして使う
+	_, err := os.Stat(fontPath)
+	if err == nil {
+		fontData, err = ioutil.ReadFile(fontPath)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		msg := fmt.Sprintf("[WARN] %s is not found. please set font path with `-f` option", fontPath)
+		fmt.Fprintln(os.Stderr, msg)
+		fontData = gobold.TTF
 	}
+
 	ft, err := truetype.Parse(fontData)
 	if err != nil {
 		panic(err)
