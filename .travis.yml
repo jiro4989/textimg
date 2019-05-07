@@ -5,7 +5,7 @@ env:
     - GO111MODULE=on
 
 before_script:
-  - mkdir -p /images
+  - sudo mkdir -p /images
   - go build
 
 script:
