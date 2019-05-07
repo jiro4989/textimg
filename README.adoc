@@ -57,7 +57,7 @@ Foreground example is below.
 ----
 seq 0 255 | while read -r i; do
   echo -ne "\x1b[38;5;${i}m$(printf %03d $i)"
-  if [ $(((i+1) % 50)) -eq 0 ]; then
+  if [ $(((i+1) % 16)) -eq 0 ]; then
     echo
   fi
 done | textimg -o 256_fg.png
@@ -73,7 +73,7 @@ Background example is below.
 ----
 seq 0 255 | while read -r i; do
   echo -ne "\x1b[48;5;${i}m$(printf %03d $i)"
-  if [ $(((i+1) % 50)) -eq 0 ]; then
+  if [ $(((i+1) % 16)) -eq 0 ]; then
     echo
   fi
 done | textimg -o 256_bg.png
@@ -91,15 +91,15 @@ textimg supports `\x1b[38;2;255;0;0m` notation.
 ----
 seq 0 255 | while read i; do
   echo -ne "\x1b[38;2;${i};0;0m$(printf %03d $i)"
-  if [ $(((i+1) % 50)) -eq 0 ]; then
+  if [ $(((i+1) % 16)) -eq 0 ]; then
     echo
   fi
-done | textimg -o extrgb_f_gradation_red.png
+done | textimg -o extrgb_f_gradation.png
 ----
 
 Output is here.
 
-image:img/extrgb_f_gradation_red.png["RGB gradation example"]
+image:img/extrgb_f_gradation.png["RGB gradation example"]
 
 == Install
 
