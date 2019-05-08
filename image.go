@@ -161,7 +161,7 @@ func getEncodeFormat(path string) (encodeFormat, error) {
 func readFace(fontPath string, fontSize float64) font.Face {
 	var fontData []byte
 
-	// ファイルが存在しなければgoboldをデフォルトとして使う
+	// ファイルが存在しなければビルトインのフォントをデフォルトとして使う
 	_, err := os.Stat(fontPath)
 	if err == nil {
 		fontData, err = ioutil.ReadFile(fontPath)
