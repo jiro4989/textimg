@@ -34,7 +34,7 @@ color format is same as "foreground" option`)
 available image formats are [png | jpg | gif]`)
 	RootCommand.Flags().BoolP("shellgei-imagedir", "s", false, `image directory path for shell gei bot (path: "/images/t.png")`)
 	RootCommand.Flags().BoolP("animation", "a", false, "generate animation gif")
-	RootCommand.Flags().IntP("delay", "d", 10, "animation delay time")
+	RootCommand.Flags().IntP("delay", "d", 20, "animation delay time")
 	RootCommand.Flags().IntP("line-count", "l", 1, "animation input line count")
 
 	font := "/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf"

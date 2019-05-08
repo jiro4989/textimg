@@ -156,12 +156,17 @@ echo -e '\x1b[31mText\x1b[0m
 \x1b[36mText\x1b[0m
 \x1b[37mText\x1b[0m
 \x1b[41mText\x1b[0m
-\x1b[42mText\x1b[0m' | $CMD -a -o $OUTDIR/ansi_fb_anime_1line.gif
+\x1b[42mText\x1b[0m
+\x1b[43mText\x1b[0m
+\x1b[44mText\x1b[0m
+\x1b[45mText\x1b[0m
+\x1b[46mText\x1b[0m
+\x1b[47mText\x1b[0m' | $CMD -a -o $OUTDIR/ansi_fb_anime_1line.gif
 
 echo -e '\x1b[31mText\x1b[0m
 \x1b[32mText\x1b[0m
 \x1b[41mText\x1b[0m
-\x1b[42mText\x1b[0m' | $CMD -a -d 6 -l 2 -o $OUTDIR/ansi_fb_anime_2line.gif
+\x1b[42mText\x1b[0m' | $CMD -a -d 60 -l 2 -o $OUTDIR/ansi_fb_anime_2line.gif
 
 #}}}
 

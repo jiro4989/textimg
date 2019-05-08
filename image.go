@@ -56,16 +56,6 @@ func writeImage(w io.Writer, encFmt encodeFormat, texts []string, appconf applic
 
 	posY := charHeight
 	for i, line := range texts {
-		if appconf.useAnimation {
-			if i+1%appconf.lineCount == 0 {
-				posY = 0
-				imgs = append(imgs, img)
-				delays = append(delays, appconf.delay)
-				img = image.NewRGBA(image.Rect(0, 0, imageWidth, imageHeight))
-				drawBackgroundAll(img, appconf.background)
-			}
-		}
-
 		posX := 0
 		fgCol := appconf.foreground
 		bgCol := appconf.background
@@ -110,12 +100,16 @@ func writeImage(w io.Writer, encFmt encodeFormat, texts []string, appconf applic
 			line = suffix
 		}
 		posY += charHeight
-	}
 
-	// 最後のループで残ったものを描画
-	if appconf.useAnimation {
-		imgs = append(imgs, img)
-		delays = append(delays, appconf.delay)
+		if appconf.useAnimation {
+			if (i+1)%appconf.lineCount == 0 {
+				posY = charHeight
+				imgs = append(imgs, img)
+				delays = append(delays, appconf.delay)
+				img = image.NewRGBA(image.Rect(0, 0, imageWidth, imageHeight))
+				drawBackgroundAll(img, appconf.background)
+			}
+		}
 	}
 
 	var err error
