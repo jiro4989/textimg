@@ -152,10 +152,14 @@ Flags:
       --foreground string   foreground color.
                             format is [black|red|green|yellow|blue|magenta|cyan|white]
                             or (R,G,B,A(0~255)) (default "white")
-  -b, --background string   background color.
-                            color format is same as "foreground" option. (default "black")
-  -o, --out string          output image file path
+  -b, --background string   ackground color.
+                            color format is same as "foreground" option (default "black")
+  -o, --out string          output image file path.
+                            available image formats are [png | jpg | gif]
   -s, --shellgei-imagedir   image directory path for shell gei bot (path: "/images/t.png")
+  -a, --animation           generate animation gif
+  -d, --delay int           animation delay time (default 20)
+  -l, --line-count int      animation input line count (default 1)
   -f, --fontfile string     font file path (default "/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf")
   -F, --fontsize int        font size (default 20)
   -h, --help                help for textimg
