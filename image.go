@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"image"
 	"image/color"
+	"image/color/palette"
+	"image/draw"
 	"image/gif"
 	"image/jpeg"
 	"image/png"
@@ -17,6 +19,7 @@ import (
 	"github.com/golang/freetype/truetype"
 	"github.com/mattn/go-runewidth"
 	"golang.org/x/image/font"
+	"golang.org/x/image/font/gofont/gomono"
 	"golang.org/x/image/math/fixed"
 )
 
@@ -36,14 +39,23 @@ func writeImage(w io.Writer, encFmt encodeFormat, texts []string, appconf applic
 		charHeight  = int(float64(appconf.fontsize) * 1.1)
 		imageWidth  = maxStringWidth(texts) * charWidth
 		imageHeight = len(texts) * charHeight
-		img         = image.NewRGBA(image.Rect(0, 0, imageWidth, imageHeight))
-		face        = readFace(appconf.fontfile, float64(appconf.fontsize))
+	)
+
+	if appconf.useAnimation {
+		imageHeight /= (len(texts) / appconf.lineCount)
+	}
+
+	var (
+		img    = image.NewRGBA(image.Rect(0, 0, imageWidth, imageHeight))
+		face   = readFace(appconf.fontfile, float64(appconf.fontsize))
+		imgs   []*image.RGBA
+		delays []int
 	)
 
 	drawBackgroundAll(img, appconf.background)
 
 	posY := charHeight
-	for _, line := range texts {
+	for i, line := range texts {
 		posX := 0
 		fgCol := appconf.foreground
 		bgCol := appconf.background
@@ -88,6 +100,16 @@ func writeImage(w io.Writer, encFmt encodeFormat, texts []string, appconf applic
 			line = suffix
 		}
 		posY += charHeight
+
+		if appconf.useAnimation {
+			if (i+1)%appconf.lineCount == 0 {
+				posY = charHeight
+				imgs = append(imgs, img)
+				delays = append(delays, appconf.delay)
+				img = image.NewRGBA(image.Rect(0, 0, imageWidth, imageHeight))
+				drawBackgroundAll(img, appconf.background)
+			}
+		}
 	}
 
 	var err error
@@ -97,7 +119,14 @@ func writeImage(w io.Writer, encFmt encodeFormat, texts []string, appconf applic
 	case encodeFormatJPG:
 		err = jpeg.Encode(w, img, nil)
 	case encodeFormatGIF:
-		err = gif.Encode(w, img, nil)
+		if appconf.useAnimation {
+			err = gif.EncodeAll(w, &gif.GIF{
+				Image: toPalettes(imgs),
+				Delay: delays,
+			})
+		} else {
+			err = gif.Encode(w, img, nil)
+		}
 	default:
 		err = errors.New(fmt.Sprintf("%v is not supported.", encFmt))
 	}
@@ -130,10 +159,21 @@ func getEncodeFormat(path string) (encodeFormat, error) {
 
 // readFace はfontPathのフォントファイルからfaceを返す。
 func readFace(fontPath string, fontSize float64) font.Face {
-	fontData, err := ioutil.ReadFile(fontPath)
-	if err != nil {
-		panic(err)
+	var fontData []byte
+
+	// ファイルが存在しなければビルトインのフォントをデフォルトとして使う
+	_, err := os.Stat(fontPath)
+	if err == nil {
+		fontData, err = ioutil.ReadFile(fontPath)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		msg := fmt.Sprintf("[WARN] %s is not found. please set font path with `-f` option", fontPath)
+		fmt.Fprintln(os.Stderr, msg)
+		fontData = gomono.TTF
 	}
+
 	ft, err := truetype.Parse(fontData)
 	if err != nil {
 		panic(err)
@@ -187,4 +227,14 @@ func drawBackground(img *image.RGBA, posX, posY int, label string, col color.RGB
 			img.Set(x, y, col)
 		}
 	}
+}
+
+func toPalettes(imgs []*image.RGBA) (ret []*image.Paletted) {
+	for _, v := range imgs {
+		bounds := v.Bounds()
+		p := image.NewPaletted(bounds, palette.Plan9)
+		draw.Draw(p, p.Rect, v, bounds.Min, draw.Over)
+		ret = append(ret, p)
+	}
+	return
 }

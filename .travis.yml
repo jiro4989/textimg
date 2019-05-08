@@ -1,5 +1,20 @@
 language: go
 
+env:
+  global:
+    - GO111MODULE=on
+
+before_script:
+  - sudo install -d -o $USER -g $USER -m 0777 /images
+  - go build
+
 script:
-  - env GO111MODULE=on go build
-  - env GO111MODULE=on go test -cover ./...
+  - go build
+  - go test -cover ./...
+  - ./tester.sh
+  - ./textimg "t.png" -s
+  - ./textimg "t.gif" -sa
+
+after_script:
+  - [ -e /images/t.png ]
+  - [ -e /images/t.gif ]

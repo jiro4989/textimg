@@ -1,10 +1,12 @@
 #!/bin/bash
 # vim: tw=0 nowrap:
 
-set -eu
-
 readonly CMD=./bin/textimg
 readonly OUTDIR=testdata/out
+test_count=0
+err_count=0
+
+# 色のANSIエスケープシーケンス定数 {{{
 
 readonly COLOR_RESET="\x1b[0m"
 readonly COLOR_FG_BLACK="\x1b[30m"
@@ -23,6 +25,10 @@ readonly COLOR_BG_BLUE="\x1b[44m"
 readonly COLOR_BG_MAGENTA="\x1b[45m"
 readonly COLOR_BG_CYAN="\x1b[46m"
 readonly COLOR_BG_WHITE="\x1b[47m"
+
+#}}}
+
+# ユーティリティ関数 {{{
 
 ## 色文字と文字列を合わせて出力し、色付けをリセットする。
 ##
@@ -51,13 +57,9 @@ b_magenta() { echo_color_string "$COLOR_BG_MAGENTA"  "$1"; };
 b_cyan()    { echo_color_string "$COLOR_BG_CYAN"     "$1"; };
 b_white()   { echo_color_string "$COLOR_BG_WHITE"    "$1"; };
 
-info() {
-  echo -e "$(f_green "[OK] Generated $1")"
-}
-
-err() {
-  echo -e "$(f_red "[kG] Failed to generate $1")"
-}
+suite() { echo -e "$(f_blue [Suite]) $1"; };
+info() { echo -e "  $(f_green "[OK]") $1"          ; };
+err()  { echo -e "  $(f_red   "[NG]") $1" ; };
 
 ## 指定の文字列を指定回数繰り返した文字列を1行出力する。
 ##
@@ -74,18 +76,27 @@ repeat() {
 ## @param $1 入力文字列
 ## @param $2 出力ファイル名。出力先はtestdata/out配下で固定
 run_test() {
+  local desc
+  local inputstr
   local outfile
-  outfile="$OUTDIR/$2"
-  echo -e "$1" | $CMD -o "$outfile"
+  local exitcode
 
-  local ret
-  ret=$?
-  if [ "$ret" -eq 0 ]; then
-    info "$outfile"
+  desc="$1"
+  inputstr="$2"
+  outfile="$OUTDIR/$3"
+  echo -e "$inputstr" | $CMD -o "$outfile"
+
+  exitcode=$?
+  test_count=$((test_count + 1))
+  if [ "$exitcode" -eq 0 ]; then
+    info "$desc"
   else
-    err "$outfile"
+    err "$desc"
+    err_count=$((err_count + 1))
   fi
 }
+
+#}}}
 
 # ==============================================================================
 #
@@ -93,52 +104,28 @@ run_test() {
 #
 # ==============================================================================
 
-make build
+make build || { echo "$(f_red Failed to build application)"; exit 1; };
 mkdir -p testdata/out
 
-# ------------------------------------------------------------------------------
-#
-#     ANSI color
-#
-# ------------------------------------------------------------------------------
+# Test: ANSIカラー{{{
 
-cat << EOS
---------------------------------------------------------------------------------
+suite "ANSI color tests"
 
-    TEST START
-
---------------------------------------------------------------------------------
-EOS
-
-# ANSI colorのテスト
 for color in black red green yellow blue magenta cyan white; do
-  run_test "$(f_$color $color)" ansi_f_$color.png
-  run_test "$(b_$color $color)" ansi_b_$color.png
+  run_test "Foreground ANSI color ($color)" "$(f_$color $color)" ansi_f_$color.png
+  run_test "Background ANSI color ($color)" "$(b_$color $color)" ansi_b_$color.png
 done
 
 for t in f b; do
-  # 1行で色の入れ替わりを試験
-  run_test "$(${t}_red red)$(${t}_green green)$(${t}_blue blue)" ansi_${t}_rgb.png
-
-  # 日本語のテスト
-  run_test "$(${t}_red 赤あか)$(${t}_green 緑みどり)$(${t}_blue 青あお)" ansi_${t}_rgb_ja.png
-
-  # 複数行出力のテスト
-  run_test "$(repeat 10 $(${t}_red red)$(${t}_green green)$(${t}_blue blue)\\n)" ansi_${t}_multiline.png
-
-  # 全角文字と半角文字の混在
-  run_test "$(${t}_red 赤RR)\n$(${t}_green 緑GG)" ansi_${t}_full_half.png
+  run_test "Switch color on 1 line ($t)" "$(${t}_red red)$(${t}_green green)$(${t}_blue blue)" ansi_${t}_rgb.png
+  run_test "Japanese text ($t)" "$(${t}_red 赤あか)$(${t}_green 緑みどり)$(${t}_blue 青あお)" ansi_${t}_rgb_ja.png
+  run_test "Multiline text ($t)" "$(repeat 10 $(${t}_red red)$(${t}_green green)$(${t}_blue blue)\\n)" ansi_${t}_multiline.png
+  run_test "Half width and Full width characters ($t)" "$(${t}_red 赤RR)\n$(${t}_green 緑GG)" ansi_${t}_full_half.png
 done
-run_test "\x1b[31mRed\x1b[32mGreen\x1b[34mBlue\x1b[0m" ansi_f_rgb2.png
-
-# grepのテスト
-run_test "$(echo TestAbcTest | grep --color=always Abc)" grep.png
-
-# 色の装飾なしのテスト
-run_test no_color no_color.png
-
-# 背景色指定有りのテスト
-run_test "$(echo -e "あいうえおかきくけこ" | sed -r 's/[^　]/\x1b[31m&\x1b[0m/g')" ansi_f_set_bg.png
+run_test "No reset color" "\x1b[31mRed\x1b[32mGreen\x1b[34mBlue\x1b[0m" ansi_f_rgb2.png
+run_test "Grep color" "$(echo TestAbcTest | grep --color=always Abc)" grep.png
+run_test "No escape sequence" no_color no_color.png
+run_test "CLI background option" "$(echo -e "あいうえおかきくけこ" | sed -r 's/[^　]/\x1b[31m&\x1b[0m/g')" ansi_f_set_bg.png
 
 # 背景色をRGBA指定するテスト
 colors=(30 31 32 33 34 35 36 37)
@@ -148,11 +135,8 @@ while read -r line; do
   i=$((i+1))
 done <<< "$(seq 8 | xargs -I@ echo TEST)" | $CMD -b 50,100,12,255 -o $OUTDIR/ansi_f_bgopt_rgba.png
 
-# JPG出力
-run_test "$(f_red RedJPG)" ansi_f_red.jpg
-
-# GIF出力
-run_test "$(f_red RedGIF)" ansi_f_red.gif
+run_test "Output JPG" "$(f_red RedJPG)" ansi_f_red.jpg
+run_test "Output GIF" "$(f_red RedGIF)" ansi_f_red.gif
 
 # 引数から指定
 $CMD "$(f_red RedArgs)" -o $OUTDIR/ansi_f_red_args.png
@@ -162,56 +146,70 @@ $CMD "Normal$(f_red Red)Normal" --foreground green -o $OUTDIR/ansi_f_changefg.pn
 $CMD "Normal$(f_red Red)Normal" --foreground 255,255,0,255 -o $OUTDIR/ansi_f_changefg2.png
 $CMD "Normal$(f_red Red)Normal" --foreground 0,0,0,0 -o $OUTDIR/ansi_f_changefg3.png
 
-run_test "\x1b[31;42mRedGreen\x1b[7mRedGreen" ansi_fb_reverse.png
+run_test "Reverse color" "\x1b[31;42mRedGreen\x1b[7mRedGreen" ansi_fb_reverse.png
 
-# ------------------------------------------------------------------------------
-#
-#     Extension 256 color
-#
-# ------------------------------------------------------------------------------
+echo -e '\x1b[31mText\x1b[0m
+\x1b[32mText\x1b[0m
+\x1b[33mText\x1b[0m
+\x1b[34mText\x1b[0m
+\x1b[35mText\x1b[0m
+\x1b[36mText\x1b[0m
+\x1b[37mText\x1b[0m
+\x1b[41mText\x1b[0m
+\x1b[42mText\x1b[0m
+\x1b[43mText\x1b[0m
+\x1b[44mText\x1b[0m
+\x1b[45mText\x1b[0m
+\x1b[46mText\x1b[0m
+\x1b[47mText\x1b[0m' | $CMD -a -o $OUTDIR/ansi_fb_anime_1line.gif
 
-# 拡張256色のテスト (foreground)
-seq 0 255 | while read -r i; do
-  echo -ne "\x1b[38;5;${i}m$(printf %03d $i)"
-  if [ $(((i+1) % 50)) -eq 0 ]; then
-    echo
-  fi
-done | $CMD -o $OUTDIR/ext256_f_rainbow.png
+echo -e '\x1b[31mText\x1b[0m
+\x1b[32mText\x1b[0m
+\x1b[41mText\x1b[0m
+\x1b[42mText\x1b[0m' | $CMD -a -d 60 -l 2 -o $OUTDIR/ansi_fb_anime_2line.gif
 
-# 拡張256色のテスト (background)
-seq 0 255 | while read -r i; do
-  echo -ne "\x1b[48;5;${i}m$(printf %03d $i)"
-  if [ $(((i+1) % 50)) -eq 0 ]; then
-    echo
-  fi
-done | $CMD -o $OUTDIR/ext256_b_rainbow.png
+#}}}
 
-# ------------------------------------------------------------------------------
-#
-#     Extension RGBA color
-#
-# ------------------------------------------------------------------------------
+# Test: 拡張256色 {{{
 
-# 拡張RGB指定のテスト (foreground)
-seq 0 255 | while read i; do
-  echo -ne "\x1b[38;2;${i};0;0m$(printf %03d $i)"
-  if [ $(((i+1) % 50)) -eq 0 ]; then
-    echo
-  fi
-done | $CMD -o $OUTDIR/extrgb_f_gradation_red.png
+suite "Extension 256 color tests"
 
-# 拡張RGB指定のテスト (background)
-seq 0 255 | while read i; do
-  echo -ne "\x1b[48;2;0;$i;0m$(printf %03d $i)"
-  if [ $(((i+1) % 50)) -eq 0 ]; then
-    echo
-  fi
-done | $CMD -o $OUTDIR/extrgb_b_gradation_green.png
+echo_256rainbow() {
+  seq 0 255 | while read i; do
+    echo -ne "\x1b[$1;5;${i}m$(printf %03d $i)"
+    if [ $(((i+1) % 16)) -eq 0 ]; then
+      echo
+    fi
+  done
+}
 
-cat << EOS
---------------------------------------------------------------------------------
+run_test "Foreground rainbow" "$(echo_256rainbow 38)" ext256_f_rainbow.png
+run_test "Background rainbow" "$(echo_256rainbow 48)" ext256_b_rainbow.png
 
-    TEST SUCCESS
+#}}}
 
---------------------------------------------------------------------------------
-EOS
+# Test: 拡張256色(RGB) {{{
+
+suite "Extension 256 color (RGB) tests"
+
+echo_rgb_gradation() {
+  seq 0 255 | while read i; do
+    echo -ne "\x1b[$1;2;${i};0;0m$(printf %03d $i)"
+    if [ $(((i+1) % 16)) -eq 0 ]; then
+      echo
+    fi
+  done
+}
+
+run_test "Foreground gradation" "$(echo_rgb_gradation 38)" extrgb_f_gradation.png
+run_test "Background gradation" "$(echo_rgb_gradation 48)" extrgb_b_gradation.png
+
+#}}}
+
+if [ "$err_count" -lt 1 ]; then
+  echo -e "$(f_green Success:) [$test_count/$test_count] tests passed"
+  exit 0
+else
+  echo -e "$(f_red Failure:) [$err_count/$test_count] tests don't passed"
+  exit 1
+fi

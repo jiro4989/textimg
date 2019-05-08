@@ -12,11 +12,14 @@ import (
 )
 
 type applicationConfig struct {
-	foreground color.RGBA
-	background color.RGBA
-	outpath    string
-	fontfile   string
-	fontsize   int
+	foreground   color.RGBA // 文字色
+	background   color.RGBA // 背景色
+	outpath      string     // 画像の出力ファイルパス
+	fontfile     string     // フォントファイルのパス
+	fontsize     int        // フォントサイズ
+	useAnimation bool       // アニメーションGIFを生成する
+	delay        int        // アニメーションのディレイ時間
+	lineCount    int        // 入力データのうち何行を1フレーム画像に使うか
 }
 
 func init() {
@@ -25,10 +28,14 @@ func init() {
 	RootCommand.Flags().StringP("foreground", "", "white", `foreground color.
 format is [black|red|green|yellow|blue|magenta|cyan|white]
 or (R,G,B,A(0~255))`)
-	RootCommand.Flags().StringP("background", "b", "black", `background color.
-color format is same as "foreground" option.`)
-	RootCommand.Flags().StringP("out", "o", "", "output image file path")
+	RootCommand.Flags().StringP("background", "b", "black", `ackground color.
+color format is same as "foreground" option`)
+	RootCommand.Flags().StringP("out", "o", "", `output image file path.
+available image formats are [png | jpg | gif]`)
 	RootCommand.Flags().BoolP("shellgei-imagedir", "s", false, `image directory path for shell gei bot (path: "/images/t.png")`)
+	RootCommand.Flags().BoolP("animation", "a", false, "generate animation gif")
+	RootCommand.Flags().IntP("delay", "d", 20, "animation delay time")
+	RootCommand.Flags().IntP("line-count", "l", 1, "animation input line count")
 
 	font := "/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf"
 	if runtime.GOOS == "darwin" {
@@ -62,12 +69,31 @@ var RootCommand = &cobra.Command{
 			panic(err)
 		}
 
+		useAnimation, err := f.GetBool("animation")
+		if err != nil {
+			panic(err)
+		}
+
+		delay, err := f.GetInt("delay")
+		if err != nil {
+			panic(err)
+		}
+
+		lineCount, err := f.GetInt("line-count")
+		if err != nil {
+			panic(err)
+		}
+
 		useShellGeiDir, err := f.GetBool("shellgei-imagedir")
 		if err != nil {
 			panic(err)
 		}
 		if useShellGeiDir {
-			outpath = "/images/t.png"
+			if useAnimation {
+				outpath = "/images/t.gif"
+			} else {
+				outpath = "/images/t.png"
+			}
 		}
 
 		fontpath, err := f.GetString("fontfile")
@@ -89,14 +115,18 @@ var RootCommand = &cobra.Command{
 		if err != nil {
 			panic(err)
 		}
+
 		// }}}
 
 		appconf := applicationConfig{
-			foreground: confForeground,
-			background: confBackground,
-			outpath:    outpath,
-			fontfile:   fontpath,
-			fontsize:   fontsize,
+			foreground:   confForeground,
+			background:   confBackground,
+			outpath:      outpath,
+			fontfile:     fontpath,
+			fontsize:     fontsize,
+			useAnimation: useAnimation,
+			delay:        delay,
+			lineCount:    lineCount,
 		}
 
 		// 引数にテキストの指定がなければ標準入力を使用する
