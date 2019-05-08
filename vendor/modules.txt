@@ -17,4 +17,5 @@ github.com/spf13/pflag
 github.com/stretchr/testify/assert
 # golang.org/x/image v0.0.0-20190501045829-6d32002ffd75
 golang.org/x/image/font
+golang.org/x/image/font/gofont/gomono
 golang.org/x/image/math/fixed
