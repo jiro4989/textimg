@@ -206,6 +206,44 @@ run_test "Background gradation" "$(echo_rgb_gradation 48)" extrgb_b_gradation.pn
 
 #}}}
 
+# Test: スライドアニメーション {{{
+
+suite "Slide animation tests"
+
+seq 5 | $CMD -l 3 -S -o $OUTDIR/slide_3_1.gif
+seq 5 | $CMD -l 3 -SW 2 -o $OUTDIR/slide_3_2.gif
+echo -e '\x1b[31mText\x1b[0m
+\x1b[32mText\x1b[0m
+\x1b[33mText\x1b[0m
+\x1b[34mText\x1b[0m
+\x1b[35mText\x1b[0m
+\x1b[36mText\x1b[0m
+\x1b[37mText\x1b[0m
+\x1b[41mText\x1b[0m
+\x1b[42mText\x1b[0m
+\x1b[43mText\x1b[0m
+\x1b[44mText\x1b[0m
+\x1b[45mText\x1b[0m
+\x1b[46mText\x1b[0m
+\x1b[47mText\x1b[0m' | $CMD -l 5 -S -o $OUTDIR/slide_5_1_rainbow.gif
+
+echo -e '\x1b[31mText\x1b[0m
+\x1b[32mText\x1b[0m
+\x1b[33mText\x1b[0m
+\x1b[34mText\x1b[0m
+\x1b[35mText\x1b[0m
+\x1b[36mText\x1b[0m
+\x1b[37mText\x1b[0m
+\x1b[41mText\x1b[0m
+\x1b[42mText\x1b[0m
+\x1b[43mText\x1b[0m
+\x1b[44mText\x1b[0m
+\x1b[45mText\x1b[0m
+\x1b[46mText\x1b[0m
+\x1b[47mText\x1b[0m' | $CMD -l 5 -SE -o $OUTDIR/slide_5_1_rainbow_forever.gif
+
+#}}}
+
 if [ "$err_count" -lt 1 ]; then
   echo -e "$(f_green Success:) [$test_count/$test_count] tests passed"
   exit 0

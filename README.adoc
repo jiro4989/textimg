@@ -127,6 +127,30 @@ Output is here.
 
 image:img/ansi_fb_anime_1line.gif["Animation GIF example"]
 
+==== Slide animation GIF
+
+[source,bash]
+----
+echo -e '\x1b[31mText\x1b[0m
+\x1b[32mText\x1b[0m
+\x1b[33mText\x1b[0m
+\x1b[34mText\x1b[0m
+\x1b[35mText\x1b[0m
+\x1b[36mText\x1b[0m
+\x1b[37mText\x1b[0m
+\x1b[41mText\x1b[0m
+\x1b[42mText\x1b[0m
+\x1b[43mText\x1b[0m
+\x1b[44mText\x1b[0m
+\x1b[45mText\x1b[0m
+\x1b[46mText\x1b[0m
+\x1b[47mText\x1b[0m' | textimg -l 5 -SE -o slide_5_1_rainbow_forever.gif
+----
+
+Output is here.
+
+image:img/slide_5_1_rainbow_forever.gif["Slide Animation GIF example"]
+
 == Install
 
 [source,bash]
@@ -154,14 +178,17 @@ Flags:
                             or (R,G,B,A(0~255)) (default "white")
   -b, --background string   ackground color.
                             color format is same as "foreground" option (default "black")
+  -f, --fontfile string     font file path (default "/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf")
+  -F, --fontsize int        font size (default 20)
   -o, --out string          output image file path.
                             available image formats are [png | jpg | gif]
   -s, --shellgei-imagedir   image directory path for shell gei bot (path: "/images/t.png")
   -a, --animation           generate animation gif
   -d, --delay int           animation delay time (default 20)
   -l, --line-count int      animation input line count (default 1)
-  -f, --fontfile string     font file path (default "/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf")
-  -F, --fontsize int        font size (default 20)
+  -S, --slide               use slide animation
+  -W, --slide-width int     sliding animation width (default 1)
+  -E, --forever             sliding forever
   -h, --help                help for textimg
       --version             version for textimg
 ----
