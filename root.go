@@ -30,19 +30,22 @@ format is [black|red|green|yellow|blue|magenta|cyan|white]
 or (R,G,B,A(0~255))`)
 	RootCommand.Flags().StringP("background", "b", "black", `ackground color.
 color format is same as "foreground" option`)
-	RootCommand.Flags().StringP("out", "o", "", `output image file path.
-available image formats are [png | jpg | gif]`)
-	RootCommand.Flags().BoolP("shellgei-imagedir", "s", false, `image directory path for shell gei bot (path: "/images/t.png")`)
-	RootCommand.Flags().BoolP("animation", "a", false, "generate animation gif")
-	RootCommand.Flags().IntP("delay", "d", 20, "animation delay time")
-	RootCommand.Flags().IntP("line-count", "l", 1, "animation input line count")
-
 	font := "/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf"
 	if runtime.GOOS == "darwin" {
 		font = "/Library/Fonts/AppleGothic.ttf"
 	}
 	RootCommand.Flags().StringP("fontfile", "f", font, "font file path")
 	RootCommand.Flags().IntP("fontsize", "F", 20, "font size")
+	RootCommand.Flags().StringP("out", "o", "", `output image file path.
+available image formats are [png | jpg | gif]`)
+	RootCommand.Flags().BoolP("shellgei-imagedir", "s", false, `image directory path for shell gei bot (path: "/images/t.png")`)
+
+	RootCommand.Flags().BoolP("animation", "a", false, "generate animation gif")
+	RootCommand.Flags().IntP("delay", "d", 20, "animation delay time")
+	RootCommand.Flags().IntP("line-count", "l", 1, "animation input line count")
+	RootCommand.Flags().BoolP("slide", "S", false, "use slide animation")
+	RootCommand.Flags().IntP("slide-width", "W", 1, "sliding animation width")
+	RootCommand.Flags().BoolP("forever", "E", false, "sliding forever")
 }
 
 var RootCommand = &cobra.Command{
