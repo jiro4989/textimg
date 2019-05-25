@@ -51,6 +51,29 @@ func TestToSlideStrings(t *testing.T) {
 			slideForever: false,
 		},
 		{
+			desc: "3行描画、スライド幅3、無限なし、不足なし",
+			src:  []string{"1", "2", "3", "4", "5", "6"},
+			expect: []string{
+				"1", "2", "3",
+				"4", "5", "6",
+			},
+			lineCount:    3,
+			slideWidth:   3,
+			slideForever: false,
+		},
+		{
+			desc: "3行描画、スライド幅3、無限なし、不足あり",
+			src:  []string{"1", "2", "3", "4", "5", "6", "7"},
+			expect: []string{
+				"1", "2", "3",
+				"4", "5", "6",
+				"7", "", "",
+			},
+			lineCount:    3,
+			slideWidth:   3,
+			slideForever: false,
+		},
+		{
 			desc: "3行描画、スライド幅1、無限あり",
 			src:  []string{"1", "2", "3", "4", "5"},
 			expect: []string{
@@ -59,11 +82,22 @@ func TestToSlideStrings(t *testing.T) {
 				"3", "4", "5",
 				"4", "5", "1",
 				"5", "1", "2",
-				"1", "2", "3",
 			},
 			lineCount:    3,
 			slideWidth:   1,
-			slideForever: false,
+			slideForever: true,
+		},
+		{
+			desc: "3行描画、スライド幅2、無限あり",
+			src:  []string{"1", "2", "3", "4", "5"},
+			expect: []string{
+				"1", "2", "3",
+				"3", "4", "5",
+				"5", "1", "2",
+			},
+			lineCount:    3,
+			slideWidth:   2,
+			slideForever: true,
 		},
 	}
 	for _, v := range tds {
