@@ -12,14 +12,17 @@ import (
 )
 
 type applicationConfig struct {
-	foreground   color.RGBA // 文字色
-	background   color.RGBA // 背景色
-	outpath      string     // 画像の出力ファイルパス
-	fontfile     string     // フォントファイルのパス
-	fontsize     int        // フォントサイズ
-	useAnimation bool       // アニメーションGIFを生成する
-	delay        int        // アニメーションのディレイ時間
-	lineCount    int        // 入力データのうち何行を1フレーム画像に使うか
+	foreground        color.RGBA // 文字色
+	background        color.RGBA // 背景色
+	outpath           string     // 画像の出力ファイルパス
+	fontfile          string     // フォントファイルのパス
+	fontsize          int        // フォントサイズ
+	useAnimation      bool       // アニメーションGIFを生成する
+	delay             int        // アニメーションのディレイ時間
+	lineCount         int        // 入力データのうち何行を1フレーム画像に使うか
+	useSlideAnimation bool       // スライドアニメーションする
+	slideWidth        int        // スライドする幅
+	slideForever      bool       // スライドを無限にスライドするように描画する
 }
 
 func init() {
@@ -109,6 +112,24 @@ var RootCommand = &cobra.Command{
 			panic(err)
 		}
 
+		useSlideAnimation, err := f.GetBool("slide")
+		if err != nil {
+			panic(err)
+		}
+		if useSlideAnimation {
+			useAnimation = true
+		}
+
+		slideWidth, err := f.GetInt("slide-width")
+		if err != nil {
+			panic(err)
+		}
+
+		slideForever, err := f.GetBool("forever")
+		if err != nil {
+			panic(err)
+		}
+
 		confForeground, err := optionColorStringToRGBA(foreground)
 		if err != nil {
 			panic(err)
@@ -122,14 +143,17 @@ var RootCommand = &cobra.Command{
 		// }}}
 
 		appconf := applicationConfig{
-			foreground:   confForeground,
-			background:   confBackground,
-			outpath:      outpath,
-			fontfile:     fontpath,
-			fontsize:     fontsize,
-			useAnimation: useAnimation,
-			delay:        delay,
-			lineCount:    lineCount,
+			foreground:        confForeground,
+			background:        confBackground,
+			outpath:           outpath,
+			fontfile:          fontpath,
+			fontsize:          fontsize,
+			useAnimation:      useAnimation,
+			delay:             delay,
+			lineCount:         lineCount,
+			useSlideAnimation: useSlideAnimation,
+			slideWidth:        slideWidth,
+			slideForever:      slideForever,
 		}
 
 		// 引数にテキストの指定がなければ標準入力を使用する
