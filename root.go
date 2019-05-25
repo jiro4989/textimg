@@ -164,6 +164,11 @@ var RootCommand = &cobra.Command{
 			texts = args
 		}
 
+		// スライドアニメーションを使うときはテキストを加工する
+		if appconf.useSlideAnimation {
+			texts = toSlideStrings(texts, appconf.lineCount, appconf.slideWidth, appconf.slideForever)
+		}
+
 		// 出力先画像の指定がなければ標準出力を出力先にする
 		var w *os.File
 		if outpath == "" {
