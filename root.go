@@ -37,7 +37,12 @@ color format is same as "foreground" option`)
 	if runtime.GOOS == "darwin" {
 		font = "/Library/Fonts/AppleGothic.ttf"
 	}
-	RootCommand.Flags().StringP("fontfile", "f", font, "font file path")
+	envFontFile := os.Getenv("TEXTIMG_FONT_FILE")
+	if envFontFile != "" {
+		font = envFontFile
+	}
+	RootCommand.Flags().StringP("fontfile", "f", font, `font file path.
+You can change this default value with environment variables TEXTIMG_FONT_FILE`)
 	RootCommand.Flags().IntP("fontsize", "F", 20, "font size")
 	RootCommand.Flags().StringP("out", "o", "", `output image file path.
 available image formats are [png | jpg | gif]`)

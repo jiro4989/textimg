@@ -6,6 +6,9 @@ readonly OUTDIR=testdata/out
 test_count=0
 err_count=0
 
+export TEXTIMG_EMOJI_DIR=/usr/share/src/noto-emoji/png/128
+export TEXTIMG_FONT_FILE=/usr/share/fonts/TTF/HackGen-Regular.ttf
+
 # 色のANSIエスケープシーケンス定数 {{{
 
 readonly COLOR_RESET="\x1b[0m"
@@ -245,7 +248,17 @@ echo -e '\x1b[31mText\x1b[0m
 #}}}
 
 # Test: 絵文字 {{{
-echo 😃 | textimg -o $OUTDIR/emoji1.png
+
+suite "Emoji"
+
+run_test "Draw 1 line emoji" "あ😃a👍！👀ん👄" emoji1.png
+
+run_test "Draw 2 line emoji" "あ😃い👍う👀え👄
+😃い👍う👀え👄あ" emoji2.png
+
+run_test "Draw 3 line emoji" "ab😃cd👍ef👀gh👄
+😃い👍う👀え👄あ
+😃a👍b👀c👄dabcd" emoji3.png
 
 #}}}
 

@@ -193,7 +193,9 @@ Flags:
       --version             version for textimg
 ----
 
-=== Fonts
+== Fonts
+
+=== Default font path
 
 Default fonts that to use are below.
 
@@ -205,6 +207,30 @@ Default fonts that to use are below.
 |MacOS  |/Library/Fonts/AppleGothic.ttf
 |Windows|Not supported (Welcome Pull Request!)
 |==============================================================
+
+You can change this font path with environment variables `TEXTIMG_FONT_FILE` .
+
+Examples.
+
+[source,bash]
+----
+export TEXTIMG_FONT_FILE=/usr/share/fonts/TTF/HackGen-Regular.ttf
+----
+
+=== Emoji font (image file path)
+
+textimg needs emoji image files to draw emoji.
+You have to set `TEXTIMG_EMOJI_DIR` environment variables if you want to draw
+one.
+For example, run below.
+
+[source,bash]
+----
+# You can clone your favorite fonts here.
+$ sudo git clone https://github.com/googlefonts/noto-emoji /usr/share/src/noto-emoji
+$ export TEXTIMG_EMOJI_DIR=/usr/share/src/noto-emoji/png/128
+$ echo Test👍 | textimg -o emoji.png
+----
 
 == See also
 

@@ -32,6 +32,14 @@ const (
 	encodeFormatGIF
 )
 
+var (
+	emojiDir string
+)
+
+func init() {
+	emojiDir = os.Getenv("TEXTIMG_EMOJI_DIR")
+}
+
 // writeImage はテキストのEscapeSequenceから色情報などを読み取り、
 // wに書き込む。
 func writeImage(w io.Writer, encFmt encodeFormat, texts []string, appconf applicationConfig) {
@@ -71,8 +79,21 @@ func writeImage(w io.Writer, encFmt encodeFormat, texts []string, appconf applic
 				text := prefix
 				drawBackground(img, posX, posY-charHeight, text, bgCol, charWidth, charHeight)
 				// テキストが微妙に見切れるので調整
-				drawLabel(img, posX, posY-(charHeight/5), text, fgCol, face)
-				posX += runewidth.StringWidth(prefix) * charWidth
+				// drawLabel(img, posX, posY-(charHeight/5), text, fgCol, face)
+				for _, r := range []rune(text) {
+					path := fmt.Sprintf("%s/emoji_u%.4x.png", emojiDir, r)
+					_, err := os.Stat(path)
+					if err == nil {
+						// エラーにならないときは絵文字コードポイントにマッチす
+						// る画像ファイルが存在するため絵文字として描画
+						drawEmoji(img, posX, posY-(charHeight/5), r, path, fgCol, face)
+					} else {
+						// 絵文字コードポイントにマッチする画像が存在しないときは
+						// 普通のテキストとして描画する
+						drawLabel(img, posX, posY-(charHeight/5), r, fgCol, face)
+					}
+					posX += runewidth.RuneWidth(r) * charWidth
+				}
 			case kindEscapeSequenceColor:
 				colors := parseColorEscapeSequence(prefix)
 				for _, v := range colors {
@@ -206,7 +227,7 @@ func drawBackgroundAll(img *image.RGBA, bg color.RGBA) {
 }
 
 // drawLabel はimgにラベルを描画する。
-func drawLabel(img *image.RGBA, x, y int, label string, col color.RGBA, face font.Face) {
+func drawLabel(img *image.RGBA, x, y int, r rune, col color.RGBA, face font.Face) {
 	point := fixed.Point26_6{fixed.Int26_6(x * 64), fixed.Int26_6(y * 64)}
 	d := &font.Drawer{
 		Dst:  img,
@@ -214,9 +235,11 @@ func drawLabel(img *image.RGBA, x, y int, label string, col color.RGBA, face fon
 		Face: face,
 		Dot:  point,
 	}
-	// d.DrawString(label)
+	d.DrawString(string(r))
+}
 
-	path := fmt.Sprintf("%s/emoji_u%.4x.png", "noto-emoji/png/128", '😁')
+// 絵文字を画像ファイルから読み取って描画する。
+func drawEmoji(img *image.RGBA, x, y int, emojiRune rune, path string, col color.RGBA, face font.Face) {
 	fp, err := os.Open(path)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
@@ -229,6 +252,15 @@ func drawLabel(img *image.RGBA, x, y int, label string, col color.RGBA, face fon
 		fmt.Fprintln(os.Stderr, err)
 		return
 	}
+
+	point := fixed.Point26_6{fixed.Int26_6(x * 64), fixed.Int26_6(y * 64)}
+	d := &font.Drawer{
+		Dst:  img,
+		Src:  image.NewUniform(col),
+		Face: face,
+		Dot:  point,
+	}
+	// 画像サイズをフォントサイズに合わせる
 	size := d.Face.Metrics().Ascent.Floor() + d.Face.Metrics().Descent.Floor()
 	rect := image.Rect(0, 0, size, size)
 	dst := image.NewRGBA(rect)
