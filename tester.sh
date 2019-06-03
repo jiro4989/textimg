@@ -244,6 +244,11 @@ echo -e '\x1b[31mText\x1b[0m
 
 #}}}
 
+# Test: 絵文字 {{{
+echo 😃 | textimg -o $OUTDIR/emoji1.png
+
+#}}}
+
 if [ "$err_count" -lt 1 ]; then
   echo -e "$(f_green Success:) [$test_count/$test_count] tests passed"
   exit 0

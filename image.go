@@ -18,6 +18,7 @@ import (
 
 	"github.com/golang/freetype/truetype"
 	"github.com/mattn/go-runewidth"
+	xdraw "golang.org/x/image/draw"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/gofont/gomono"
 	"golang.org/x/image/math/fixed"
@@ -213,7 +214,28 @@ func drawLabel(img *image.RGBA, x, y int, label string, col color.RGBA, face fon
 		Face: face,
 		Dot:  point,
 	}
-	d.DrawString(label)
+	// d.DrawString(label)
+
+	path := fmt.Sprintf("%s/emoji_u%.4x.png", "noto-emoji/png/128", '😁')
+	fp, err := os.Open(path)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		return
+	}
+	defer fp.Close()
+
+	emoji, _, err := image.Decode(fp)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		return
+	}
+	size := d.Face.Metrics().Ascent.Floor() + d.Face.Metrics().Descent.Floor()
+	rect := image.Rect(0, 0, size, size)
+	dst := image.NewRGBA(rect)
+	xdraw.ApproxBiLinear.Scale(dst, rect, emoji, emoji.Bounds(), draw.Over, nil)
+
+	p := image.Pt(d.Dot.X.Floor(), d.Dot.Y.Floor()-d.Face.Metrics().Ascent.Floor())
+	draw.Draw(img, rect.Add(p), dst, image.ZP, draw.Over)
 }
 
 func drawBackground(img *image.RGBA, posX, posY int, label string, col color.RGBA, charWidth, charHeight int) {
