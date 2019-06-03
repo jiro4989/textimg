@@ -6,7 +6,7 @@ readonly OUTDIR=testdata/out
 test_count=0
 err_count=0
 
-export TEXTIMG_EMOJI_DIR=/usr/share/src/noto-emoji/png/128
+export TEXTIMG_EMOJI_DIR=/usr/local/src/noto-emoji/png/128
 export TEXTIMG_FONT_FILE=/usr/share/fonts/TTF/HackGen-Regular.ttf
 
 # 色のANSIエスケープシーケンス定数 {{{
@@ -257,7 +257,7 @@ run_test "Draw 2 line emoji" "あ😃い👍う👀え👄
 😃い👍う👀え👄あ" emoji2.png
 
 run_test "Draw 3 line emoji" "ab😃cd👍ef👀gh👄
-😃い👍う👀え👄あ
+😃12👍34👀5a👄あ
 😃a👍b👀c👄dabcd" emoji3.png
 
 #}}}

@@ -78,12 +78,14 @@ func writeImage(w io.Writer, encFmt encodeFormat, texts []string, appconf applic
 			case kindText:
 				text := prefix
 				drawBackground(img, posX, posY-charHeight, text, bgCol, charWidth, charHeight)
-				// テキストが微妙に見切れるので調整
 				// drawLabel(img, posX, posY-(charHeight/5), text, fgCol, face)
 				for _, r := range []rune(text) {
 					path := fmt.Sprintf("%s/emoji_u%.4x.png", emojiDir, r)
 					_, err := os.Stat(path)
-					if err == nil {
+					// 48~57は数字の0~9
+					// 画像のパスのうち、数字が絵文字として描画されてしまってい
+					// たのでその対応
+					if err == nil && !(48 <= r && r <= 57) {
 						// エラーにならないときは絵文字コードポイントにマッチす
 						// る画像ファイルが存在するため絵文字として描画
 						drawEmoji(img, posX, posY-(charHeight/5), r, path, fgCol, face)
@@ -261,7 +263,8 @@ func drawEmoji(img *image.RGBA, x, y int, emojiRune rune, path string, col color
 		Dot:  point,
 	}
 	// 画像サイズをフォントサイズに合わせる
-	size := d.Face.Metrics().Ascent.Floor() + d.Face.Metrics().Descent.Floor()
+	// 0.9でさらに微妙に調整
+	size := int(float64(d.Face.Metrics().Ascent.Floor()+d.Face.Metrics().Descent.Floor()) * 0.9)
 	rect := image.Rect(0, 0, size, size)
 	dst := image.NewRGBA(rect)
 	xdraw.ApproxBiLinear.Scale(dst, rect, emoji, emoji.Bounds(), draw.Over, nil)

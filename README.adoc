@@ -227,8 +227,8 @@ For example, run below.
 [source,bash]
 ----
 # You can clone your favorite fonts here.
-$ sudo git clone https://github.com/googlefonts/noto-emoji /usr/share/src/noto-emoji
-$ export TEXTIMG_EMOJI_DIR=/usr/share/src/noto-emoji/png/128
+$ sudo git clone https://github.com/googlefonts/noto-emoji /usr/loacl/src/noto-emoji
+$ export TEXTIMG_EMOJI_DIR=/usr/loacl/src/noto-emoji/png/128
 $ echo Test👍 | textimg -o emoji.png
 ----
 
