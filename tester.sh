@@ -6,6 +6,9 @@ readonly OUTDIR=testdata/out
 test_count=0
 err_count=0
 
+export TEXTIMG_EMOJI_DIR=/usr/local/src/noto-emoji/png/128
+export TEXTIMG_FONT_FILE=/usr/share/fonts/TTF/HackGen-Regular.ttf
+
 # 色のANSIエスケープシーケンス定数 {{{
 
 readonly COLOR_RESET="\x1b[0m"
@@ -241,6 +244,21 @@ echo -e '\x1b[31mText\x1b[0m
 \x1b[45mText\x1b[0m
 \x1b[46mText\x1b[0m
 \x1b[47mText\x1b[0m' | $CMD -l 5 -SE -o $OUTDIR/slide_5_1_rainbow_forever.gif
+
+#}}}
+
+# Test: 絵文字 {{{
+
+suite "Emoji"
+
+run_test "Draw 1 line emoji" "あ😃a👍！👀ん👄" emoji1.png
+
+run_test "Draw 2 line emoji" "あ😃い👍う👀え👄
+😃い👍う👀え👄あ" emoji2.png
+
+run_test "Draw 3 line emoji" "ab😃cd👍ef👀gh👄
+😃12👍34👀5a👄あ
+😃a👍b👀c👄dabcd" emoji3.png
 
 #}}}
 

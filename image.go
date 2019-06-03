@@ -18,6 +18,7 @@ import (
 
 	"github.com/golang/freetype/truetype"
 	"github.com/mattn/go-runewidth"
+	xdraw "golang.org/x/image/draw"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/gofont/gomono"
 	"golang.org/x/image/math/fixed"
@@ -30,6 +31,14 @@ const (
 	encodeFormatJPG
 	encodeFormatGIF
 )
+
+var (
+	emojiDir string
+)
+
+func init() {
+	emojiDir = os.Getenv("TEXTIMG_EMOJI_DIR")
+}
 
 // writeImage はテキストのEscapeSequenceから色情報などを読み取り、
 // wに書き込む。
@@ -69,9 +78,24 @@ func writeImage(w io.Writer, encFmt encodeFormat, texts []string, appconf applic
 			case kindText:
 				text := prefix
 				drawBackground(img, posX, posY-charHeight, text, bgCol, charWidth, charHeight)
-				// テキストが微妙に見切れるので調整
-				drawLabel(img, posX, posY-(charHeight/5), text, fgCol, face)
-				posX += runewidth.StringWidth(prefix) * charWidth
+				// drawLabel(img, posX, posY-(charHeight/5), text, fgCol, face)
+				for _, r := range []rune(text) {
+					path := fmt.Sprintf("%s/emoji_u%.4x.png", emojiDir, r)
+					_, err := os.Stat(path)
+					// 48~57は数字の0~9
+					// 画像のパスのうち、数字が絵文字として描画されてしまってい
+					// たのでその対応
+					if err == nil && !(48 <= r && r <= 57) {
+						// エラーにならないときは絵文字コードポイントにマッチす
+						// る画像ファイルが存在するため絵文字として描画
+						drawEmoji(img, posX, posY-(charHeight/5), r, path, fgCol, face)
+					} else {
+						// 絵文字コードポイントにマッチする画像が存在しないときは
+						// 普通のテキストとして描画する
+						drawLabel(img, posX, posY-(charHeight/5), r, fgCol, face)
+					}
+					posX += runewidth.RuneWidth(r) * charWidth
+				}
 			case kindEscapeSequenceColor:
 				colors := parseColorEscapeSequence(prefix)
 				for _, v := range colors {
@@ -205,7 +229,7 @@ func drawBackgroundAll(img *image.RGBA, bg color.RGBA) {
 }
 
 // drawLabel はimgにラベルを描画する。
-func drawLabel(img *image.RGBA, x, y int, label string, col color.RGBA, face font.Face) {
+func drawLabel(img *image.RGBA, x, y int, r rune, col color.RGBA, face font.Face) {
 	point := fixed.Point26_6{fixed.Int26_6(x * 64), fixed.Int26_6(y * 64)}
 	d := &font.Drawer{
 		Dst:  img,
@@ -213,7 +237,40 @@ func drawLabel(img *image.RGBA, x, y int, label string, col color.RGBA, face fon
 		Face: face,
 		Dot:  point,
 	}
-	d.DrawString(label)
+	d.DrawString(string(r))
+}
+
+// 絵文字を画像ファイルから読み取って描画する。
+func drawEmoji(img *image.RGBA, x, y int, emojiRune rune, path string, col color.RGBA, face font.Face) {
+	fp, err := os.Open(path)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		return
+	}
+	defer fp.Close()
+
+	emoji, _, err := image.Decode(fp)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		return
+	}
+
+	point := fixed.Point26_6{fixed.Int26_6(x * 64), fixed.Int26_6(y * 64)}
+	d := &font.Drawer{
+		Dst:  img,
+		Src:  image.NewUniform(col),
+		Face: face,
+		Dot:  point,
+	}
+	// 画像サイズをフォントサイズに合わせる
+	// 0.9でさらに微妙に調整
+	size := int(float64(d.Face.Metrics().Ascent.Floor()+d.Face.Metrics().Descent.Floor()) * 0.9)
+	rect := image.Rect(0, 0, size, size)
+	dst := image.NewRGBA(rect)
+	xdraw.ApproxBiLinear.Scale(dst, rect, emoji, emoji.Bounds(), draw.Over, nil)
+
+	p := image.Pt(d.Dot.X.Floor(), d.Dot.Y.Floor()-d.Face.Metrics().Ascent.Floor())
+	draw.Draw(img, rect.Add(p), dst, image.ZP, draw.Over)
 }
 
 func drawBackground(img *image.RGBA, posX, posY int, label string, col color.RGBA, charWidth, charHeight int) {
