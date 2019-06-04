@@ -2,6 +2,8 @@
 :toc: left
 :sectnums:
 
+image:https://travis-ci.org/jiro4989/textimg.svg?branch=master["Build Status", link="https://travis-ci.org/jiro4989/textimg"]
+
 textimg is command to convert from color text (ANSI or 256) to image. +
 Drawn image keeps having colors of escape sequence.
 
