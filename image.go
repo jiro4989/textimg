@@ -55,11 +55,17 @@ func writeImage(w io.Writer, encFmt encodeFormat, texts []string, appconf applic
 	}
 
 	var (
-		img    = image.NewRGBA(image.Rect(0, 0, imageWidth, imageHeight))
-		face   = readFace(appconf.fontfile, float64(appconf.fontsize))
-		imgs   []*image.RGBA
-		delays []int
+		img       = image.NewRGBA(image.Rect(0, 0, imageWidth, imageHeight))
+		face      = readFace(appconf.fontfile, float64(appconf.fontsize))
+		emojiFace font.Face
+		imgs      []*image.RGBA
+		delays    []int
 	)
+
+	// 絵文字フォントの指定があれば使う
+	if appconf.emojiFontfile != "" {
+		emojiFace = readFace(appconf.emojiFontfile, float64(appconf.fontsize))
+	}
 
 	drawBackgroundAll(img, appconf.background)
 
@@ -88,7 +94,11 @@ func writeImage(w io.Writer, encFmt encodeFormat, texts []string, appconf applic
 					if err == nil && !(48 <= r && r <= 57) {
 						// エラーにならないときは絵文字コードポイントにマッチす
 						// る画像ファイルが存在するため絵文字として描画
-						drawEmoji(img, posX, posY-(charHeight/5), r, path, fgCol, face)
+						if appconf.emojiFontfile != "" {
+							drawLabel(img, posX, posY-(charHeight/5), r, fgCol, emojiFace)
+						} else {
+							drawEmoji(img, posX, posY-(charHeight/5), r, path, fgCol, face)
+						}
 					} else {
 						// 絵文字コードポイントにマッチする画像が存在しないときは
 						// 普通のテキストとして描画する
