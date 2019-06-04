@@ -227,10 +227,12 @@ For example, run below.
 [source,bash]
 ----
 # You can clone your favorite fonts here.
-$ sudo git clone https://github.com/googlefonts/noto-emoji /usr/loacl/src/noto-emoji
-$ export TEXTIMG_EMOJI_DIR=/usr/loacl/src/noto-emoji/png/128
-$ echo Test👍 | textimg -o emoji.png
+sudo git clone https://github.com/googlefonts/noto-emoji /usr/local/src/noto-emoji
+export TEXTIMG_EMOJI_DIR=/usr/local/src/noto-emoji/png/128
+echo Test👍 | textimg -o emoji.png
 ----
+
+image:img/emoji.png["Emoji example"]
 
 == See also
 
