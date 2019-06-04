@@ -16,6 +16,7 @@ type applicationConfig struct {
 	background        color.RGBA // 背景色
 	outpath           string     // 画像の出力ファイルパス
 	fontfile          string     // フォントファイルのパス
+	emojiFontfile     string     // 絵文字用のフォントファイルのパス
 	fontsize          int        // フォントサイズ
 	useAnimation      bool       // アニメーションGIFを生成する
 	delay             int        // アニメーションのディレイ時間
@@ -43,6 +44,8 @@ color format is same as "foreground" option`)
 	}
 	RootCommand.Flags().StringP("fontfile", "f", font, `font file path.
 You can change this default value with environment variables TEXTIMG_FONT_FILE`)
+	envEmojiFontFile := os.Getenv("TEXTIMG_EMOJI_FONT_FILE")
+	RootCommand.Flags().StringP("emoji-fontfile", "e", envEmojiFontFile, "emoji font file")
 	RootCommand.Flags().IntP("fontsize", "F", 20, "font size")
 	RootCommand.Flags().StringP("out", "o", "", `output image file path.
 available image formats are [png | jpg | gif]`)
@@ -112,6 +115,11 @@ var RootCommand = &cobra.Command{
 			panic(err)
 		}
 
+		emojiFontpath, err := f.GetString("emoji-fontfile")
+		if err != nil {
+			panic(err)
+		}
+
 		fontsize, err := f.GetInt("fontsize")
 		if err != nil {
 			panic(err)
@@ -152,6 +160,7 @@ var RootCommand = &cobra.Command{
 			background:        confBackground,
 			outpath:           outpath,
 			fontfile:          fontpath,
+			emojiFontfile:     emojiFontpath,
 			fontsize:          fontsize,
 			useAnimation:      useAnimation,
 			delay:             delay,

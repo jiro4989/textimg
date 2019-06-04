@@ -236,6 +236,19 @@ echo Test👍 | textimg -o emoji.png
 
 image:img/emoji.png["Emoji example"]
 
+=== Emoji font (TTF)
+
+textimg can change emoji font with `TEXTIMG_EMOJI_FONT_FILE` environment variables.
+For example, swicthing emoji font to https://www.wfonts.com/font/symbola[Symbola font].
+
+[source,bash]
+----
+export TEXTIMG_EMOJI_FONT_FILE=/usr/share/fonts/TTF/Symbola.ttf
+echo あ😃a👍！👀ん👄 | textimg -o emoji_symbola.png
+----
+
+image:img/emoji_symbola.png["Symbola emoji example"]
+
 == See also
 
 * https://misc.flogisoft.com/bash/tip_colors_and_formatting
