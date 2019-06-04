@@ -26,6 +26,8 @@ type applicationConfig struct {
 	slideForever      bool       // スライドを無限にスライドするように描画する
 }
 
+const shellgeiEmojiFontPath = "/usr/share/fonts/truetype/ancient-scripts/Symbola_hint.ttf"
+
 func init() {
 	cobra.OnInitialize()
 	RootCommand.Flags().SortFlags = false
@@ -46,10 +48,11 @@ color format is same as "foreground" option`)
 You can change this default value with environment variables TEXTIMG_FONT_FILE`)
 	envEmojiFontFile := os.Getenv("TEXTIMG_EMOJI_FONT_FILE")
 	RootCommand.Flags().StringP("emoji-fontfile", "e", envEmojiFontFile, "emoji font file")
+	RootCommand.Flags().BoolP("shellgei-emoji-fontfile", "z", false, `emoji font file for shellgei-bot (path: "`+shellgeiEmojiFontPath+`")`)
 	RootCommand.Flags().IntP("fontsize", "F", 20, "font size")
 	RootCommand.Flags().StringP("out", "o", "", `output image file path.
 available image formats are [png | jpg | gif]`)
-	RootCommand.Flags().BoolP("shellgei-imagedir", "s", false, `image directory path for shell gei bot (path: "/images/t.png")`)
+	RootCommand.Flags().BoolP("shellgei-imagedir", "s", false, `image directory path for shellgei-bot (path: "/images/t.png")`)
 
 	RootCommand.Flags().BoolP("animation", "a", false, "generate animation gif")
 	RootCommand.Flags().IntP("delay", "d", 20, "animation delay time")
@@ -118,6 +121,14 @@ var RootCommand = &cobra.Command{
 		emojiFontpath, err := f.GetString("emoji-fontfile")
 		if err != nil {
 			panic(err)
+		}
+
+		useShellGeiEmojiFont, err := f.GetBool("shellgei-emoji-fontfile")
+		if err != nil {
+			panic(err)
+		}
+		if useShellGeiEmojiFont {
+			emojiFontpath = shellgeiEmojiFontPath
 		}
 
 		fontsize, err := f.GetInt("fontsize")
