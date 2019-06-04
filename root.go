@@ -44,7 +44,8 @@ color format is same as "foreground" option`)
 	}
 	RootCommand.Flags().StringP("fontfile", "f", font, `font file path.
 You can change this default value with environment variables TEXTIMG_FONT_FILE`)
-	RootCommand.Flags().StringP("emoji-fontfile", "e", "", "emoji font file")
+	envEmojiFontFile := os.Getenv("TEXTIMG_EMOJI_FONT_FILE")
+	RootCommand.Flags().StringP("emoji-fontfile", "e", envEmojiFontFile, "emoji font file")
 	RootCommand.Flags().IntP("fontsize", "F", 20, "font size")
 	RootCommand.Flags().StringP("out", "o", "", `output image file path.
 available image formats are [png | jpg | gif]`)

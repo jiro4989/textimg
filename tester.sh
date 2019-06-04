@@ -260,6 +260,19 @@ run_test "Draw 3 line emoji" "ab😃cd👍ef👀gh👄
 😃12👍34👀5a👄あ
 😃a👍b👀c👄dabcd" emoji3.png
 
+# Symbolaフォント指定
+
+export TEXTIMG_EMOJI_FONT_FILE=/usr/share/fonts/TTF/Symbola.ttf
+
+run_test "(Symbola)Draw 1 line emoji " "あ😃a👍！👀ん👄" emoji1_symbola.png
+
+run_test "(Symbola)Draw 2 line emoji" "あ😃い👍う👀え👄
+😃い👍う👀え👄あ" emoji2_symbola.png
+
+run_test "(Symbola)Draw 3 line emoji" "ab😃cd👍ef👀gh👄
+😃12👍34👀5a👄あ
+😃a👍b👀c👄dabcd" emoji3_symbola.png
+
 #}}}
 
 if [ "$err_count" -lt 1 ]; then
