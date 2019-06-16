@@ -1,114 +1,108 @@
-= textimg
-:toc: left
-:sectnums:
+# textimg
 
-image:https://travis-ci.org/jiro4989/textimg.svg?branch=master["Build Status", link="https://travis-ci.org/jiro4989/textimg"]
+[![Build Status](https://travis-ci.org/jiro4989/textimg.svg?branch=master)](https://travis-ci.org/jiro4989/textimg)
 
 textimg is command to convert from color text (ANSI or 256) to image. +
 Drawn image keeps having colors of escape sequence.
 
-== Development
+## Development
 
- go version go1.12 linux/amd64
+go version go1.12 linux/amd64
 
 **I didn't test on Windows.**
 
-== Usage examples
+## Usage examples
 
-=== Simple examples
+### Simple examples
 
-[source,bash]
+```bash
 textimg $'\x1b[31mRED\x1b[0m' > out.png
 textimg $'\x1b[31mRED\x1b[0m' -o out.png
 echo -e '\x1b[31mRED\x1b[0m' | textimg -o out.png
 echo -e '\x1b[31mRED\x1b[0m' | textimg --background 0,255,255,255 -o out.jpg
 echo -e '\x1b[31mRED\x1b[0m' | textimg --background black -o out.gif
+```
 
 Output image format is PNG or JPG or GIF.
 File extention of `-o` option defines output image format.
 Default image format is PNG. if you write image file with `>` redirect then
 image file will be saved as PNG file.
 
-=== Rainbow examples
+### Rainbow examples
 
-==== From ANSI color
+#### From ANSI color
 
 textimg supports `\x1b[30m` notation.
 
-[source,bash]
-----
+```bash
 colors=(30 31 32 33 34 35 36 37)
 i=0
 while read -r line; do
   echo -e "$line" | sed -r 's/.*/\x1b['"${colors[$((i%8))]}"'m&\x1b[m/g'
   i=$((i+1))
 done <<< "$(seq 8 | xargs -I@ echo TEST)" | textimg -b 50,100,12,255 -o testdata/out/rainbow.png
-----
+```
 
 Output is here.
 
-image:img/rainbow.png["Rainbow example"]
+![Rainbow example](img/rainbow.png)
 
-==== From 256 color
+#### From 256 color
 
 textimg supports `\x1b[38;5;255m` notation.
 
 Foreground example is below.
 
-[source,bash]
-----
+```bash
 seq 0 255 | while read -r i; do
   echo -ne "\x1b[38;5;${i}m$(printf %03d $i)"
   if [ $(((i+1) % 16)) -eq 0 ]; then
     echo
   fi
 done | textimg -o 256_fg.png
-----
+```
 
 Output is here.
 
-image:img/256_fg.png["256 foreground example"]
+![256 foreground example](img/256_fg.png)
 
 Background example is below.
 
-[source,bash]
-----
+```bash
 seq 0 255 | while read -r i; do
   echo -ne "\x1b[48;5;${i}m$(printf %03d $i)"
   if [ $(((i+1) % 16)) -eq 0 ]; then
     echo
   fi
 done | textimg -o 256_bg.png
-----
+```
 
 Output is here.
 
-image:img/256_bg.png["256 background example"]
+![256 background example](img/256_bg.png)
 
-==== From 256 RGB color
+#### From 256 RGB color
 
 textimg supports `\x1b[38;2;255;0;0m` notation.
 
-[source,bash]
-----
+```bash
 seq 0 255 | while read i; do
   echo -ne "\x1b[38;2;${i};0;0m$(printf %03d $i)"
   if [ $(((i+1) % 16)) -eq 0 ]; then
     echo
   fi
 done | textimg -o extrgb_f_gradation.png
-----
+```
 
 Output is here.
 
-image:img/extrgb_f_gradation.png["RGB gradation example"]
+![RGB gradation example](img/extrgb_f_gradation.png)
 
-==== Animation GIF
+#### Animation GIF
 
 textimg supports animation GIF.
 
-[source,bash]
-----
+```bash
 echo -e '\x1b[31mText\x1b[0m
 \x1b[32mText\x1b[0m
 \x1b[33mText\x1b[0m
@@ -123,16 +117,15 @@ echo -e '\x1b[31mText\x1b[0m
 \x1b[45mText\x1b[0m
 \x1b[46mText\x1b[0m
 \x1b[47mText\x1b[0m' | textimg -a -o ansi_fb_anime_1line.gif
-----
+```
 
 Output is here.
 
-image:img/ansi_fb_anime_1line.gif["Animation GIF example"]
+![Animation GIF example](img/ansi_fb_anime_1line.gif)
 
-==== Slide animation GIF
+#### Slide animation GIF
 
-[source,bash]
-----
+```bash
 echo -e '\x1b[31mText\x1b[0m
 \x1b[32mText\x1b[0m
 \x1b[33mText\x1b[0m
@@ -147,37 +140,36 @@ echo -e '\x1b[31mText\x1b[0m
 \x1b[45mText\x1b[0m
 \x1b[46mText\x1b[0m
 \x1b[47mText\x1b[0m' | textimg -l 5 -SE -o slide_5_1_rainbow_forever.gif
-----
+```
 
 Output is here.
 
-image:img/slide_5_1_rainbow_forever.gif["Slide Animation GIF example"]
+![Slide Animation GIF example](img/slide_5_1_rainbow_forever.gif)
 
-=== Using on Docker
+### Using on Docker
 
 You can use textimg on Docker.
 
-[source,bash]
-----
+```bash
 docker pull jiro4989/textimg
 docker run -v $(pwd):/images -it jiro4989/textimg -h
 docker run -v $(pwd):/images -it jiro4989/textimg Testあいうえお😄 -o /images/a.png
 docker run -v $(pwd):/images -it jiro4989/textimg Testあいうえお😄 -s
-----
+```
 
-== Install
+## Install
 
-[source,bash]
+```bash
 go get -u github.com/jiro4989/textimg
+```
 
 or
 
-Download binary from https://github.com/jiro4989/textimg/releases[Releases].
+Download binary from [Releases](https://github.com/jiro4989/textimg/releases).
 
-== Help
+## Help
 
-[source]
-----
+```
 textimg is command to convert from colored text (ANSI or 256) to image.
 
 Usage:
@@ -208,62 +200,56 @@ Flags:
   -E, --forever                   sliding forever
   -h, --help                      help for textimg
       --version                   version for textimg
-----
+```
 
-== Fonts
+## Fonts
 
-=== Default font path
+### Default font path
 
 Default fonts that to use are below.
 
-.OS fonts
-[options="header"]
-|==============================================================
-|OS     |Font path
-|Linux  |/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf
-|MacOS  |/Library/Fonts/AppleGothic.ttf
-|Windows|Not supported (Welcome Pull Request!)
-|==============================================================
+|OS     |Font path |
+|-------|----------|
+|Linux  |/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf |
+|MacOS  |/Library/Fonts/AppleGothic.ttf |
+|Windows|Not supported (Welcome Pull Request!) |
 
 You can change this font path with environment variables `TEXTIMG_FONT_FILE` .
 
 Examples.
 
-[source,bash]
-----
+```bash
 export TEXTIMG_FONT_FILE=/usr/share/fonts/TTF/HackGen-Regular.ttf
-----
+```
 
-=== Emoji font (image file path)
+### Emoji font (image file path)
 
 textimg needs emoji image files to draw emoji.
 You have to set `TEXTIMG_EMOJI_DIR` environment variables if you want to draw
 one.
 For example, run below.
 
-[source,bash]
-----
+```bash
 # You can clone your favorite fonts here.
 sudo git clone https://github.com/googlefonts/noto-emoji /usr/local/src/noto-emoji
 export TEXTIMG_EMOJI_DIR=/usr/local/src/noto-emoji/png/128
 echo Test👍 | textimg -o emoji.png
-----
+```
 
-image:img/emoji.png["Emoji example"]
+![Emoji example](img/emoji.png)
 
-=== Emoji font (TTF)
+### Emoji font (TTF)
 
 textimg can change emoji font with `TEXTIMG_EMOJI_FONT_FILE` environment variables.
-For example, swicthing emoji font to https://www.wfonts.com/font/symbola[Symbola font].
+For example, swicthing emoji font to [Symbola font](https://www.wfonts.com/font/symbola).
 
-[source,bash]
-----
+```bash
 export TEXTIMG_EMOJI_FONT_FILE=/usr/share/fonts/TTF/Symbola.ttf
 echo あ😃a👍！👀ん👄 | textimg -o emoji_symbola.png
-----
+```
 
-image:img/emoji_symbola.png["Symbola emoji example"]
+![Symbola emoji example](img/emoji_symbola.png)
 
-== See also
+## See also
 
-* https://misc.flogisoft.com/bash/tip_colors_and_formatting
+- https://misc.flogisoft.com/bash/tip_colors_and_formatting
