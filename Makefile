@@ -59,4 +59,10 @@ bootstrap: ## 外部ツールをインストールする
 		GO111MODULE=off go get $$t ; \
 	done
 
-.PHONY: help build install xbuild archive release lint test clean bootstrap
+docker-build:
+	docker build -t jiro4989/textimg .
+
+docker-push:
+	docker push jiro4989/textimg
+
+.PHONY: help build install xbuild archive release lint test clean bootstrap docker-build docker-push
