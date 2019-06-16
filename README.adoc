@@ -153,6 +153,18 @@ Output is here.
 
 image:img/slide_5_1_rainbow_forever.gif["Slide Animation GIF example"]
 
+=== Using on Docker
+
+You can use textimg on Docker.
+
+[source,bash]
+----
+docker pull jiro4989/textimg
+docker run -v $(pwd):/images -it jiro4989/textimg -h
+docker run -v $(pwd):/images -it jiro4989/textimg Testあいうえお😄 -o /images/a.png
+docker run -v $(pwd):/images -it jiro4989/textimg Testあいうえお😄 -s
+----
+
 == Install
 
 [source,bash]
