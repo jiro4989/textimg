@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"image/color"
 	"os"
 	"runtime"
@@ -17,6 +18,7 @@ type applicationConfig struct {
 	outpath           string     // 画像の出力ファイルパス
 	fontfile          string     // フォントファイルのパス
 	emojiFontfile     string     // 絵文字用のフォントファイルのパス
+	useEmojiFont      bool       // 絵文字TTFを使う
 	fontsize          int        // フォントサイズ
 	useAnimation      bool       // アニメーションGIFを生成する
 	delay             int        // アニメーションのディレイ時間
@@ -36,19 +38,24 @@ format is [black|red|green|yellow|blue|magenta|cyan|white]
 or (R,G,B,A(0~255))`)
 	RootCommand.Flags().StringP("background", "b", "black", `ackground color.
 color format is same as "foreground" option`)
+
 	font := "/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf"
 	if runtime.GOOS == "darwin" {
 		font = "/Library/Fonts/AppleGothic.ttf"
 	}
-	envFontFile := os.Getenv("TEXTIMG_FONT_FILE")
+	envFontFile := os.Getenv(envNameFontFile)
 	if envFontFile != "" {
 		font = envFontFile
 	}
 	RootCommand.Flags().StringP("fontfile", "f", font, `font file path.
 You can change this default value with environment variables TEXTIMG_FONT_FILE`)
-	envEmojiFontFile := os.Getenv("TEXTIMG_EMOJI_FONT_FILE")
+
+	envEmojiFontFile := os.Getenv(envNameEmojiFontFile)
 	RootCommand.Flags().StringP("emoji-fontfile", "e", envEmojiFontFile, "emoji font file")
+
+	RootCommand.Flags().BoolP("use-emoji-font", "i", false, "use emoji font")
 	RootCommand.Flags().BoolP("shellgei-emoji-fontfile", "z", false, `emoji font file for shellgei-bot (path: "`+shellgeiEmojiFontPath+`")`)
+
 	RootCommand.Flags().IntP("fontsize", "F", 20, "font size")
 	RootCommand.Flags().StringP("out", "o", "", `output image file path.
 available image formats are [png | jpg | gif]`)
@@ -60,6 +67,7 @@ available image formats are [png | jpg | gif]`)
 	RootCommand.Flags().BoolP("slide", "S", false, "use slide animation")
 	RootCommand.Flags().IntP("slide-width", "W", 1, "sliding animation width")
 	RootCommand.Flags().BoolP("forever", "E", false, "sliding forever")
+	RootCommand.Flags().BoolP("environments", "", false, "print environment variables")
 }
 
 var RootCommand = &cobra.Command{
@@ -71,6 +79,18 @@ var RootCommand = &cobra.Command{
 		f := cmd.Flags()
 
 		// コマンドライン引数の取得{{{
+		printEnv, err := f.GetBool("environments")
+		if err != nil {
+			panic(err)
+		}
+		if printEnv {
+			for _, envName := range []string{envNameFontFile, envNameEmojiDir, envNameEmojiFontFile} {
+				text := fmt.Sprintf("%s=%s", envName, os.Getenv(envName))
+				fmt.Println(text)
+			}
+			return
+		}
+
 		foreground, err := f.GetString("foreground")
 		if err != nil {
 			panic(err)
@@ -123,12 +143,18 @@ var RootCommand = &cobra.Command{
 			panic(err)
 		}
 
+		useEmojiFont, err := f.GetBool("use-emoji-font")
+		if err != nil {
+			panic(err)
+		}
+
 		useShellGeiEmojiFont, err := f.GetBool("shellgei-emoji-fontfile")
 		if err != nil {
 			panic(err)
 		}
 		if useShellGeiEmojiFont {
 			emojiFontpath = shellgeiEmojiFontPath
+			useEmojiFont = true
 		}
 
 		fontsize, err := f.GetInt("fontsize")
@@ -172,6 +198,7 @@ var RootCommand = &cobra.Command{
 			outpath:           outpath,
 			fontfile:          fontpath,
 			emojiFontfile:     emojiFontpath,
+			useEmojiFont:      useEmojiFont,
 			fontsize:          fontsize,
 			useAnimation:      useAnimation,
 			delay:             delay,

@@ -17,6 +17,7 @@ COPY --from=build-stage /go/bin/textimg /usr/local/bin/
 COPY --from=build-stage /tmp/MyricaM.TTC /usr/share/fonts/truetype/myrica/MyricaM.TTC
 COPY --from=build-stage /usr/local/src/noto-emoji/png/128 /usr/share/emoji-image
 COPY --from=build-stage /tmp/Symbola_hint.ttf /usr/share/fonts/truetype/symbola/
+COPY --from=build-stage /tmp/Symbola_hint.ttf /usr/share/fonts/truetype/ancient-scripts/
 
 ENV TEXTIMG_FONT_FILE /usr/share/fonts/truetype/myrica/MyricaM.TTC
 ENV TEXTIMG_EMOJI_DIR /usr/share/emoji-image
