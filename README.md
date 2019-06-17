@@ -185,8 +185,9 @@ Flags:
   -b, --background string         ackground color.
                                   color format is same as "foreground" option (default "black")
   -f, --fontfile string           font file path.
-                                  You can change this default value with environment variables TEXTIMG_FONT_FILE (default "/usr/share/fonts/TTF/HackGen-Regular.ttf")
-  -e, --emoji-fontfile string     emoji font file
+                                  You can change this default value with environment variables TEXTIMG_FONT_FILE (default "/usr/share/fonts/truetype/hack-gen/HackGen-Regular.ttf")
+  -e, --emoji-fontfile string     emoji font file (default "/usr/share/fonts/truetype/symbola/Symbola_hint.ttf")
+  -i, --use-emoji-font            use emoji font
   -z, --shellgei-emoji-fontfile   emoji font file for shellgei-bot (path: "/usr/share/fonts/truetype/ancient-scripts/Symbola_hint.ttf")
   -F, --fontsize int              font size (default 20)
   -o, --out string                output image file path.
@@ -198,6 +199,7 @@ Flags:
   -S, --slide                     use slide animation
   -W, --slide-width int           sliding animation width (default 1)
   -E, --forever                   sliding forever
+      --environments              print environment variables
   -h, --help                      help for textimg
       --version                   version for textimg
 ```
@@ -240,12 +242,12 @@ echo Test👍 | textimg -o emoji.png
 
 ### Emoji font (TTF)
 
-textimg can change emoji font with `TEXTIMG_EMOJI_FONT_FILE` environment variables.
+textimg can change emoji font with `TEXTIMG_EMOJI_FONT_FILE` environment variables and set `-i` option.
 For example, swicthing emoji font to [Symbola font](https://www.wfonts.com/font/symbola).
 
 ```bash
 export TEXTIMG_EMOJI_FONT_FILE=/usr/share/fonts/TTF/Symbola.ttf
-echo あ😃a👍！👀ん👄 | textimg -o emoji_symbola.png
+echo あ😃a👍！👀ん👄 | textimg -i -o emoji_symbola.png
 ```
 
 ![Symbola emoji example](img/emoji_symbola.png)
