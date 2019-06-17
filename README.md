@@ -148,7 +148,7 @@ Output is here.
 
 ### Using on Docker
 
-You can use textimg on Docker.
+You can use textimg on Docker. ([DockerHub](https://hub.docker.com/r/jiro4989/textimg))
 
 ```bash
 docker pull jiro4989/textimg
