@@ -14,6 +14,11 @@ if [ "$TEXTIMG_FONT_FILE" = "" ]; then
   export TEXTIMG_FONT_FILE=/usr/share/fonts/TTF/HackGen-Regular.ttf
 fi
 
+# Symbolaフォント指定
+if [ "$TEXTIMG_EMOJI_FONT_FILE" = "" ]; then
+  export TEXTIMG_EMOJI_FONT_FILE=/usr/share/fonts/truetype/symbola/Symbola.ttf
+fi
+
 # 色のANSIエスケープシーケンス定数 {{{
 
 readonly COLOR_RESET="\x1b[0m"
@@ -92,7 +97,7 @@ run_test() {
   desc="$1"
   inputstr="$2"
   outfile="$OUTDIR/$3"
-  echo -e "$inputstr" | $CMD -o "$outfile"
+  echo -e "$inputstr" | $CMD ${opts[@]} -o "$outfile"
 
   exitcode=$?
   test_count=$((test_count + 1))
@@ -265,11 +270,8 @@ run_test "Draw 3 line emoji" "ab😃cd👍ef👀gh👄
 😃12👍34👀5a👄あ
 😃a👍b👀c👄dabcd" emoji3.png
 
-# Symbolaフォント指定
-
-if [ "$TEXTIMG_EMOJI_FONT_FILE" = "" ]; then
-  export TEXTIMG_EMOJI_FONT_FILE=/usr/share/fonts/TTF/Symbola.ttf
-fi
+# Symbola fontを使う指定
+opts=(-i)
 
 run_test "(Symbola)Draw 1 line emoji " "あ😃a👍！👀ん👄" emoji1_symbola.png
 

@@ -94,9 +94,12 @@ func writeImage(w io.Writer, encFmt encodeFormat, texts []string, appconf applic
 					if err == nil && !(48 <= r && r <= 57) {
 						// エラーにならないときは絵文字コードポイントにマッチす
 						// る画像ファイルが存在するため絵文字として描画
-						if appconf.emojiFontfile != "" {
+						if appconf.useEmojiFont {
+							// EmojiFontを使うときはTTFから絵文字を描画する
 							drawLabel(img, posX, posY-(charHeight/5), r, fgCol, emojiFace)
 						} else {
+							// EmojiFontを使わないときは画像ファイルから絵文字を
+							// 描画する
 							drawEmoji(img, posX, posY-(charHeight/5), r, path, fgCol, face)
 						}
 					} else {
