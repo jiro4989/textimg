@@ -37,7 +37,7 @@ var (
 )
 
 func init() {
-	emojiDir = os.Getenv("TEXTIMG_EMOJI_DIR")
+	emojiDir = os.Getenv(envNameEmojiDir)
 }
 
 // writeImage はテキストのEscapeSequenceから色情報などを読み取り、

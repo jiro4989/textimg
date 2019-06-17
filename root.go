@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"image/color"
 	"os"
 	"runtime"
@@ -40,13 +41,13 @@ color format is same as "foreground" option`)
 	if runtime.GOOS == "darwin" {
 		font = "/Library/Fonts/AppleGothic.ttf"
 	}
-	envFontFile := os.Getenv("TEXTIMG_FONT_FILE")
+	envFontFile := os.Getenv(envNameFontFile)
 	if envFontFile != "" {
 		font = envFontFile
 	}
 	RootCommand.Flags().StringP("fontfile", "f", font, `font file path.
 You can change this default value with environment variables TEXTIMG_FONT_FILE`)
-	envEmojiFontFile := os.Getenv("TEXTIMG_EMOJI_FONT_FILE")
+	envEmojiFontFile := os.Getenv(envNameEmojiFontFile)
 	RootCommand.Flags().StringP("emoji-fontfile", "e", envEmojiFontFile, "emoji font file")
 	RootCommand.Flags().BoolP("shellgei-emoji-fontfile", "z", false, `emoji font file for shellgei-bot (path: "`+shellgeiEmojiFontPath+`")`)
 	RootCommand.Flags().IntP("fontsize", "F", 20, "font size")
@@ -60,6 +61,7 @@ available image formats are [png | jpg | gif]`)
 	RootCommand.Flags().BoolP("slide", "S", false, "use slide animation")
 	RootCommand.Flags().IntP("slide-width", "W", 1, "sliding animation width")
 	RootCommand.Flags().BoolP("forever", "E", false, "sliding forever")
+	RootCommand.Flags().BoolP("environments", "", false, "print environment variables")
 }
 
 var RootCommand = &cobra.Command{
@@ -71,6 +73,18 @@ var RootCommand = &cobra.Command{
 		f := cmd.Flags()
 
 		// コマンドライン引数の取得{{{
+		printEnv, err := f.GetBool("environments")
+		if err != nil {
+			panic(err)
+		}
+		if printEnv {
+			for _, envName := range []string{envNameFontFile, envNameEmojiDir, envNameEmojiFontFile} {
+				text := fmt.Sprintf("%s=%s", envName, os.Getenv(envName))
+				fmt.Println(text)
+			}
+			return
+		}
+
 		foreground, err := f.GetString("foreground")
 		if err != nil {
 			panic(err)

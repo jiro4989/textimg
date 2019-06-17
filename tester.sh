@@ -6,8 +6,13 @@ readonly OUTDIR=testdata/out
 test_count=0
 err_count=0
 
-export TEXTIMG_EMOJI_DIR=/usr/local/src/noto-emoji/png/128
-export TEXTIMG_FONT_FILE=/usr/share/fonts/TTF/HackGen-Regular.ttf
+if [ "$TEXTIMG_EMOJI_DIR" = "" ]; then
+  export TEXTIMG_EMOJI_DIR=/usr/local/src/noto-emoji/png/128
+fi
+
+if [ "$TEXTIMG_FONT_FILE" = "" ]; then
+  export TEXTIMG_FONT_FILE=/usr/share/fonts/TTF/HackGen-Regular.ttf
+fi
 
 # 色のANSIエスケープシーケンス定数 {{{
 
@@ -262,7 +267,9 @@ run_test "Draw 3 line emoji" "ab😃cd👍ef👀gh👄
 
 # Symbolaフォント指定
 
-export TEXTIMG_EMOJI_FONT_FILE=/usr/share/fonts/TTF/Symbola.ttf
+if [ "$TEXTIMG_EMOJI_FONT_FILE" = "" ]; then
+  export TEXTIMG_EMOJI_FONT_FILE=/usr/share/fonts/TTF/Symbola.ttf
+fi
 
 run_test "(Symbola)Draw 1 line emoji " "あ😃a👍！👀ん👄" emoji1_symbola.png
 
