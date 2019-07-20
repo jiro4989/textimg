@@ -1,3 +1,5 @@
 /bin/
 /dist/
 /testdata/out/
+tools/**/*
+!tools/**/*.go
