@@ -9,6 +9,21 @@ Drawn image keeps having colors of escape sequence.
 
 go version go1.12 linux/amd64
 
+### How to build
+
+You run below.
+
+```bash
+make build
+```
+
+You run below if you want to do cross compiling.
+
+```bash
+make bootstrap
+make xbuild
+```
+
 **I didn't test on Windows.**
 
 ## Usage examples
