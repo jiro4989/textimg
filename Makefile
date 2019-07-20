@@ -1,5 +1,5 @@
 APPNAME := $(shell basename `pwd`)
-VERSION := v$(shell gobump show -r)
+VERSION := v$(shell grep Version version.go | grep -Eo '"[^"]+"' | tr -d '"')
 SRCS := $(shell find . -name "*.go" -type f )
 LDFLAGS := -ldflags="-s -w \
 	-extldflags \"-static\""
