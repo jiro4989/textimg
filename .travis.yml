@@ -14,8 +14,8 @@ install:
   - make bootstrap
 
 before_script:
-  - if [ "$TRAVIS_OS_NAME" = linux ]; then sudo install -d -o $USER -g $USER -m 0777 /images; fi
-  - if [ "$TRAVIS_OS_NAME" = osx ]; then install -d -o $USER -g $USER -m 0777 /images; fi
+  - if [ "$TRAVIS_OS_NAME" = linux ]; then sudo mkdir /images; fi
+  - if [ "$TRAVIS_OS_NAME" = osx ]; then mkdir /images; fi
   - git clone https://github.com/googlefonts/noto-emoji /tmp/noto-emoji
 
 script:
