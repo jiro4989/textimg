@@ -27,8 +27,8 @@ script:
   - ./bin/textimg "t.gif" -sa
 
 after_script:
-  - [ -e /images/t.png ]
-  - [ -e /images/t.gif ]
+  - file /images/t.png
+  - file /images/t.gif
 
 before_deploy:
   - make xbuild archive
