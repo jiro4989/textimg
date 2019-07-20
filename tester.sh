@@ -138,13 +138,13 @@ done
 run_test "No reset color" "\x1b[31mRed\x1b[32mGreen\x1b[34mBlue\x1b[0m" ansi_f_rgb2.png
 run_test "Grep color" "$(echo TestAbcTest | grep --color=always Abc)" grep.png
 run_test "No escape sequence" no_color no_color.png
-run_test "CLI background option" "$(echo -e "あいうえおかきくけこ" | sed -r 's/[^　]/\x1b[31m&\x1b[0m/g')" ansi_f_set_bg.png
+run_test "CLI background option" "$(echo -e "あいうえおかきくけこ" | sed -E 's/[^　]/\x1b[31m&\x1b[0m/g')" ansi_f_set_bg.png
 
 # 背景色をRGBA指定するテスト
 colors=(30 31 32 33 34 35 36 37)
 i=0
 while read -r line; do
-  echo -e "$line" | sed -r 's/.*/\x1b['"${colors[$((i%8))]}"'m&\x1b[m/g'
+  echo -e "$line" | sed -E 's/.*/\x1b['"${colors[$((i%8))]}"'m&\x1b[m/g'
   i=$((i+1))
 done <<< "$(seq 8 | xargs -I@ echo TEST)" | $CMD -b 50,100,12,255 -o $OUTDIR/ansi_f_bgopt_rgba.png
 
