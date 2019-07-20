@@ -1,3 +1,5 @@
+sudo: false
+
 language: go
 
 env:
@@ -6,18 +8,40 @@ env:
     - TEXTIMG_EMOJI_DIR=/tmp/noto-emoji/png/128
     - TEXTIMG_FONT_FILE=/usr/share/fonts/TTF/HackGen-Regular.ttf
 
+os:
+  - linux
+  - osx
+
+install:
+  - make bootstrap
+
 before_script:
-  - sudo install -d -o $USER -g $USER -m 0777 /images
-  - go build
+  - install -d -o $USER -g $USER -m 0777 /images
   - git clone https://github.com/googlefonts/noto-emoji /tmp/noto-emoji
 
 script:
-  - go build
-  - go test -cover ./...
-  - ./tester.sh
+  - go version
+  - make build
+  - make install
+  - make test
   - ./textimg "t.png" -s
   - ./textimg "t.gif" -sa
 
 after_script:
   - [ -e /images/t.png ]
   - [ -e /images/t.gif ]
+
+before_deploy:
+  - make xbuild archive
+
+deploy:
+  provider: releases
+  api_key:
+    secure: D0HeGJQuyVid676hra7sW5z2WJPaJObDSgncBNcRNZIGDTaQCPDaL4Qkl/Sr9gfKiZ+WSfnT3Lis2/3WlCDd+q0exCTeRM9SxKCZ8ymLq5DLRTX1lkf24Z3T+BW71GnxEstOLbPMOAnPsjm97xLPdzYp/FW9MFyIwJXpsijCB9SJTFNpfhuX5PuhCmlrNCyUwTVNAqZbvSTuSVsOgqjSBifxGG8avUH6UenFRTI7wqWup+tgo/TwnjO0VxE3wKsKF1kNl72JtsKg8+ytn0LgBJJQdpVe6Qoco7v2qOwGlyiXZCY+9G/Q2yrbtehs6cgCbXP9F41Ymdl83RG6Vwy7pxmJmEdPMX4dozsLlAwX2njwz+YSHGY8Fm/Fmvgt2Abo1w8sh1JVIglZ9fWbRHEZIofIHXA02FnW8FniybFFsW+K9nlo+QktVj5hCboUYWb3Br7+MrMyZ0+gRt0oTEtPoi7eSh80o1eheFi76vqVr1m6RoObhbeJK0uCraQExjiSmXGrgkvU52NkmcMsKUH1KkOM2ovsUB6Gn+Wz7ZXKgE6gxrHZF/5GvuA3wLPEW/y9Azl+v4c5CXzCE6Mdxv4j76KY4se9hlP+tAxchc5Q78uMlgjJo3R0Ql/v+noS23BTsXZAs+un3flFnLtLPRADhclPNp5uPIp0DbhZ3w51DcU=
+  file:
+    - 'dist/*.tar.gz'
+    - 'dist/*.zip'
+  file_glob: true
+  on:
+    branch: master
+    condition: $TRAVIS_OS_NAME = linux

@@ -1,17 +1,15 @@
 APPNAME := $(shell basename `pwd`)
-VERSION := v$(shell grep Version version.go | grep -Eo '"[^"]+"' | tr -d '"')
+VERSION := $(shell grep Version version.go | grep -Eo '"[^"]+"' | tr -d '"')
 SRCS := $(shell find . -name "*.go" -type f )
 LDFLAGS := -ldflags="-s -w \
 	-extldflags \"-static\""
 XBUILD_TARGETS := \
 	-os="windows linux darwin" \
 	-arch="386 amd64" 
-DIST_DIR := dist/$(VERSION)
+DIST_DIR := dist
 README := README.*
 EXTERNAL_TOOLS := \
-	github.com/mitchellh/gox \
-	github.com/tcnksm/ghr \
-	github.com/motemen/gobump/cmd/gobump
+	github.com/mitchellh/gox
 
 help: ## ドキュメントのヘルプを表示する。
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -23,7 +21,7 @@ install: build ## インストール
 	go install
 
 xbuild: $(SRCS) bootstrap ## クロスコンパイル
-	gox $(LDFLAGS) $(XBUILD_TARGETS) --output "$(DIST_DIR)/{{.Dir}}_{{.OS}}_{{.Arch}}/{{.Dir}}"
+	gox $(LDFLAGS) $(XBUILD_TARGETS) --output "$(DIST_DIR)/{{.Dir}}$(VERSION)_{{.OS}}_{{.Arch}}/{{.Dir}}"
 
 archive: xbuild ## クロスコンパイルしたバイナリとREADMEを圧縮する
 	find $(DIST_DIR)/ -mindepth 1 -maxdepth 1 -a -type d \
@@ -36,14 +34,8 @@ archive: xbuild ## クロスコンパイルしたバイナリとREADMEを圧縮�
 		find . -maxdepth 1 -mindepth 1 -a -type d  \
 		| while read -r d; \
 		do \
-			tar czf $$d.tar.gz $$d; \
+			../archive.sh $$d; \
 		done
-
-release: bootstrap test archive ## GitHubにリリースする
-	ghr $(VERSION) $(DIST_DIR)/
-
-lint: ## 静的解析をかける
-	gometalinter
 
 test: ## テストコードを実行する
 	go test -cover ./...
