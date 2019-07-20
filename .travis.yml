@@ -23,8 +23,8 @@ script:
   - make build
   - make install
   - make test
-  - ./textimg "t.png" -s
-  - ./textimg "t.gif" -sa
+  - ./bin/textimg "t.png" -s
+  - ./bin/textimg "t.gif" -sa
 
 after_script:
   - [ -e /images/t.png ]
