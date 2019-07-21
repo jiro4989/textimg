@@ -88,10 +88,7 @@ func writeImage(w io.Writer, encFmt encodeFormat, texts []string, appconf applic
 				for _, r := range []rune(text) {
 					path := fmt.Sprintf("%s/emoji_u%.4x.png", emojiDir, r)
 					_, err := os.Stat(path)
-					// 48~57は数字の0~9
-					// 画像のパスのうち、数字が絵文字として描画されてしまってい
-					// たのでその対応
-					if err == nil && !(48 <= r && r <= 57) {
+					if err == nil && isEmojiCodePoint(r) {
 						// エラーにならないときは絵文字コードポイントにマッチす
 						// る画像ファイルが存在するため絵文字として描画
 						if appconf.useEmojiFont {
@@ -307,4 +304,26 @@ func toPalettes(imgs []*image.RGBA) (ret []*image.Paletted) {
 		ret = append(ret, p)
 	}
 	return
+}
+
+// rune文字のコードポイントが絵文字のコードポイント範囲にあるかどうかを判定する
+func isEmojiCodePoint(r rune) bool {
+	// 48~57は数字の0~9
+	// 画像のパスのうち、数字が絵文字として描画されてしまってい
+	// たのでその対応
+	if 48 <= r && r <= 57 {
+		return false
+	}
+
+	// 35 == #
+	// 42 == *
+	ignoreCodePoints := []rune{35, 42}
+
+	for _, codePoint := range ignoreCodePoints {
+		if r == codePoint {
+			return false
+		}
+	}
+
+	return true
 }
