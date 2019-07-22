@@ -9,7 +9,7 @@ env:
 addons:
   apt:
     packages:
-      - fonts-noto-cjk:i386
+      - fonts-noto-cjk
 
 cache:
   directories:
@@ -22,7 +22,7 @@ os:
 install:
   - fc-list
   - make bootstrap
-  - if [ ! -e "/usr/share/fonts/truetype/noto-emoji" ]; then git clone https://github.com/googlefonts/noto-emoji /usr/share/fonts/truetype/noto-emoji ; fi
+  - file "/usr/share/fonts/truetype/noto-emoji" || git clone https://github.com/googlefonts/noto-emoji /usr/share/fonts/truetype/noto-emoji
 
 before_script:
   - if [ "$TRAVIS_OS_NAME" = linux ]; then sudo install -d -o $USER -g $USER -m 0755 /images; fi
