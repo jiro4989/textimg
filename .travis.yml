@@ -22,16 +22,17 @@ os:
   - osx
 
 install:
-  - pwd
   - make bootstrap
   - if [[ ! -e "$HOME/noto-emoji" ]]; then git clone https://github.com/googlefonts/noto-emoji $HOME/noto-emoji; fi
   - mkdir -p $HOME/symbola
   - chmod 0777 $HOME/symbola
   - wget https://www.wfonts.com/download/data/2016/04/23/symbola/symbola.zip -q -O $HOME/symbola/symbola.zip
-  - cd $HOME/symbola
-  - unzip -f symbola.zip
-  - cp -p $HOME/symbola/Symbola_hint.ttf /tmp/
-  - cd $HOME
+  - |-
+    (
+    cd $HOME/symbola
+    unzip -f symbola.zip
+    cp -p Symbola_hint.ttf /tmp/
+    )
 
 before_script:
   - if [ "$TRAVIS_OS_NAME" = linux ]; then sudo install -d -o $USER -g $USER -m 0755 /images; fi
