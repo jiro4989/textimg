@@ -5,6 +5,7 @@ env:
     - GO111MODULE=on
     - TEXTIMG_EMOJI_DIR=$HOME/noto-emoji/png/128
     - TEXTIMG_FONT_FILE=/Library/Fonts/AppleGothic.ttf
+    - TEXTIMG_EMOJI_FONT_FILE=$HOME/symbola/Symbola.ttf
 
 addons:
   apt:
@@ -14,6 +15,7 @@ addons:
 cache:
   directories:
     - $HOME/noto-emoji
+    - $HOME/symbola
 
 os:
   - linux
@@ -22,7 +24,14 @@ os:
 install:
   - fc-list
   - make bootstrap
-  - if [[ ! -e "$HOME/noto-emoji" ]]; then git clone https://github.com/googlefonts/noto-emoji $HOME/noto-emoji ; fi
+  - if [[ ! -e "$HOME/noto-emoji" ]]; then git clone https://github.com/googlefonts/noto-emoji $HOME/noto-emoji; fi
+  - install -d -o $USER -g $USER -m 0755 $HOME/symbola
+  - |-
+    if [[ ! -e "$HOME/symbola" ]]; then
+      wget https://www.wfonts.com/download/data/2016/04/23/symbola/symbola.zip -q -O $HOME/symbola/symbola.zip
+      cd $HOME/symbola
+      unzip symbola.zip
+    fi
 
 before_script:
   - if [ "$TRAVIS_OS_NAME" = linux ]; then sudo install -d -o $USER -g $USER -m 0755 /images; fi
