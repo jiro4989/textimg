@@ -26,6 +26,7 @@ install:
 
 before_script:
   - if [ "$TRAVIS_OS_NAME" = linux ]; then sudo install -d -o $USER -g $USER -m 0755 /images; fi
+  - if [ "$TRAVIS_OS_NAME" = linux ]; then export TEXTIMG_FONT_FILE=/usr/share/fonts/truetype/fonts-japanese-gothic.ttf; fi
 
 script:
   - go version
