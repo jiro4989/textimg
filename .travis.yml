@@ -3,8 +3,17 @@ language: go
 env:
   global:
     - GO111MODULE=on
-    - TEXTIMG_EMOJI_DIR=/tmp/noto-emoji/png/128
-    - TEXTIMG_FONT_FILE=/usr/share/fonts/TTF/HackGen-Regular.ttf
+    - TEXTIMG_EMOJI_DIR=/usr/share/fonts/truetype/noto-emoji/png/128
+    - TEXTIMG_FONT_FILE=/usr/share/fonts/truetype/ricty-diminished/RictyDiminished-Regular.ttf
+
+addons:
+  apt:
+    packages:
+    - fonts-ricty-diminished
+
+cache:
+  directories:
+    - /usr/share/fonts/truetype/noto-emoji
 
 os:
   - linux
@@ -12,10 +21,10 @@ os:
 
 install:
   - make bootstrap
+  - if [ ! -e "/usr/share/fonts/truetype/noto-emoji" ]; then git clone https://github.com/googlefonts/noto-emoji /usr/share/fonts/truetype/noto-emoji ; fi
 
 before_script:
   - if [ "$TRAVIS_OS_NAME" = linux ]; then sudo install -d -o $USER -g $USER -m 0755 /images; fi
-  - git clone https://github.com/googlefonts/noto-emoji /tmp/noto-emoji
 
 script:
   - go version
