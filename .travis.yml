@@ -32,6 +32,7 @@ install:
       cd $HOME/symbola
       unzip symbola.zip
     fi
+  - ls -la $HOME/symbola/*
   - cp -p $HOME/symbola/Symbola_hint.ttf /tmp/
 
 before_script:
