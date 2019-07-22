@@ -4,13 +4,12 @@ env:
   global:
     - GO111MODULE=on
     - TEXTIMG_EMOJI_DIR=/usr/share/fonts/truetype/noto-emoji/png/128
-    - TEXTIMG_FONT_FILE=/usr/share/fonts/truetype/ricty-diminished/RictyDiminished-Regular.ttf
+    - TEXTIMG_FONT_FILE=/Library/Fonts/AppleGothic.ttf
 
 addons:
   apt:
     packages:
-      #- fonts-ricty-diminished
-      - fonts-ipafont
+      - fonts-noto-cjk:i386
 
 cache:
   directories:
