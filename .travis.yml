@@ -30,6 +30,7 @@ install:
   - cd $HOME/symbola
   - unzip -f symbola.zip
   - cp -p $HOME/symbola/Symbola_hint.ttf /tmp/
+  - cd $HOME
 
 before_script:
   - if [ "$TRAVIS_OS_NAME" = linux ]; then sudo install -d -o $USER -g $USER -m 0755 /images; fi
