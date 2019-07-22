@@ -3,17 +3,17 @@ language: go
 env:
   global:
     - GO111MODULE=on
-    - TEXTIMG_EMOJI_DIR=/usr/share/fonts/truetype/noto-emoji/png/128
+    - TEXTIMG_EMOJI_DIR=$HOME/noto-emoji/png/128
     - TEXTIMG_FONT_FILE=/Library/Fonts/AppleGothic.ttf
 
 addons:
   apt:
     packages:
-      - fonts-noto-cjk
+      - fonts-ipafont
 
 cache:
   directories:
-    - /usr/share/fonts/truetype/noto-emoji
+    - $HOME/noto-emoji
 
 os:
   - linux
@@ -22,7 +22,7 @@ os:
 install:
   - fc-list
   - make bootstrap
-  - file "/usr/share/fonts/truetype/noto-emoji" || git clone https://github.com/googlefonts/noto-emoji /usr/share/fonts/truetype/noto-emoji
+  - if [[ ! -e "$HOME/noto-emoji" ]]; then git clone https://github.com/googlefonts/noto-emoji $HOME/noto-emoji ; fi
 
 before_script:
   - if [ "$TRAVIS_OS_NAME" = linux ]; then sudo install -d -o $USER -g $USER -m 0755 /images; fi
