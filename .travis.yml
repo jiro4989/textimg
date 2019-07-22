@@ -39,6 +39,7 @@ before_script:
   - if [ "$TRAVIS_OS_NAME" = linux ]; then export TEXTIMG_FONT_FILE=/usr/share/fonts/truetype/fonts-japanese-gothic.ttf; fi
 
 script:
+  - ls $HOME/symbola
   - go version
   - make build
   - make install
