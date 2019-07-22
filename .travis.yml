@@ -5,7 +5,7 @@ env:
     - GO111MODULE=on
     - TEXTIMG_EMOJI_DIR=$HOME/noto-emoji/png/128
     - TEXTIMG_FONT_FILE=/Library/Fonts/AppleGothic.ttf
-    - TEXTIMG_EMOJI_FONT_FILE=$HOME/symbola/Symbola_hint.ttf
+    - TEXTIMG_EMOJI_FONT_FILE=/tmp/Symbola_hint.ttf
 
 addons:
   apt:
@@ -33,13 +33,13 @@ install:
       cd $HOME/symbola
       unzip symbola.zip
     fi
+  - cp -p $HOME/symbola /tmp/Symbola_hint.ttf
 
 before_script:
   - if [ "$TRAVIS_OS_NAME" = linux ]; then sudo install -d -o $USER -g $USER -m 0755 /images; fi
   - if [ "$TRAVIS_OS_NAME" = linux ]; then export TEXTIMG_FONT_FILE=/usr/share/fonts/truetype/fonts-japanese-gothic.ttf; fi
 
 script:
-  - ls $HOME/symbola
   - go version
   - make build
   - make install
