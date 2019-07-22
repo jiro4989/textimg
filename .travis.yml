@@ -27,7 +27,8 @@ install:
   - if [[ ! -e "$HOME/noto-emoji" ]]; then git clone https://github.com/googlefonts/noto-emoji $HOME/noto-emoji; fi
   - |-
     if [[ ! -e "$HOME/symbola" ]]; then
-      install -d -o $USER -g $USER -m 0755 $HOME/symbola
+      mkdir $HOME/symbola
+      chmod 0777 $HOME/symbola
       wget https://www.wfonts.com/download/data/2016/04/23/symbola/symbola.zip -q -O $HOME/symbola/symbola.zip
       cd $HOME/symbola
       unzip symbola.zip
