@@ -6,10 +6,11 @@ env:
     - TEXTIMG_EMOJI_DIR=/usr/share/fonts/truetype/noto-emoji/png/128
     - TEXTIMG_FONT_FILE=/usr/share/fonts/truetype/ricty-diminished/RictyDiminished-Regular.ttf
 
-# addons:
-#   apt:
-#     packages:
-#     - fonts-ricty-diminished
+addons:
+  apt:
+    packages:
+      #- fonts-ricty-diminished
+      - fonts-ipafont
 
 cache:
   directories:
