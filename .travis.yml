@@ -15,7 +15,6 @@ addons:
 cache:
   directories:
     - $HOME/noto-emoji
-    - $HOME/symbola
 
 os:
   - linux
