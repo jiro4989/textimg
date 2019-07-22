@@ -3,8 +3,19 @@ language: go
 env:
   global:
     - GO111MODULE=on
-    - TEXTIMG_EMOJI_DIR=/tmp/noto-emoji/png/128
-    - TEXTIMG_FONT_FILE=/usr/share/fonts/TTF/HackGen-Regular.ttf
+    - TEXTIMG_EMOJI_DIR=$HOME/noto-emoji/png/128
+    - TEXTIMG_FONT_FILE=/Library/Fonts/AppleGothic.ttf
+    - TEXTIMG_EMOJI_FONT_FILE=/tmp/Symbola_hint.ttf
+
+addons:
+  apt:
+    packages:
+      - fonts-ipafont
+
+cache:
+  directories:
+    - $HOME/noto-emoji
+    - $HOME/symbola
 
 os:
   - linux
@@ -12,10 +23,20 @@ os:
 
 install:
   - make bootstrap
+  - if [[ ! -e "$HOME/noto-emoji" ]]; then git clone https://github.com/googlefonts/noto-emoji $HOME/noto-emoji; fi
+  - mkdir -p $HOME/symbola
+  - chmod 0777 $HOME/symbola
+  - if [[ ! -e "$HOME/symbola/symbola.zip" ]]; then wget https://www.wfonts.com/download/data/2016/04/23/symbola/symbola.zip -q -O $HOME/symbola/symbola.zip; fi
+  - |-
+    (
+    cd $HOME/symbola
+    unzip -f symbola.zip
+    cp -p Symbola_hint.ttf /tmp/
+    )
 
 before_script:
   - if [ "$TRAVIS_OS_NAME" = linux ]; then sudo install -d -o $USER -g $USER -m 0755 /images; fi
-  - git clone https://github.com/googlefonts/noto-emoji /tmp/noto-emoji
+  - if [ "$TRAVIS_OS_NAME" = linux ]; then export TEXTIMG_FONT_FILE=/usr/share/fonts/truetype/fonts-japanese-gothic.ttf; fi
 
 script:
   - go version
