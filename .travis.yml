@@ -22,6 +22,7 @@ os:
   - osx
 
 install:
+  - pwd
   - make bootstrap
   - if [[ ! -e "$HOME/noto-emoji" ]]; then git clone https://github.com/googlefonts/noto-emoji $HOME/noto-emoji; fi
   - mkdir -p $HOME/symbola
