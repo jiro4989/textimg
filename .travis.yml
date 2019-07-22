@@ -6,10 +6,10 @@ env:
     - TEXTIMG_EMOJI_DIR=/usr/share/fonts/truetype/noto-emoji/png/128
     - TEXTIMG_FONT_FILE=/usr/share/fonts/truetype/ricty-diminished/RictyDiminished-Regular.ttf
 
-addons:
-  apt:
-    packages:
-    - fonts-ricty-diminished
+# addons:
+#   apt:
+#     packages:
+#     - fonts-ricty-diminished
 
 cache:
   directories:
@@ -20,6 +20,7 @@ os:
   - osx
 
 install:
+  - fc-list
   - make bootstrap
   - if [ ! -e "/usr/share/fonts/truetype/noto-emoji" ]; then git clone https://github.com/googlefonts/noto-emoji /usr/share/fonts/truetype/noto-emoji ; fi
 
