@@ -236,6 +236,10 @@ var RootCommand = &cobra.Command{
 
 		encFmt, err := getEncodeFormat(outpath)
 
+		for i, text := range texts {
+			texts[i] = strings.Replace(text, "\t", "  ", -1)
+		}
+
 		writeImage(w, encFmt, texts, appconf)
 	},
 }
