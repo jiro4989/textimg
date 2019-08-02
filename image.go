@@ -17,6 +17,7 @@ import (
 	"strings"
 
 	"github.com/golang/freetype/truetype"
+	"github.com/jiro4989/textimg/escseq"
 	"github.com/mattn/go-runewidth"
 	xdraw "golang.org/x/image/draw"
 	"golang.org/x/image/font"
@@ -76,12 +77,12 @@ func writeImage(w io.Writer, encFmt encodeFormat, texts []string, appconf applic
 		bgCol := appconf.background
 		for line != "" {
 			// 色文字列の句切れごとに画像に色指定して書き込む
-			k, prefix, suffix := getPrefix(line)
+			k, prefix, suffix := escseq.Prefix(line)
 			switch k {
-			case kindEmpty:
+			case escseq.KindEmpty:
 				fmt.Fprintln(os.Stderr, "[WARN] input string is empty")
 				return
-			case kindText:
+			case escseq.KindText:
 				text := prefix
 				drawBackground(img, posX, posY-charHeight, text, bgCol, charWidth, charHeight)
 				// drawLabel(img, posX, posY-(charHeight/5), text, fgCol, face)
@@ -106,24 +107,24 @@ func writeImage(w io.Writer, encFmt encodeFormat, texts []string, appconf applic
 					}
 					posX += runewidth.RuneWidth(r) * charWidth
 				}
-			case kindEscapeSequenceColor:
-				colors := parseColorEscapeSequence(prefix)
+			case escseq.KindColor:
+				colors := escseq.ParseColor(prefix)
 				for _, v := range colors {
-					switch v.colorType {
-					case colorTypeReset:
+					switch v.ColorType {
+					case escseq.ColorTypeReset:
 						fgCol = appconf.foreground
 						bgCol = appconf.background
-					case colorTypeReverse:
+					case escseq.ColorTypeReverse:
 						fgCol, bgCol = bgCol, fgCol
-					case colorTypeForeground:
-						fgCol = v.color
-					case colorTypeBackground:
-						bgCol = v.color
+					case escseq.ColorTypeForeground:
+						fgCol = v.Color
+					case escseq.ColorTypeBackground:
+						bgCol = v.Color
 					default:
 						// 未実装のcolorTypeでは何もしない
 					}
 				}
-			case kindEscapeSequenceNotColor:
+			case escseq.KindNotColor:
 				// 色出力と関係のないエスケープシーケンスの場合は何もしない
 			default:
 				// 到達しないはず
@@ -225,7 +226,7 @@ func readFace(fontPath string, fontSize float64) font.Face {
 }
 
 // drawBackgroundAll はimgにbgを背景色として描画する。
-func drawBackgroundAll(img *image.RGBA, bg color.RGBA) {
+func drawBackgroundAll(img *image.RGBA, bg escseq.RGBA) {
 	var (
 		bounds = img.Bounds().Max
 		width  = bounds.X
@@ -233,17 +234,17 @@ func drawBackgroundAll(img *image.RGBA, bg color.RGBA) {
 	)
 	for x := 0; x < width; x++ {
 		for y := 0; y < height; y++ {
-			img.Set(x, y, bg)
+			img.Set(x, y, color.RGBA(bg))
 		}
 	}
 }
 
 // drawLabel はimgにラベルを描画する。
-func drawLabel(img *image.RGBA, x, y int, r rune, col color.RGBA, face font.Face) {
+func drawLabel(img *image.RGBA, x, y int, r rune, col escseq.RGBA, face font.Face) {
 	point := fixed.Point26_6{fixed.Int26_6(x * 64), fixed.Int26_6(y * 64)}
 	d := &font.Drawer{
 		Dst:  img,
-		Src:  image.NewUniform(col),
+		Src:  image.NewUniform(color.RGBA(col)),
 		Face: face,
 		Dot:  point,
 	}
@@ -251,7 +252,7 @@ func drawLabel(img *image.RGBA, x, y int, r rune, col color.RGBA, face font.Face
 }
 
 // 絵文字を画像ファイルから読み取って描画する。
-func drawEmoji(img *image.RGBA, x, y int, emojiRune rune, path string, col color.RGBA, face font.Face) {
+func drawEmoji(img *image.RGBA, x, y int, emojiRune rune, path string, col escseq.RGBA, face font.Face) {
 	fp, err := os.Open(path)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
@@ -268,7 +269,7 @@ func drawEmoji(img *image.RGBA, x, y int, emojiRune rune, path string, col color
 	point := fixed.Point26_6{fixed.Int26_6(x * 64), fixed.Int26_6(y * 64)}
 	d := &font.Drawer{
 		Dst:  img,
-		Src:  image.NewUniform(col),
+		Src:  image.NewUniform(color.RGBA(col)),
 		Face: face,
 		Dot:  point,
 	}
@@ -283,7 +284,7 @@ func drawEmoji(img *image.RGBA, x, y int, emojiRune rune, path string, col color
 	draw.Draw(img, rect.Add(p), dst, image.ZP, draw.Over)
 }
 
-func drawBackground(img *image.RGBA, posX, posY int, label string, col color.RGBA, charWidth, charHeight int) {
+func drawBackground(img *image.RGBA, posX, posY int, label string, col escseq.RGBA, charWidth, charHeight int) {
 	var (
 		tw     = runewidth.StringWidth(label)
 		width  = tw * charWidth
@@ -291,7 +292,7 @@ func drawBackground(img *image.RGBA, posX, posY int, label string, col color.RGB
 	)
 	for x := posX; x < posX+width; x++ {
 		for y := posY; y < posY+height; y++ {
-			img.Set(x, y, col)
+			img.Set(x, y, color.RGBA(col))
 		}
 	}
 }
@@ -336,4 +337,16 @@ func isExceptionallyCodePoint(r rune) bool {
 	}
 
 	return false
+}
+
+// maxStringWidth は表示上のテキストの最も幅の長い長さを返却する。
+func maxStringWidth(s []string) (max int) {
+	for _, v := range s {
+		text := escseq.Text(v)
+		width := runewidth.StringWidth(text)
+		if max < width {
+			max = width
+		}
+	}
+	return
 }

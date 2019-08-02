@@ -3,29 +3,30 @@ package main
 import (
 	"errors"
 	"fmt"
-	"image/color"
 	"os"
 	"runtime"
 	"strconv"
 	"strings"
 
+	"github.com/jiro4989/textimg/escseq"
+
 	"github.com/spf13/cobra"
 )
 
 type applicationConfig struct {
-	foreground        color.RGBA // 文字色
-	background        color.RGBA // 背景色
-	outpath           string     // 画像の出力ファイルパス
-	fontfile          string     // フォントファイルのパス
-	emojiFontfile     string     // 絵文字用のフォントファイルのパス
-	useEmojiFont      bool       // 絵文字TTFを使う
-	fontsize          int        // フォントサイズ
-	useAnimation      bool       // アニメーションGIFを生成する
-	delay             int        // アニメーションのディレイ時間
-	lineCount         int        // 入力データのうち何行を1フレーム画像に使うか
-	useSlideAnimation bool       // スライドアニメーションする
-	slideWidth        int        // スライドする幅
-	slideForever      bool       // スライドを無限にスライドするように描画する
+	foreground        escseq.RGBA // 文字色
+	background        escseq.RGBA // 背景色
+	outpath           string      // 画像の出力ファイルパス
+	fontfile          string      // フォントファイルのパス
+	emojiFontfile     string      // 絵文字用のフォントファイルのパス
+	useEmojiFont      bool        // 絵文字TTFを使う
+	fontsize          int         // フォントサイズ
+	useAnimation      bool        // アニメーションGIFを生成する
+	delay             int         // アニメーションのディレイ時間
+	lineCount         int         // 入力データのうち何行を1フレーム画像に使うか
+	useSlideAnimation bool        // スライドアニメーションする
+	slideWidth        int         // スライドする幅
+	slideForever      bool        // スライドを無限にスライドするように描画する
 }
 
 const shellgeiEmojiFontPath = "/usr/share/fonts/truetype/ancient-scripts/Symbola_hint.ttf"
@@ -33,10 +34,10 @@ const shellgeiEmojiFontPath = "/usr/share/fonts/truetype/ancient-scripts/Symbola
 func init() {
 	cobra.OnInitialize()
 	RootCommand.Flags().SortFlags = false
-	RootCommand.Flags().StringP("foreground", "", "white", `foreground color.
+	RootCommand.Flags().StringP("foreground", "", "white", `foreground escseq.
 format is [black|red|green|yellow|blue|magenta|cyan|white]
 or (R,G,B,A(0~255))`)
-	RootCommand.Flags().StringP("background", "b", "black", `ackground color.
+	RootCommand.Flags().StringP("background", "b", "black", `ackground escseq.
 color format is same as "foreground" option`)
 
 	font := "/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf"
@@ -250,11 +251,11 @@ var RootCommand = &cobra.Command{
 // 2. RGBAのカンマ区切り指定
 //    書式: R,G,B,A
 //    赤色の例: 255,0,0,255
-func optionColorStringToRGBA(colstr string) (color.RGBA, error) {
+func optionColorStringToRGBA(colstr string) (escseq.RGBA, error) {
 	// "black"といった色名称でマッチするものがあれば返す
 	colstr = strings.ToLower(colstr)
-	col := colorStringMap[colstr]
-	zeroColor := color.RGBA{}
+	col := escseq.StringMap[colstr]
+	zeroColor := escseq.RGBA{}
 	if col != zeroColor {
 		return col, nil
 	}
@@ -292,7 +293,7 @@ func optionColorStringToRGBA(colstr string) (color.RGBA, error) {
 	if err != nil {
 		return zeroColor, err
 	}
-	c := color.RGBA{
+	c := escseq.RGBA{
 		R: uint8(r),
 		G: uint8(g),
 		B: uint8(b),
