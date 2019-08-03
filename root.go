@@ -3,20 +3,15 @@ package main
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"runtime"
 	"strconv"
 	"strings"
 
-	"github.com/goki/freetype/truetype"
 	"github.com/jiro4989/textimg/escseq"
 	"github.com/jiro4989/textimg/internal/global"
 	"github.com/jiro4989/textimg/ioimage"
-	"github.com/jiro4989/textimg/log"
-	"golang.org/x/image/font"
-	"golang.org/x/image/font/gofont/gomono"
 
 	"github.com/spf13/cobra"
 )
@@ -250,8 +245,8 @@ var RootCommand = &cobra.Command{
 			texts[i] = strings.Replace(text, "\t", "  ", -1)
 		}
 
-		face := readFace(appconf.FontFile, float64(appconf.FontSize))
-		emojiFace := readFace(appconf.EmojiFontFile, float64(appconf.FontSize))
+		face := ioimage.ReadFace(appconf.FontFile, float64(appconf.FontSize))
+		emojiFace := ioimage.ReadFace(appconf.EmojiFontFile, float64(appconf.FontSize))
 		emojiDir := os.Getenv(global.EnvNameEmojiDir)
 
 		writeConf := ioimage.WriteConfig{
@@ -326,36 +321,4 @@ func optionColorStringToRGBA(colstr string) (escseq.RGBA, error) {
 		A: uint8(a),
 	}
 	return c, nil
-}
-
-// readFace はfontPathのフォントファイルからfaceを返す。
-func readFace(fontPath string, fontSize float64) font.Face {
-	var fontData []byte
-
-	// ファイルが存在しなければビルトインのフォントをデフォルトとして使う
-	_, err := os.Stat(fontPath)
-	if err == nil {
-		fontData, err = ioutil.ReadFile(fontPath)
-		if err != nil {
-			panic(err)
-		}
-	} else {
-		log.Warnf("%s is not found. please set font path with `-f` option\n", fontPath)
-		fontData = gomono.TTF
-	}
-
-	ft, err := truetype.Parse(fontData)
-	if err != nil {
-		panic(err)
-	}
-	opt := truetype.Options{
-		Size:              fontSize,
-		DPI:               0,
-		Hinting:           0,
-		GlyphCacheEntries: 0,
-		SubPixelsX:        0,
-		SubPixelsY:        0,
-	}
-	face := truetype.NewFace(ft, &opt)
-	return face
 }
