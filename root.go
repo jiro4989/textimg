@@ -21,19 +21,19 @@ import (
 )
 
 type applicationConfig struct {
-	foreground        escseq.RGBA // 文字色
-	background        escseq.RGBA // 背景色
-	outpath           string      // 画像の出力ファイルパス
-	fontfile          string      // フォントファイルのパス
-	emojiFontfile     string      // 絵文字用のフォントファイルのパス
-	useEmojiFont      bool        // 絵文字TTFを使う
-	fontsize          int         // フォントサイズ
-	useAnimation      bool        // アニメーションGIFを生成する
-	delay             int         // アニメーションのディレイ時間
-	lineCount         int         // 入力データのうち何行を1フレーム画像に使うか
-	useSlideAnimation bool        // スライドアニメーションする
-	slideWidth        int         // スライドする幅
-	slideForever      bool        // スライドを無限にスライドするように描画する
+	Foreground        escseq.RGBA // 文字色
+	Background        escseq.RGBA // 背景色
+	Outpath           string      // 画像の出力ファイルパス
+	FontFile          string      // フォントファイルのパス
+	EmojiFontFile     string      // 絵文字用のフォントファイルのパス
+	UseEmojiFont      bool        // 絵文字TTFを使う
+	FontSize          int         // フォントサイズ
+	UseAnimation      bool        // アニメーションGIFを生成する
+	Delay             int         // アニメーションのディレイ時間
+	LineCount         int         // 入力データのうち何行を1フレーム画像に使うか
+	UseSlideAnimation bool        // スライドアニメーションする
+	SlideWidth        int         // スライドする幅
+	SlideForever      bool        // スライドを無限にスライドするように描画する
 }
 
 const shellgeiEmojiFontPath = "/usr/share/fonts/truetype/ancient-scripts/Symbola_hint.ttf"
@@ -201,19 +201,19 @@ var RootCommand = &cobra.Command{
 		// }}}
 
 		appconf := applicationConfig{
-			foreground:        confForeground,
-			background:        confBackground,
-			outpath:           outpath,
-			fontfile:          fontpath,
-			emojiFontfile:     emojiFontpath,
-			useEmojiFont:      useEmojiFont,
-			fontsize:          fontsize,
-			useAnimation:      useAnimation,
-			delay:             delay,
-			lineCount:         lineCount,
-			useSlideAnimation: useSlideAnimation,
-			slideWidth:        slideWidth,
-			slideForever:      slideForever,
+			Foreground:        confForeground,
+			Background:        confBackground,
+			Outpath:           outpath,
+			FontFile:          fontpath,
+			EmojiFontFile:     emojiFontpath,
+			UseEmojiFont:      useEmojiFont,
+			FontSize:          fontsize,
+			UseAnimation:      useAnimation,
+			Delay:             delay,
+			LineCount:         lineCount,
+			UseSlideAnimation: useSlideAnimation,
+			SlideWidth:        slideWidth,
+			SlideForever:      slideForever,
 		}
 
 		// 引数にテキストの指定がなければ標準入力を使用する
@@ -225,8 +225,8 @@ var RootCommand = &cobra.Command{
 		}
 
 		// スライドアニメーションを使うときはテキストを加工する
-		if appconf.useSlideAnimation {
-			texts = toSlideStrings(texts, appconf.lineCount, appconf.slideWidth, appconf.slideForever)
+		if appconf.UseSlideAnimation {
+			texts = toSlideStrings(texts, appconf.LineCount, appconf.SlideWidth, appconf.SlideForever)
 		}
 
 		// 出力先画像の指定がなければ標準出力を出力先にする
@@ -235,7 +235,7 @@ var RootCommand = &cobra.Command{
 			w = os.Stdout
 		} else {
 			var err error
-			w, err = os.Create(appconf.outpath)
+			w, err = os.Create(appconf.Outpath)
 			if err != nil {
 				panic(err)
 			}
@@ -249,8 +249,25 @@ var RootCommand = &cobra.Command{
 			texts[i] = strings.Replace(text, "\t", "  ", -1)
 		}
 
-		writeConf := ioimage.WriteConfig{}
-		ioimage.Write(w, imgExt, texts, writeConf)
+		face := readFace(appconf.FontFile, float64(appconf.FontSize))
+		emojiFace := readFace(appconf.EmojiFontFile, float64(appconf.FontSize))
+		emojiDir := os.Getenv(envNameEmojiDir)
+
+		writeConf := ioimage.WriteConfig{
+			Foreground:    confForeground,
+			Background:    confBackground,
+			FontFace:      face,
+			EmojiFontFace: emojiFace,
+			EmojiDir:      emojiDir,
+			UseEmojiFont:  useEmojiFont,
+			FontSize:      fontsize,
+			UseAnimation:  useAnimation,
+			Delay:         delay,
+			LineCount:     lineCount,
+		}
+		if err := ioimage.Write(w, imgExt, texts, writeConf); err != nil {
+			panic(err)
+		}
 	},
 }
 

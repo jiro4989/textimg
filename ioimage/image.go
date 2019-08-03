@@ -1,7 +1,6 @@
 package ioimage
 
 import (
-	"errors"
 	"fmt"
 	"image"
 	"image/color/palette"
@@ -12,8 +11,8 @@ import (
 	"io"
 
 	"github.com/jiro4989/textimg/escseq"
-	"github.com/jiro4989/textimg/log"
 	"github.com/mattn/go-runewidth"
+	"github.com/pkg/errors"
 	"golang.org/x/image/font"
 )
 
@@ -55,7 +54,7 @@ var (
 
 // writeImage はテキストのEscapeSequenceから色情報などを読み取り、
 // wに書き込む。
-func Write(w io.Writer, imgExt string, texts []string, conf WriteConfig) {
+func Write(w io.Writer, imgExt string, texts []string, conf WriteConfig) error {
 	var (
 		charWidth   = conf.FontSize / 2
 		charHeight  = int(float64(conf.FontSize) * 1.1)
@@ -68,9 +67,8 @@ func Write(w io.Writer, imgExt string, texts []string, conf WriteConfig) {
 	}
 
 	var (
-		img  = image.NewRGBA(image.Rect(0, 0, imageWidth, imageHeight))
-		face = conf.FontFace
-		//face      = readFace(conf.FontFile, float64(conf.FontSize))
+		img       = image.NewRGBA(image.Rect(0, 0, imageWidth, imageHeight))
+		face      = conf.FontFace
 		emojiFace = conf.EmojiFontFace
 		imgs      []*image.RGBA
 		delays    []int
@@ -88,8 +86,8 @@ func Write(w io.Writer, imgExt string, texts []string, conf WriteConfig) {
 			k, prefix, suffix := escseq.Prefix(line)
 			switch k {
 			case escseq.KindEmpty:
-				log.Warn("input string is empty")
-				return
+				err := errors.New("input string is empty")
+				return err
 			case escseq.KindText:
 				text := prefix
 				drawBackground(img, posX, posY-charHeight, text, bgCol, charWidth, charHeight)
@@ -154,11 +152,12 @@ func Write(w io.Writer, imgExt string, texts []string, conf WriteConfig) {
 			err = gif.Encode(w, img, nil)
 		}
 	default:
-		err = errors.New(fmt.Sprintf("%v is not supported.", imgExt))
+		err = errors.New(fmt.Sprintf("%s is not supported extension.", imgExt))
 	}
 	if err != nil {
-		panic(err)
+		return err
 	}
+	return nil
 }
 
 func toPalettes(imgs []*image.RGBA) (ret []*image.Paletted) {
