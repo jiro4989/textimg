@@ -12,6 +12,7 @@ import (
 	"github.com/jiro4989/textimg/escseq"
 	"github.com/jiro4989/textimg/internal/global"
 	"github.com/jiro4989/textimg/ioimage"
+	"golang.org/x/image/font"
 
 	"github.com/spf13/cobra"
 )
@@ -246,7 +247,10 @@ var RootCommand = &cobra.Command{
 		}
 
 		face := ioimage.ReadFace(appconf.FontFile, float64(appconf.FontSize))
-		emojiFace := ioimage.ReadFace(appconf.EmojiFontFile, float64(appconf.FontSize))
+		var emojiFace font.Face
+		if appconf.EmojiFontFile != "" {
+			emojiFace = ioimage.ReadFace(appconf.EmojiFontFile, float64(appconf.FontSize))
+		}
 		emojiDir := os.Getenv(global.EnvNameEmojiDir)
 
 		writeConf := ioimage.WriteConfig{

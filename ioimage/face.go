@@ -22,7 +22,7 @@ func ReadFace(fontPath string, fontSize float64) font.Face {
 			panic(err)
 		}
 	} else {
-		log.Warnf("%s is not found. please set font path with `-f` option\n", fontPath)
+		log.Warnf("%s is not found. please set font path with `-f` option", fontPath)
 		fontData = gomono.TTF
 	}
 

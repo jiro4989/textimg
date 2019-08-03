@@ -1,9 +1,10 @@
 package log
 
 import (
-	"log"
-
-	"github.com/jiro4989/textimg/internal/global"
+	"fmt"
+	"os"
+	"runtime"
+	"time"
 )
 
 const (
@@ -13,27 +14,35 @@ const (
 	errorPrefix = "[ERROR]"
 )
 
-func init() {
-	log.SetPrefix(global.AppName + ": ")
-	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+func log(lvl, msg string) {
+	_, f, l, ok := runtime.Caller(2)
+	if !ok {
+		fmt.Fprintln(os.Stderr, "something error occured.")
+		return
+	}
+
+	now := time.Now().Format("2006/01/02 03:04:05")
+	text := fmt.Sprintf("%s %s %s:%d %s", now, lvl, f, l, msg)
+	fmt.Fprintln(os.Stderr, text)
 }
 
 func Debug(msg string) {
-	log.Println(debugPrefix, msg)
+	log(debugPrefix, msg)
 }
 
 func Info(msg string) {
-	log.Println(infoPrefix, msg)
+	log(infoPrefix, msg)
 }
 
 func Warn(msg string) {
-	log.Println(warnPrefix, msg)
+	log(warnPrefix, msg)
 }
 
 func Warnf(format, msg string) {
-	log.Printf(warnPrefix+format, msg)
+	text := fmt.Sprintf(format, msg)
+	log(warnPrefix, text)
 }
 
 func Error(msg string) {
-	log.Println(errorPrefix, msg)
+	log(errorPrefix, msg)
 }
