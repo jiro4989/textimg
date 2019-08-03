@@ -58,7 +58,7 @@ func Write(w io.Writer, imgExt string, texts []string, conf WriteConfig) error {
 	var (
 		charWidth   = conf.FontSize / 2
 		charHeight  = int(float64(conf.FontSize) * 1.1)
-		imageWidth  = maxStringWidth(texts) * charWidth
+		imageWidth  = escseq.StringWidth(texts) * charWidth
 		imageHeight = len(texts) * charHeight
 	)
 
@@ -184,16 +184,4 @@ func isExceptionallyCodePoint(r rune) bool {
 	}
 
 	return false
-}
-
-// maxStringWidth は表示上のテキストの最も幅の長い長さを返却する。
-func maxStringWidth(s []string) (max int) {
-	for _, v := range s {
-		text := escseq.Text(v)
-		width := runewidth.StringWidth(text)
-		if max < width {
-			max = width
-		}
-	}
-	return
 }

@@ -6,6 +6,8 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/mattn/go-runewidth"
 )
 
 type (
@@ -212,8 +214,20 @@ func Prefix(s string) (k Kind, prefix string, suffix string) {
 	return KindText, s, ""
 }
 
-// Text はエスケープシーケンスを含む文字列からテキストのみを返す。
-func Text(s string) (ret string) {
+// StringWidth は表示上のテキストの最も幅の長い長さを返却する。
+func StringWidth(s []string) (max int) {
+	for _, v := range s {
+		text := text(v)
+		width := runewidth.StringWidth(text)
+		if max < width {
+			max = width
+		}
+	}
+	return
+}
+
+// text はエスケープシーケンスを含む文字列からテキストのみを返す。
+func text(s string) (ret string) {
 	for s != "" {
 		k, pref, suff := Prefix(s)
 		if k == KindText {

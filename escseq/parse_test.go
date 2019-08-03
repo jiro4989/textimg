@@ -103,7 +103,28 @@ func TestText(t *testing.T) {
 		{desc: "色以外文字", s: "\x1b[1ATest\x1b[2BTest2", expect: "TestTest2"},
 	}
 	for _, v := range tds {
-		got := Text(v.s)
+		got := text(v.s)
+		assert.Equal(t, v.expect, got, v.desc)
+	}
+}
+
+func TestStringWidth(t *testing.T) {
+	type TestData struct {
+		desc   string
+		s      []string
+		expect int
+	}
+	tds := []TestData{
+		{desc: "エスケープ文字 有", s: []string{"\x1b[31mTest\x1b[0mTest2"}, expect: 9},
+		{desc: "エスケープ文字 有", s: []string{"\x1b[31mTest", "\x1b[0mTest2"}, expect: 5},
+		{desc: "エスケープ文字 無", s: []string{"TestTest2"}, expect: 9},
+		{desc: "マルチバイト文字", s: []string{"あいうえお"}, expect: 10},
+		{desc: "空文字列", s: []string{""}, expect: 0},
+		{desc: "空配列", s: []string{}, expect: 0},
+		{desc: "nil", s: nil, expect: 0},
+	}
+	for _, v := range tds {
+		got := StringWidth(v.s)
 		assert.Equal(t, v.expect, got, v.desc)
 	}
 }
