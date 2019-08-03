@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"runtime"
 	"strconv"
 	"strings"
 
 	"github.com/goki/freetype/truetype"
 	"github.com/jiro4989/textimg/escseq"
+	"github.com/jiro4989/textimg/ioimage"
 	"github.com/jiro4989/textimg/log"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/gofont/gomono"
@@ -240,14 +242,15 @@ var RootCommand = &cobra.Command{
 			defer w.Close()
 		}
 
-		encFmt, err := getEncodeFormat(outpath)
+		imgExt := filepath.Ext(strings.ToLower(outpath))
 
 		// タブ文字は画像描画時に表示されないので暫定対応で半角スペースに置換
 		for i, text := range texts {
 			texts[i] = strings.Replace(text, "\t", "  ", -1)
 		}
 
-		writeImage(w, encFmt, texts, appconf)
+		writeConf := ioimage.WriteConfig{}
+		ioimage.Write(w, imgExt, texts, writeConf)
 	},
 }
 
