@@ -3,3 +3,4 @@
 /testdata/out/
 tools/**/*
 !tools/**/*.go
+!tools/**/*.sh

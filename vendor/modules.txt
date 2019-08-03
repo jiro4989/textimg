@@ -1,8 +1,8 @@
 # github.com/davecgh/go-spew v1.1.0
 github.com/davecgh/go-spew/spew
-# github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
-github.com/golang/freetype/truetype
-github.com/golang/freetype/raster
+# github.com/goki/freetype v0.0.0-20181231101311-fa8a33aabaff
+github.com/goki/freetype/truetype
+github.com/goki/freetype/raster
 # github.com/inconshreveable/mousetrap v1.0.0
 github.com/inconshreveable/mousetrap
 # github.com/mattn/go-runewidth v0.0.4
@@ -18,4 +18,6 @@ github.com/stretchr/testify/assert
 # golang.org/x/image v0.0.0-20190501045829-6d32002ffd75
 golang.org/x/image/font
 golang.org/x/image/font/gofont/gomono
+golang.org/x/image/draw
 golang.org/x/image/math/fixed
+golang.org/x/image/math/f64

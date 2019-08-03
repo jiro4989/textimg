@@ -1,5 +1,5 @@
 APPNAME := $(shell basename `pwd`)
-VERSION := $(shell grep Version version.go | grep -Eo '"[^"]+"' | tr -d '"')
+VERSION := $(shell grep Version internal/global/*.go | grep -Eo '"[^"]+"' | tr -d '"')
 SRCS := $(shell find . -name "*.go" -type f )
 LDFLAGS := -ldflags="-s -w \
 	-extldflags \"-static\""
@@ -39,13 +39,13 @@ archive: xbuild ## クロスコンパイルしたバイナリとREADMEを圧縮�
 		find . -maxdepth 1 -mindepth 1 -a -type d  \
 		| while read -r d; \
 		do \
-			../archive.sh $$d; \
+			../tools/archive.sh $$d; \
 		done
 
 .PHONY: test
 test: ## テストコードを実行する
 	go test -cover ./...
-	./tester.sh
+	./tools/tester.sh
 
 .PHONY: clean
 clean: ## バイナリ、配布物ディレクトリを削除する
