@@ -1,5 +1,5 @@
 APPNAME := $(shell basename `pwd`)
-VERSION := $(shell grep Version version.go | grep -Eo '"[^"]+"' | tr -d '"')
+VERSION := $(shell grep Version internal/global/*.go | grep -Eo '"[^"]+"' | tr -d '"')
 SRCS := $(shell find . -name "*.go" -type f )
 LDFLAGS := -ldflags="-s -w \
 	-extldflags \"-static\""

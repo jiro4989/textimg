@@ -1,6 +1,10 @@
 package log
 
-import "log"
+import (
+	"log"
+
+	"github.com/jiro4989/textimg/internal/global"
+)
 
 const (
 	debugPrefix = "[DEBUG]"
@@ -10,7 +14,7 @@ const (
 )
 
 func init() {
-	log.SetPrefix("textimg: ")
+	log.SetPrefix(global.AppName + ": ")
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 }
 

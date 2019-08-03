@@ -12,6 +12,7 @@ import (
 
 	"github.com/goki/freetype/truetype"
 	"github.com/jiro4989/textimg/escseq"
+	"github.com/jiro4989/textimg/internal/global"
 	"github.com/jiro4989/textimg/ioimage"
 	"github.com/jiro4989/textimg/log"
 	"golang.org/x/image/font"
@@ -51,14 +52,14 @@ color format is same as "foreground" option`)
 	if runtime.GOOS == "darwin" {
 		font = "/Library/Fonts/AppleGothic.ttf"
 	}
-	envFontFile := os.Getenv(envNameFontFile)
+	envFontFile := os.Getenv(global.EnvNameFontFile)
 	if envFontFile != "" {
 		font = envFontFile
 	}
 	RootCommand.Flags().StringP("fontfile", "f", font, `font file path.
 You can change this default value with environment variables TEXTIMG_FONT_FILE`)
 
-	envEmojiFontFile := os.Getenv(envNameEmojiFontFile)
+	envEmojiFontFile := os.Getenv(global.EnvNameEmojiFontFile)
 	RootCommand.Flags().StringP("emoji-fontfile", "e", envEmojiFontFile, "emoji font file")
 
 	RootCommand.Flags().BoolP("use-emoji-font", "i", false, "use emoji font")
@@ -79,10 +80,10 @@ available image formats are [png | jpg | gif]`)
 }
 
 var RootCommand = &cobra.Command{
-	Use:     "textimg",
-	Short:   "textimg is command to convert from colored text (ANSI or 256) to image.",
-	Example: `textimg $'\x1b[31mRED\x1b[0m' -o out.png`,
-	Version: Version,
+	Use:     global.AppName,
+	Short:   global.AppName + " is command to convert from colored text (ANSI or 256) to image.",
+	Example: global.AppName + ` $'\x1b[31mRED\x1b[0m' -o out.png`,
+	Version: global.Version,
 	Run: func(cmd *cobra.Command, args []string) {
 		f := cmd.Flags()
 
@@ -92,7 +93,7 @@ var RootCommand = &cobra.Command{
 			panic(err)
 		}
 		if printEnv {
-			for _, envName := range []string{envNameFontFile, envNameEmojiDir, envNameEmojiFontFile} {
+			for _, envName := range global.EnvNames {
 				text := fmt.Sprintf("%s=%s", envName, os.Getenv(envName))
 				fmt.Println(text)
 			}
@@ -251,7 +252,7 @@ var RootCommand = &cobra.Command{
 
 		face := readFace(appconf.FontFile, float64(appconf.FontSize))
 		emojiFace := readFace(appconf.EmojiFontFile, float64(appconf.FontSize))
-		emojiDir := os.Getenv(envNameEmojiDir)
+		emojiDir := os.Getenv(global.EnvNameEmojiDir)
 
 		writeConf := ioimage.WriteConfig{
 			Foreground:    confForeground,
