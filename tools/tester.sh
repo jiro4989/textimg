@@ -124,6 +124,12 @@ mkdir -p testdata/out
 
 suite "ANSI color tests"
 
+echo test | textimg > $OUTDIR/no_outpath.png
+if [ $? -ne 0 ]; then
+  err "Failed execute no outpath pattern"
+  exit 1
+fi
+
 for color in black red green yellow blue magenta cyan white; do
   run_test "Foreground ANSI color ($color)" "$(f_$color $color)" ansi_f_$color.png
   run_test "Background ANSI color ($color)" "$(b_$color $color)" ansi_b_$color.png

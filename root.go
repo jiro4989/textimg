@@ -226,10 +226,14 @@ var RootCommand = &cobra.Command{
 			texts = toSlideStrings(texts, appconf.LineCount, appconf.SlideWidth, appconf.SlideForever)
 		}
 
+		// 拡張子のみ取得
+		imgExt := filepath.Ext(strings.ToLower(outpath))
+
 		// 出力先画像の指定がなければ標準出力を出力先にする
 		var w *os.File
 		if outpath == "" {
 			w = os.Stdout
+			imgExt = ".png" // 画像未指定のときはPNG出力
 		} else {
 			var err error
 			w, err = os.Create(appconf.Outpath)
@@ -238,8 +242,6 @@ var RootCommand = &cobra.Command{
 			}
 			defer w.Close()
 		}
-
-		imgExt := filepath.Ext(strings.ToLower(outpath))
 
 		// タブ文字は画像描画時に表示されないので暫定対応で半角スペースに置換
 		for i, text := range texts {
