@@ -3,6 +3,7 @@ module github.com/jiro4989/textimg
 go 1.12
 
 require (
+	github.com/goki/freetype v0.0.0-20181231101311-fa8a33aabaff
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/mattn/go-runewidth v0.0.4
