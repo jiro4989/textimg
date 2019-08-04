@@ -197,7 +197,7 @@ Flags:
       --foreground string         foreground color.
                                   format is [black|red|green|yellow|blue|magenta|cyan|white]
                                   or (R,G,B,A(0~255)) (default "white")
-  -b, --background string         ackground color.
+  -b, --background string         background color.
                                   color format is same as "foreground" option (default "black")
   -f, --fontfile string           font file path.
                                   You can change this default value with environment variables TEXTIMG_FONT_FILE (default "/usr/share/fonts/truetype/hack-gen/HackGen-Regular.ttf")
