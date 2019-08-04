@@ -41,7 +41,7 @@ func init() {
 	RootCommand.Flags().StringP("foreground", "", "white", `foreground escseq.
 format is [black|red|green|yellow|blue|magenta|cyan|white]
 or (R,G,B,A(0~255))`)
-	RootCommand.Flags().StringP("background", "b", "black", `ackground escseq.
+	RootCommand.Flags().StringP("background", "b", "black", `background escseq.
 color format is same as "foreground" option`)
 
 	font := "/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf"
