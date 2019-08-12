@@ -152,6 +152,7 @@ func Write(w io.Writer, imgExt string, texts []string, conf WriteConfig) error {
 			err = gif.Encode(w, img, nil)
 		}
 	default:
+		// root.goで拡張子の判定をしているため、このブロックには到達しないはず
 		err = errors.New(fmt.Sprintf("%s is not supported extension.", imgExt))
 	}
 	if err != nil {
