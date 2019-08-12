@@ -301,6 +301,51 @@ run_test "Zero width character (U+FEFF)" $'A \UFEFF B' zws_ufeff.png
 
 #}}}
 
+# Test: 空データ {{{
+
+suite "Empty input"
+
+echo -n | $CMD -o "$OUTDIR/empty.png" >& "$OUTDIR/empty_input_1.log" ## And empty.png will be not generated.
+ret=$?
+if [ $ret -eq 0 ]; then
+  err "Must be occured error if input is empty."
+  err_count=$(( err_count + 1 ))
+fi
+log=$(grep "WARN" "$OUTDIR/empty_input_1.log" | wc -l)
+if [ $log -ne 1 ]; then
+  err "Error log is not original error message."
+  err_count=$(( err_count + 1 ))
+fi
+
+$CMD "" -o "$OUTDIR/empty.png" >& "$OUTDIR/empty_input_2.log" ## And empty.png will be not generated.
+ret=$?
+if [ $ret -eq 0 ]; then
+  err "Error log is not original error message."
+  err_count=$(( err_count + 1 ))
+fi
+log=$(grep "WARN" "$OUTDIR/empty_input_2.log" | wc -l)
+if [ $log -ne 1 ]; then
+  err "Error log is not original error message."
+  err_count=$(( err_count + 1 ))
+fi
+
+$CMD "
+
+
+" -o "$OUTDIR/empty.png" >& "$OUTDIR/empty_input_3.log" ## And empty.png will be not generated.
+ret=$?
+if [ $ret -eq 0 ]; then
+  err "Error log is not original error message."
+  err_count=$(( err_count + 1 ))
+fi
+log=$(grep "WARN" "$OUTDIR/empty_input_3.log" | wc -l)
+if [ $log -ne 1 ]; then
+  err "Error log is not original error message."
+  err_count=$(( err_count + 1 ))
+fi
+
+#}}}
+
 if [ "$err_count" -lt 1 ]; then
   echo -e "$(f_green Success:) [$test_count/$test_count] tests passed"
   exit 0

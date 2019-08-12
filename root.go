@@ -80,7 +80,7 @@ var RootCommand = &cobra.Command{
 	Short:   global.AppName + " is command to convert from colored text (ANSI or 256) to image.",
 	Example: global.AppName + ` $'\x1b[31mRED\x1b[0m' -o out.png`,
 	Version: global.Version,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		f := cmd.Flags()
 
 		// コマンドライン引数の取得{{{
@@ -93,7 +93,7 @@ var RootCommand = &cobra.Command{
 				text := fmt.Sprintf("%s=%s", envName, os.Getenv(envName))
 				fmt.Println(text)
 			}
-			return
+			return nil
 		}
 
 		foreground, err := f.GetString("foreground")
@@ -218,7 +218,23 @@ var RootCommand = &cobra.Command{
 		if len(args) < 1 {
 			texts = readStdin()
 		} else {
-			texts = args
+			for _, v := range args {
+				for _, line := range strings.Split(v, "\n") {
+					texts = append(texts, line)
+				}
+			}
+		}
+
+		// textsが空のときは警告メッセージを出力して異常終了
+		var emptyCount int
+		for _, v := range texts {
+			if len(v) < 1 {
+				emptyCount++
+			}
+		}
+		if emptyCount == len(texts) {
+			err := errors.New("[WARN] Must need input texts.")
+			return err
 		}
 
 		// スライドアニメーションを使うときはテキストを加工する
@@ -273,8 +289,10 @@ var RootCommand = &cobra.Command{
 			LineCount:     lineCount,
 		}
 		if err := ioimage.Write(w, imgExt, texts, writeConf); err != nil {
-			panic(err)
+			return err
 		}
+
+		return nil
 	},
 }
 
