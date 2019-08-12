@@ -260,3 +260,21 @@ func TestToSlideStrings(t *testing.T) {
 		assert.Equal(t, v.expect, got, v.desc)
 	}
 }
+
+func TestRemoveZeroWidthCharacters(t *testing.T) {
+	type TestData struct {
+		desc   string
+		s      string
+		expect string
+	}
+	tds := []TestData{
+		{desc: "Zero width space (U+200B)が削除される", s: "A\u200bB", expect: "AB"},
+		{desc: "Zero width joiner (U+200C)が削除される", s: "A\u200cB", expect: "AB"},
+		{desc: "Zero width joiner (U+200D)が削除される", s: "A\u200dB", expect: "AB"},
+		{desc: "U+200B ~ U+200Dが削除される", s: "あ\u200bい\u200cう\u200dえ", expect: "あいうえ"},
+	}
+	for _, v := range tds {
+		got := removeZeroWidthCharacters(v.s)
+		assert.Equal(t, v.expect, got, v.desc)
+	}
+}
