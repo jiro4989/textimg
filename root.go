@@ -259,6 +259,15 @@ var RootCommand = &cobra.Command{
 			defer w.Close()
 		}
 
+		// 拡張子は.png, .jpg, .jpeg, .gifのいずれかでなければならない
+		switch imgExt {
+		case ".png", ".jpg", ".jpeg", ".gif":
+			// 何もしない
+		default:
+			err := errors.New(fmt.Sprintf("%s is not supported extension.", imgExt))
+			return err
+		}
+
 		// タブ文字は画像描画時に表示されないので暫定対応で半角スペースに置換
 		for i, text := range texts {
 			texts[i] = strings.Replace(text, "\t", "  ", -1)
