@@ -290,6 +290,17 @@ run_test "(Symbola)Draw 3 line emoji" "ab😃cd👍ef👀gh👄
 
 #}}}
 
+# Test: ゼロ幅文字 {{{
+
+suite "Zero width characters"
+
+run_test "Zero width character (U+200B)" $'A \U200B B' zws_u002b.png
+run_test "Zero width character (U+200C)" $'A \U200C B' zws_u002c.png
+run_test "Zero width character (U+200D)" $'A \U200D B' zws_u002d.png
+run_test "Zero width character (U+FEFF)" $'A \UFEFF B' zws_ufeff.png
+
+#}}}
+
 if [ "$err_count" -lt 1 ]; then
   echo -e "$(f_green Success:) [$test_count/$test_count] tests passed"
   exit 0
