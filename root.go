@@ -248,6 +248,11 @@ var RootCommand = &cobra.Command{
 			texts[i] = strings.Replace(text, "\t", "  ", -1)
 		}
 
+		// ゼロ幅文字を削除
+		for i, text := range texts {
+			texts[i] = removeZeroWidthCharacters(text)
+		}
+
 		face := ioimage.ReadFace(appconf.FontFile, float64(appconf.FontSize))
 		var emojiFace font.Face
 		if appconf.EmojiFontFile != "" {
@@ -366,4 +371,28 @@ func toSlideStrings(src []string, lineCount, slideWidth int, slideForever bool) 
 		}
 	}
 	return
+}
+
+// removeZeroWidthSpace はゼロ幅文字が存在したときに削除する。
+//
+// 参考
+// * ゼロ幅スペース https://ja.wikipedia.org/wiki/%E3%82%BC%E3%83%AD%E5%B9%85%E3%82%B9%E3%83%9A%E3%83%BC%E3%82%B9
+func removeZeroWidthCharacters(s string) string {
+	zwc := []rune{
+		0x200b, // zero width space
+		0x200c, // zero width joiner
+		0x200d, // zero width joiner
+		0xfeff, // zero width no-break-space
+	}
+	var ret []rune
+chars:
+	for _, v := range []rune(s) {
+		for _, c := range zwc {
+			if v == c {
+				continue chars
+			}
+		}
+		ret = append(ret, v)
+	}
+	return string(ret)
 }
