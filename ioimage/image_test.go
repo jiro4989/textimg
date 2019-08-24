@@ -31,7 +31,9 @@ func TestIsExceptionallyCodePoint(t *testing.T) {
 		{desc: "😚 == false", r: []rune("😚")[0], expect: false},
 	}
 	for _, v := range tds {
-		got := isExceptionallyCodePoint(v.r)
-		assert.Equal(t, v.expect, got, v.desc)
+		t.Run(v.desc, func(t *testing.T) {
+			got := isExceptionallyCodePoint(v.r)
+			assert.Equal(t, v.expect, got, v.desc)
+		})
 	}
 }
