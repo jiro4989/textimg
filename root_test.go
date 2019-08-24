@@ -28,9 +28,11 @@ func TestOptionColorStringToRGBA(t *testing.T) {
 		{desc: "0,0,0,0", colstr: "0,0,0,0", expect: escseq.RGBA{R: 0, G: 0, B: 0, A: 0}},
 	}
 	for _, v := range tds {
-		got, err := optionColorStringToRGBA(v.colstr)
-		assert.Nil(t, err, v.desc)
-		assert.Equal(t, v.expect, got, v.desc)
+		t.Run(v.desc, func(t *testing.T) {
+			got, err := optionColorStringToRGBA(v.colstr)
+			assert.Nil(t, err, v.desc)
+			assert.Equal(t, v.expect, got, v.desc)
+		})
 	}
 
 	// 異常系
@@ -45,8 +47,10 @@ func TestOptionColorStringToRGBA(t *testing.T) {
 		{desc: "RGBAの書式不正(空文字)", colstr: ""},
 	}
 	for _, v := range tds {
-		_, err := optionColorStringToRGBA(v.colstr)
-		assert.NotNil(t, err, v.desc)
+		t.Run(v.desc, func(t *testing.T) {
+			_, err := optionColorStringToRGBA(v.colstr)
+			assert.NotNil(t, err, v.desc)
+		})
 	}
 }
 
@@ -256,8 +260,10 @@ func TestToSlideStrings(t *testing.T) {
 		},
 	}
 	for _, v := range tds {
-		got := toSlideStrings(v.src, v.lineCount, v.slideWidth, v.slideForever)
-		assert.Equal(t, v.expect, got, v.desc)
+		t.Run(v.desc, func(t *testing.T) {
+			got := toSlideStrings(v.src, v.lineCount, v.slideWidth, v.slideForever)
+			assert.Equal(t, v.expect, got, v.desc)
+		})
 	}
 }
 
@@ -274,7 +280,9 @@ func TestRemoveZeroWidthCharacters(t *testing.T) {
 		{desc: "U+200B ~ U+200Dが削除される", s: "あ\u200bい\u200cう\u200dえ", expect: "あいうえ"},
 	}
 	for _, v := range tds {
-		got := removeZeroWidthCharacters(v.s)
-		assert.Equal(t, v.expect, got, v.desc)
+		t.Run(v.desc, func(t *testing.T) {
+			got := removeZeroWidthCharacters(v.s)
+			assert.Equal(t, v.expect, got, v.desc)
+		})
 	}
 }

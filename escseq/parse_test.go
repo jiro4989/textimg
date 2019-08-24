@@ -42,8 +42,10 @@ func TestParseColor(t *testing.T) {
 		}},
 	}
 	for _, v := range tds {
-		got := ParseColor(v.s)
-		assert.Equal(t, v.expect, got, v.desc)
+		t.Run(v.desc, func(t *testing.T) {
+			got := ParseColor(v.s)
+			assert.Equal(t, v.expect, got, v.desc)
+		})
 	}
 }
 
@@ -82,10 +84,12 @@ func TestPrefix(t *testing.T) {
 		{desc: "エスケープシーケンス以外 エスケープシーケンスっぽい文字列", s: "\x1b[31xTest", expectKind: KindText, expectPrefix: "\x1b[31xTest", expectSuffix: ""},
 	}
 	for _, v := range tds {
-		gk, gp, gs := Prefix(v.s)
-		assert.Equal(t, v.expectKind, gk, v.desc)
-		assert.Equal(t, v.expectPrefix, gp, v.desc)
-		assert.Equal(t, v.expectSuffix, gs, v.desc)
+		t.Run(v.desc, func(t *testing.T) {
+			gk, gp, gs := Prefix(v.s)
+			assert.Equal(t, v.expectKind, gk, v.desc)
+			assert.Equal(t, v.expectPrefix, gp, v.desc)
+			assert.Equal(t, v.expectSuffix, gs, v.desc)
+		})
 	}
 }
 
@@ -103,8 +107,10 @@ func TestText(t *testing.T) {
 		{desc: "色以外文字", s: "\x1b[1ATest\x1b[2BTest2", expect: "TestTest2"},
 	}
 	for _, v := range tds {
-		got := text(v.s)
-		assert.Equal(t, v.expect, got, v.desc)
+		t.Run(v.desc, func(t *testing.T) {
+			got := text(v.s)
+			assert.Equal(t, v.expect, got, v.desc)
+		})
 	}
 }
 
@@ -124,7 +130,9 @@ func TestStringWidth(t *testing.T) {
 		{desc: "nil", s: nil, expect: 0},
 	}
 	for _, v := range tds {
-		got := StringWidth(v.s)
-		assert.Equal(t, v.expect, got, v.desc)
+		t.Run(v.desc, func(t *testing.T) {
+			got := StringWidth(v.s)
+			assert.Equal(t, v.expect, got, v.desc)
+		})
 	}
 }
