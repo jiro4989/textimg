@@ -2,35 +2,35 @@
 
 [![Build Status](https://travis-ci.org/jiro4989/textimg.svg?branch=master)](https://travis-ci.org/jiro4989/textimg)
 
-textimg is command to convert from color text (ANSI or 256) to image. +
-Drawn image keeps having colors of escape sequence.
+textimgは端末上の着色されたテキスト(ANSIまたは256色)を画像に変換するコマンドです。
+エスケープシーケンスを解釈して色を画像に再現します。
 
-* [README on Japanese](./README_ja.md)
+* [README (英語)](./README.md)
 
-## Development
+## 開発
 
 go version go1.12 linux/amd64
 
-### How to build
+### ビルド方法
 
-You run below.
+以下のコマンドを実行する。
 
 ```bash
 make build
 ```
 
-You run below if you want to do cross compiling.
+クロスコンパイルするには以下のコマンドを実行する。
 
 ```bash
 make bootstrap
 make xbuild
 ```
 
-**I didn't test on Windows.**
+**Windows環境では動作確認していません。**
 
-## Usage examples
+## 使用例
 
-### Simple examples
+### シンプルな使い方
 
 ```bash
 textimg $'\x1b[31mRED\x1b[0m' > out.png
@@ -40,16 +40,16 @@ echo -e '\x1b[31mRED\x1b[0m' | textimg --background 0,255,255,255 -o out.jpg
 echo -e '\x1b[31mRED\x1b[0m' | textimg --background black -o out.gif
 ```
 
-Output image format is PNG or JPG or GIF.
-File extention of `-o` option defines output image format.
-Default image format is PNG. if you write image file with `>` redirect then
-image file will be saved as PNG file.
+画像フォーマットにはPNGとJPGとGIFが指定できます。
+`-o`オプションと共にファイル拡張子を指定して、画像フォーマットを指定します。
+デフォルトの画像フォーマットはPNGです。
+リダイレクトなどの標準出力へ画像を出力する際は、PNGとして出力します。
 
-### Rainbow examples
+### 虹色に出力する例
 
-#### From ANSI color
+#### ANSIカラー
 
-textimg supports `\x1b[30m` notation.
+`\x1b[30m`記法をサポートしています。
 
 ```bash
 colors=(30 31 32 33 34 35 36 37)
@@ -60,15 +60,15 @@ while read -r line; do
 done <<< "$(seq 8 | xargs -I@ echo TEST)" | textimg -b 50,100,12,255 -o testdata/out/rainbow.png
 ```
 
-Output is here.
+出力結果。
 
 ![Rainbow example](img/rainbow.png)
 
-#### From 256 color
+#### 256色指定
 
-textimg supports `\x1b[38;5;255m` notation.
+`\x1b[38;5;255m`記法をサポートしています。
 
-Foreground example is below.
+フォント色の例。
 
 ```bash
 seq 0 255 | while read -r i; do
@@ -79,11 +79,11 @@ seq 0 255 | while read -r i; do
 done | textimg -o 256_fg.png
 ```
 
-Output is here.
+出力。
 
 ![256 foreground example](img/256_fg.png)
 
-Background example is below.
+背景色の例。
 
 ```bash
 seq 0 255 | while read -r i; do
@@ -94,13 +94,13 @@ seq 0 255 | while read -r i; do
 done | textimg -o 256_bg.png
 ```
 
-Output is here.
+出力。
 
 ![256 background example](img/256_bg.png)
 
-#### From 256 RGB color
+#### RGB指定の例
 
-textimg supports `\x1b[38;2;255;0;0m` notation.
+`\x1b[38;2;255;0;0m`記法をサポートしています。
 
 ```bash
 seq 0 255 | while read i; do
@@ -111,13 +111,13 @@ seq 0 255 | while read i; do
 done | textimg -o extrgb_f_gradation.png
 ```
 
-Output is here.
+出力。
 
 ![RGB gradation example](img/extrgb_f_gradation.png)
 
-#### Animation GIF
+#### アニメーションGIF
 
-textimg supports animation GIF.
+アニメーションGIFをサポートしています。
 
 ```bash
 echo -e '\x1b[31mText\x1b[0m
@@ -136,11 +136,11 @@ echo -e '\x1b[31mText\x1b[0m
 \x1b[47mText\x1b[0m' | textimg -a -o ansi_fb_anime_1line.gif
 ```
 
-Output is here.
+出力。
 
 ![Animation GIF example](img/ansi_fb_anime_1line.gif)
 
-#### Slide animation GIF
+#### スライドアニメーション
 
 ```bash
 echo -e '\x1b[31mText\x1b[0m
@@ -159,13 +159,14 @@ echo -e '\x1b[31mText\x1b[0m
 \x1b[47mText\x1b[0m' | textimg -l 5 -SE -o slide_5_1_rainbow_forever.gif
 ```
 
-Output is here.
+出力。
 
 ![Slide Animation GIF example](img/slide_5_1_rainbow_forever.gif)
 
-### Using on Docker
+### Dockerでの使用例
 
-You can use textimg on Docker. ([DockerHub](https://hub.docker.com/r/jiro4989/textimg))
+Dockerでtextimgを使用できます。
+([DockerHub](https://hub.docker.com/r/jiro4989/textimg))
 
 ```bash
 docker pull jiro4989/textimg
@@ -174,17 +175,17 @@ docker run -v $(pwd):/images -it jiro4989/textimg Testあいうえお😄 -o /im
 docker run -v $(pwd):/images -it jiro4989/textimg Testあいうえお😄 -s
 ```
 
-## Install
+## インストール方法
 
 ```bash
 go get -u github.com/jiro4989/textimg
 ```
 
-or
+あるいは
 
-Download binary from [Releases](https://github.com/jiro4989/textimg/releases).
+[Releases](https://github.com/jiro4989/textimg/releases)からダウンロード。
 
-## Help
+## ヘルプ
 
 ```
 textimg is command to convert from colored text (ANSI or 256) to image.
@@ -221,35 +222,35 @@ Flags:
       --version                   version for textimg
 ```
 
-## Fonts
+## フォント
 
-### Default font path
+### デフォルトのフォントパス
 
-Default fonts that to use are below.
+デフォルトのフォントとして以下を使用します。
 
 |OS     |Font path |
 |-------|----------|
 |Linux  |/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf |
 |MacOS  |/Library/Fonts/AppleGothic.ttf |
-|Windows|Not supported (Welcome Pull Request!) |
+|Windows|サポートしていません(PRお待ちしています) |
 
-You can change this font path with environment variables `TEXTIMG_FONT_FILE` .
+`TEXTIMG_FONT_FILE`環境変数でフォントを変更できます。
 
-Examples.
+例。
 
 ```bash
 export TEXTIMG_FONT_FILE=/usr/share/fonts/TTF/HackGen-Regular.ttf
 ```
 
-### Emoji font (image file path)
+### 絵文字フォント (画像ファイルのパス)
 
-textimg needs emoji image files to draw emoji.
-You have to set `TEXTIMG_EMOJI_DIR` environment variables if you want to draw
-one.
-For example, run below.
+textimgは絵文字を描画するために画像ファイルを使用します。
+もしあなたが絵文字を描画したいなら、`TEXTIMG_EMOJI_DIR`環境変数をセットしなければなりません。
+
+以下がその例です。
 
 ```bash
-# You can clone your favorite fonts here.
+# お気に入りのフォントを指定できます
 sudo git clone https://github.com/googlefonts/noto-emoji /usr/local/src/noto-emoji
 export TEXTIMG_EMOJI_DIR=/usr/local/src/noto-emoji/png/128
 echo Test👍 | textimg -o emoji.png
@@ -257,10 +258,11 @@ echo Test👍 | textimg -o emoji.png
 
 ![Emoji example](img/emoji.png)
 
-### Emoji font (TTF)
+### 絵文字フォント (TTF)
 
-textimg can change emoji font with `TEXTIMG_EMOJI_FONT_FILE` environment variables and set `-i` option.
-For example, swicthing emoji font to [Symbola font](https://www.wfonts.com/font/symbola).
+textimgは`TEXTIMG_EMOJI_FONT_FILE`環境変数、あるいは`-i`オプションで絵文字フォントを指定できます。
+
+以下は[Symbola font](https://www.wfonts.com/font/symbola)を使用する例です。
 
 ```bash
 export TEXTIMG_EMOJI_FONT_FILE=/usr/share/fonts/TTF/Symbola.ttf
@@ -269,6 +271,6 @@ echo あ😃a👍！👀ん👄 | textimg -i -o emoji_symbola.png
 
 ![Symbola emoji example](img/emoji_symbola.png)
 
-## See also
+## 参考
 
 - https://misc.flogisoft.com/bash/tip_colors_and_formatting
