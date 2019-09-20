@@ -45,7 +45,7 @@ archive: xbuild ## クロスコンパイルしたバイナリとREADMEを圧縮�
 .PHONY: test
 test: ## テストコードを実行する
 	go test -cover ./...
-	./tools/tester.sh
+	./scripts/tester.sh
 
 .PHONY: clean
 clean: ## バイナリ、配布物ディレクトリを削除する
@@ -61,7 +61,7 @@ bootstrap: ## 外部ツールをインストールする
 
 .PHONY: docker-build
 docker-build:
-	docker build -t jiro4989/textimg .
+	docker-compose build
 
 .PHONY: docker-push
 docker-push:
