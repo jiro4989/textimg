@@ -5,6 +5,7 @@ services:
     build:
       context: ./
       dockerfile: ./build/textimg/Dockerfile
+    image: jiro4989/textimg
     tty: true
     volumes:
       - "$PWD:/go/src/github.com/jiro4989/textimg"
