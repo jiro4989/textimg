@@ -39,7 +39,7 @@ archive: xbuild ## クロスコンパイルしたバイナリとREADMEを圧縮�
 		find . -maxdepth 1 -mindepth 1 -a -type d  \
 		| while read -r d; \
 		do \
-			../tools/archive.sh $$d; \
+			../build/archive.sh $$d; \
 		done
 
 .PHONY: test
