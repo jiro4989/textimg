@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  textimg:
+    build:
+      context: ./
+      dockerfile: ./build/textimg/Dockerfile
+    tty: true
+    volumes:
+      - "$PWD:/go/src/github.com/jiro4989/textimg"
+      - "$PWD/images:/images"
