@@ -52,27 +52,27 @@ echo_color_string() {
   echo -e "$1$2$COLOR_RESET"
 }
 
-f_black()   { echo_color_string "$COLOR_FG_BLACK"    "$1"; };
-f_red()     { echo_color_string "$COLOR_FG_RED"      "$1"; };
-f_green()   { echo_color_string "$COLOR_FG_GREEN"    "$1"; };
-f_yellow()  { echo_color_string "$COLOR_FG_YELLOW"   "$1"; };
-f_blue()    { echo_color_string "$COLOR_FG_BLUE"     "$1"; };
-f_magenta() { echo_color_string "$COLOR_FG_MAGENTA"  "$1"; };
-f_cyan()    { echo_color_string "$COLOR_FG_CYAN"     "$1"; };
-f_white()   { echo_color_string "$COLOR_FG_WHITE"    "$1"; };
+f_black() { echo_color_string "$COLOR_FG_BLACK" "$1"; }
+f_red() { echo_color_string "$COLOR_FG_RED" "$1"; }
+f_green() { echo_color_string "$COLOR_FG_GREEN" "$1"; }
+f_yellow() { echo_color_string "$COLOR_FG_YELLOW" "$1"; }
+f_blue() { echo_color_string "$COLOR_FG_BLUE" "$1"; }
+f_magenta() { echo_color_string "$COLOR_FG_MAGENTA" "$1"; }
+f_cyan() { echo_color_string "$COLOR_FG_CYAN" "$1"; }
+f_white() { echo_color_string "$COLOR_FG_WHITE" "$1"; }
 
-b_black()   { echo_color_string "$COLOR_BG_BLACK"    "$1"; };
-b_red()     { echo_color_string "$COLOR_BG_RED"      "$1"; };
-b_green()   { echo_color_string "$COLOR_BG_GREEN"    "$1"; };
-b_yellow()  { echo_color_string "$COLOR_BG_YELLOW"   "$1"; };
-b_blue()    { echo_color_string "$COLOR_BG_BLUE"     "$1"; };
-b_magenta() { echo_color_string "$COLOR_BG_MAGENTA"  "$1"; };
-b_cyan()    { echo_color_string "$COLOR_BG_CYAN"     "$1"; };
-b_white()   { echo_color_string "$COLOR_BG_WHITE"    "$1"; };
+b_black() { echo_color_string "$COLOR_BG_BLACK" "$1"; }
+b_red() { echo_color_string "$COLOR_BG_RED" "$1"; }
+b_green() { echo_color_string "$COLOR_BG_GREEN" "$1"; }
+b_yellow() { echo_color_string "$COLOR_BG_YELLOW" "$1"; }
+b_blue() { echo_color_string "$COLOR_BG_BLUE" "$1"; }
+b_magenta() { echo_color_string "$COLOR_BG_MAGENTA" "$1"; }
+b_cyan() { echo_color_string "$COLOR_BG_CYAN" "$1"; }
+b_white() { echo_color_string "$COLOR_BG_WHITE" "$1"; }
 
-suite() { echo -e "$(f_blue [Suite]) $1"; };
-info() { echo -e "  $(f_green "[OK]") $1"          ; };
-err()  { echo -e "  $(f_red   "[NG]") $1" ; };
+suite() { echo -e "$(f_blue [Suite]) $1"; }
+info() { echo -e "  $(f_green "[OK]") $1"; }
+err() { echo -e "  $(f_red "[NG]") $1"; }
 
 ## 指定の文字列を指定回数繰り返した文字列を1行出力する。
 ##
@@ -117,7 +117,10 @@ run_test() {
 #
 # ==============================================================================
 
-make build || { echo "$(f_red Failed to build application)"; exit 1; };
+make build || {
+  echo "$(f_red Failed to build application)"
+  exit 1
+}
 mkdir -p testdata/out
 
 # Test: ANSIカラー{{{
@@ -150,8 +153,8 @@ run_test "CLI background option" "$(echo -e "あいうえおかきくけこ" | s
 colors=(30 31 32 33 34 35 36 37)
 i=0
 while read -r line; do
-  echo -e "$line" | sed -E 's/.*/\x1b['"${colors[$((i%8))]}"'m&\x1b[m/g'
-  i=$((i+1))
+  echo -e "$line" | sed -E 's/.*/\x1b['"${colors[$((i % 8))]}"'m&\x1b[m/g'
+  i=$((i + 1))
 done <<< "$(seq 8 | xargs -I@ echo TEST)" | $CMD -b 50,100,12,255 -o $OUTDIR/ansi_f_bgopt_rgba.png
 
 run_test "Output JPG" "$(f_red RedJPG)" ansi_f_red.jpg
@@ -162,6 +165,7 @@ $CMD "$(f_red RedArgs)" -o $OUTDIR/ansi_f_red_args.png
 
 # 全体の文字色を変更
 $CMD "Normal$(f_red Red)Normal" --foreground green -o $OUTDIR/ansi_f_changefg.png
+$CMD "Normal$(f_red Red)Normal" -g green -o $OUTDIR/ansi_f_changefg_short_g.png
 $CMD "Normal$(f_red Red)Normal" --foreground 255,255,0,255 -o $OUTDIR/ansi_f_changefg2.png
 $CMD "Normal$(f_red Red)Normal" --foreground 0,0,0,0 -o $OUTDIR/ansi_f_changefg3.png
 
@@ -196,7 +200,7 @@ suite "Extension 256 color tests"
 echo_256rainbow() {
   seq 0 255 | while read i; do
     echo -ne "\x1b[$1;5;${i}m$(printf %03d $i)"
-    if [ $(((i+1) % 16)) -eq 0 ]; then
+    if [ $(((i + 1) % 16)) -eq 0 ]; then
       echo
     fi
   done
@@ -214,7 +218,7 @@ suite "Extension 256 color (RGB) tests"
 echo_rgb_gradation() {
   seq 0 255 | while read i; do
     echo -ne "\x1b[$1;2;${i};0;0m$(printf %03d $i)"
-    if [ $(((i+1) % 16)) -eq 0 ]; then
+    if [ $(((i + 1) % 16)) -eq 0 ]; then
       echo
     fi
   done
@@ -305,43 +309,43 @@ run_test "Zero width character (U+FEFF)" $'A \UFEFF B' zws_ufeff.png
 
 suite "Empty input"
 
-echo -n | $CMD -o "$OUTDIR/empty.png" >& "$OUTDIR/empty_input_1.log" ## And empty.png will be not generated.
+echo -n | $CMD -o "$OUTDIR/empty.png" >&"$OUTDIR/empty_input_1.log" ## And empty.png will be not generated.
 ret=$?
 if [ $ret -eq 0 ]; then
   err "Must be occured error if input is empty."
-  err_count=$(( err_count + 1 ))
+  err_count=$((err_count + 1))
 fi
 log=$(grep "WARN" "$OUTDIR/empty_input_1.log" | wc -l)
 if [ $log -ne 1 ]; then
   err "Error log is not original error message."
-  err_count=$(( err_count + 1 ))
+  err_count=$((err_count + 1))
 fi
 
-$CMD "" -o "$OUTDIR/empty.png" >& "$OUTDIR/empty_input_2.log" ## And empty.png will be not generated.
+$CMD "" -o "$OUTDIR/empty.png" >&"$OUTDIR/empty_input_2.log" ## And empty.png will be not generated.
 ret=$?
 if [ $ret -eq 0 ]; then
   err "Error log is not original error message."
-  err_count=$(( err_count + 1 ))
+  err_count=$((err_count + 1))
 fi
 log=$(grep "WARN" "$OUTDIR/empty_input_2.log" | wc -l)
 if [ $log -ne 1 ]; then
   err "Error log is not original error message."
-  err_count=$(( err_count + 1 ))
+  err_count=$((err_count + 1))
 fi
 
 $CMD "
 
 
-" -o "$OUTDIR/empty.png" >& "$OUTDIR/empty_input_3.log" ## And empty.png will be not generated.
+" -o "$OUTDIR/empty.png" >&"$OUTDIR/empty_input_3.log" ## And empty.png will be not generated.
 ret=$?
 if [ $ret -eq 0 ]; then
   err "Error log is not original error message."
-  err_count=$(( err_count + 1 ))
+  err_count=$((err_count + 1))
 fi
 log=$(grep "WARN" "$OUTDIR/empty_input_3.log" | wc -l)
 if [ $log -ne 1 ]; then
   err "Error log is not original error message."
-  err_count=$(( err_count + 1 ))
+  err_count=$((err_count + 1))
 fi
 
 #}}}

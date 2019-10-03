@@ -38,7 +38,7 @@ const shellgeiEmojiFontPath = "/usr/share/fonts/truetype/ancient-scripts/Symbola
 func init() {
 	cobra.OnInitialize()
 	RootCommand.Flags().SortFlags = false
-	RootCommand.Flags().StringP("foreground", "", "white", `foreground escseq.
+	RootCommand.Flags().StringP("foreground", "g", "white", `foreground escseq.
 format is [black|red|green|yellow|blue|magenta|cyan|white]
 or (R,G,B,A(0~255))`)
 	RootCommand.Flags().StringP("background", "b", "black", `background escseq.
