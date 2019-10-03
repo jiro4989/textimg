@@ -196,14 +196,14 @@ Examples:
 textimg $'\x1b[31mRED\x1b[0m' -o out.png
 
 Flags:
-      --foreground string         foreground color.
+  -g, --foreground string         foreground escseq.
                                   format is [black|red|green|yellow|blue|magenta|cyan|white]
                                   or (R,G,B,A(0~255)) (default "white")
-  -b, --background string         background color.
+  -b, --background string         background escseq.
                                   color format is same as "foreground" option (default "black")
   -f, --fontfile string           font file path.
                                   You can change this default value with environment variables TEXTIMG_FONT_FILE (default "/usr/share/fonts/truetype/hack-gen/HackGen-Regular.ttf")
-  -e, --emoji-fontfile string     emoji font file (default "/usr/share/fonts/truetype/symbola/Symbola_hint.ttf")
+  -e, --emoji-fontfile string     emoji font file
   -i, --use-emoji-font            use emoji font
   -z, --shellgei-emoji-fontfile   emoji font file for shellgei-bot (path: "/usr/share/fonts/truetype/ancient-scripts/Symbola_hint.ttf")
   -F, --fontsize int              font size (default 20)
