@@ -28,6 +28,13 @@ make xbuild
 
 **I didn't test on Windows.**
 
+### How to test
+
+```bash
+make docker-build
+make docker-test
+```
+
 ## Usage examples
 
 ### Simple examples
@@ -172,6 +179,13 @@ docker pull jiro4989/textimg
 docker run -v $(pwd):/images -it jiro4989/textimg -h
 docker run -v $(pwd):/images -it jiro4989/textimg Testあいうえお😄 -o /images/a.png
 docker run -v $(pwd):/images -it jiro4989/textimg Testあいうえお😄 -s
+```
+
+or build docker image of local Dockerfile.
+
+```bash
+docker-compose build
+docker-compose run textimg $'\x1b[31mHello\x1b[42mWorld\x1b[m' -s
 ```
 
 ## Install

@@ -5,7 +5,20 @@ services:
     build:
       context: ./
       dockerfile: ./build/textimg/Dockerfile
+    container_name: textimg
     image: jiro4989/textimg
+    volumes:
+      - "$PWD:/go/src/github.com/jiro4989/textimg"
+      - "$PWD/images:/images"
+    depends_on:
+      - runtime
+
+  runtime:
+    build:
+      context: ./
+      dockerfile: ./build/runtime/Dockerfile
+    container_name: textimg_runtime
+    image: jiro4989/textimg-runtime
     tty: true
     volumes:
       - "$PWD:/go/src/github.com/jiro4989/textimg"
