@@ -45,7 +45,6 @@ archive: xbuild ## クロスコンパイルしたバイナリとREADMEを圧縮�
 .PHONY: test
 test: ## テストコードを実行する
 	go test -cover ./...
-	./scripts/tester.sh
 
 .PHONY: clean
 clean: ## バイナリ、配布物ディレクトリを削除する
