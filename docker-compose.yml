@@ -19,7 +19,6 @@ services:
       dockerfile: ./build/runtime/Dockerfile
     container_name: textimg_runtime
     image: jiro4989/textimg-runtime
-    tty: true
     volumes:
       - "$PWD:/go/src/github.com/jiro4989/textimg"
       - "$PWD/images:/images"
