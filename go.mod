@@ -10,6 +10,6 @@ require (
 	github.com/spf13/cobra v0.0.3
 	github.com/spf13/pflag v1.0.3 // indirect
 	github.com/stretchr/testify v1.3.0
-	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550 // indirect
+	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550
 	golang.org/x/image v0.0.0-20190501045829-6d32002ffd75
 )
