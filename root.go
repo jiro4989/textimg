@@ -12,6 +12,7 @@ import (
 	"github.com/jiro4989/textimg/escseq"
 	"github.com/jiro4989/textimg/internal/global"
 	"github.com/jiro4989/textimg/ioimage"
+	"golang.org/x/crypto/ssh/terminal"
 	"golang.org/x/image/font"
 
 	"github.com/spf13/cobra"
@@ -245,11 +246,18 @@ var RootCommand = &cobra.Command{
 		// 拡張子のみ取得
 		imgExt := filepath.Ext(strings.ToLower(outpath))
 
-		// 出力先画像の指定がなければ標準出力を出力先にする
 		var w *os.File
 		if outpath == "" {
+			// 出力先画像の指定がなく、且つ出力先がパイプならstdout + PNGとして
+			// 出力。なければそもそも画像処理しても意味が無いので終了
+			fd := os.Stdout.Fd()
+			if terminal.IsTerminal(int(fd)) {
+				fmt.Fprintln(os.Stderr, "textimg: Image data not written to a terminal. Use -o, -s, pipe or redirect.")
+				fmt.Fprintln(os.Stderr, "textimg: For help, type: textimg -h")
+				return errors.New("No output target error")
+			}
 			w = os.Stdout
-			imgExt = ".png" // 画像未指定のときはPNG出力
+			imgExt = ".png"
 		} else {
 			var err error
 			w, err = os.Create(appconf.Outpath)

@@ -52,7 +52,7 @@ var (
 	}
 )
 
-// writeImage はテキストのEscapeSequenceから色情報などを読み取り、
+// Write はテキストのEscapeSequenceから色情報などを読み取り、
 // wに書き込む。
 func Write(w io.Writer, imgExt string, texts []string, conf WriteConfig) error {
 	var (
