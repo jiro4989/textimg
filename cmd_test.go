@@ -410,3 +410,22 @@ func TestError(t *testing.T) {
 	err = exec.Command("bash", "-c", cmd).Run()
 	assert.NotNil(t, err, "改行のみの入力はエラーを返す")
 }
+
+func TestNoRedirectNoPipe(t *testing.T) {
+	var cmd string
+	var err error
+
+	const msg = "テスト"
+
+	cmd = fmt.Sprintf(`%s %s`, bin, msg)
+	err = exec.Command("bash", "-c", cmd).Run()
+	assert.NotNil(t, err, "出力先を未指定の時は異常終了")
+
+	cmd = fmt.Sprintf(`%s %s > /dev/null`, bin, msg)
+	err = exec.Command("bash", "-c", cmd).Run()
+	assert.Nil(t, err, "出力先(リダイレクト)が指定されている時は正常終了")
+
+	cmd = fmt.Sprintf(`%s %s | cat > /dev/null`, bin, msg)
+	err = exec.Command("bash", "-c", cmd).Run()
+	assert.Nil(t, err, "出力先(パイプ)が指定されている時は正常終了")
+}

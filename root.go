@@ -254,7 +254,7 @@ var RootCommand = &cobra.Command{
 			if terminal.IsTerminal(int(fd)) {
 				fmt.Fprintln(os.Stderr, "textimg: Image data not written to a terminal. Use -o, -s, pipe or redirect.")
 				fmt.Fprintln(os.Stderr, "textimg: For help, type: textimg -h")
-				return nil
+				return errors.New("No output target error")
 			}
 			w = os.Stdout
 			imgExt = ".png"
