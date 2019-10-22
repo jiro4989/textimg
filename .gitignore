@@ -3,3 +3,4 @@
 /testdata/out/
 images/*
 !images/.gitkeep
+scripts/width/width
