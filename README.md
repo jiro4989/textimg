@@ -1,6 +1,7 @@
 # textimg
 
 [![Build Status](https://travis-ci.org/jiro4989/textimg.svg?branch=master)](https://travis-ci.org/jiro4989/textimg)
+[![Coverage Status](https://coveralls.io/repos/github/jiro4989/textimg/badge.svg)](https://coveralls.io/github/jiro4989/textimg)
 
 textimg is command to convert from color text (ANSI or 256) to image. +
 Drawn image keeps having colors of escape sequence.
