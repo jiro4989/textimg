@@ -5,7 +5,12 @@ import (
 )
 
 func main() {
+	os.Exit(Main())
+}
+
+func Main() int {
 	if err := RootCommand.Execute(); err != nil {
-		os.Exit(-1)
+		return -1
 	}
+	return 0
 }
