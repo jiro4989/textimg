@@ -87,7 +87,7 @@ var RootCommand = &cobra.Command{
 		// コマンドライン引数の取得{{{
 		printEnv, err := f.GetBool("environments")
 		if err != nil {
-			panic(err)
+			return err
 		}
 		if printEnv {
 			for _, envName := range global.EnvNames {
@@ -99,37 +99,37 @@ var RootCommand = &cobra.Command{
 
 		foreground, err := f.GetString("foreground")
 		if err != nil {
-			panic(err)
+			return err
 		}
 
 		background, err := f.GetString("background")
 		if err != nil {
-			panic(err)
+			return err
 		}
 
 		outpath, err := f.GetString("out")
 		if err != nil {
-			panic(err)
+			return err
 		}
 
 		useAnimation, err := f.GetBool("animation")
 		if err != nil {
-			panic(err)
+			return err
 		}
 
 		delay, err := f.GetInt("delay")
 		if err != nil {
-			panic(err)
+			return err
 		}
 
 		lineCount, err := f.GetInt("line-count")
 		if err != nil {
-			panic(err)
+			return err
 		}
 
 		useShellGeiDir, err := f.GetBool("shellgei-imagedir")
 		if err != nil {
-			panic(err)
+			return err
 		}
 		if useShellGeiDir {
 			if useAnimation {
@@ -141,22 +141,22 @@ var RootCommand = &cobra.Command{
 
 		fontpath, err := f.GetString("fontfile")
 		if err != nil {
-			panic(err)
+			return err
 		}
 
 		emojiFontpath, err := f.GetString("emoji-fontfile")
 		if err != nil {
-			panic(err)
+			return err
 		}
 
 		useEmojiFont, err := f.GetBool("use-emoji-font")
 		if err != nil {
-			panic(err)
+			return err
 		}
 
 		useShellGeiEmojiFont, err := f.GetBool("shellgei-emoji-fontfile")
 		if err != nil {
-			panic(err)
+			return err
 		}
 		if useShellGeiEmojiFont {
 			emojiFontpath = shellgeiEmojiFontPath
@@ -165,12 +165,12 @@ var RootCommand = &cobra.Command{
 
 		fontsize, err := f.GetInt("fontsize")
 		if err != nil {
-			panic(err)
+			return err
 		}
 
 		useSlideAnimation, err := f.GetBool("slide")
 		if err != nil {
-			panic(err)
+			return err
 		}
 		if useSlideAnimation {
 			useAnimation = true
@@ -178,22 +178,22 @@ var RootCommand = &cobra.Command{
 
 		slideWidth, err := f.GetInt("slide-width")
 		if err != nil {
-			panic(err)
+			return err
 		}
 
 		slideForever, err := f.GetBool("forever")
 		if err != nil {
-			panic(err)
+			return err
 		}
 
 		confForeground, err := optionColorStringToRGBA(foreground)
 		if err != nil {
-			panic(err)
+			return err
 		}
 
 		confBackground, err := optionColorStringToRGBA(background)
 		if err != nil {
-			panic(err)
+			return err
 		}
 
 		// }}}
@@ -262,7 +262,7 @@ var RootCommand = &cobra.Command{
 			var err error
 			w, err = os.Create(appconf.Outpath)
 			if err != nil {
-				panic(err)
+				return err
 			}
 			defer w.Close()
 		}
