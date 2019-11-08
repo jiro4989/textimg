@@ -6,7 +6,6 @@ go:
 
 env:
   global:
-    - GO111MODULE=on
     - TEXTIMG_EMOJI_DIR=$HOME/noto-emoji/png/128
     - TEXTIMG_FONT_FILE=/Library/Fonts/AppleGothic.ttf
     - TEXTIMG_EMOJI_FONT_FILE=/tmp/Symbola_hint.ttf
@@ -32,6 +31,8 @@ install:
   - chmod 0777 $HOME/symbola
   - if [[ ! -e "$HOME/symbola/symbola.zip" ]]; then wget https://www.wfonts.com/download/data/2016/04/23/symbola/symbola.zip -q -O $HOME/symbola/symbola.zip; fi
   - unzip -o $HOME/symbola/symbola.zip -d /tmp
+    # coverage
+  - go get github.com/mattn/goveralls
 
 before_script:
   - if [ "$TRAVIS_OS_NAME" = linux ]; then sudo install -d -o $USER -g $USER -m 0755 /images; fi
@@ -44,6 +45,13 @@ script:
   - make test
   - if [ "$TRAVIS_OS_NAME" = linux ]; then ./bin/textimg "t.png" -s; fi
   - if [ "$TRAVIS_OS_NAME" = linux ]; then ./bin/textimg "t.gif" -sa; fi
+    # Coverage report
+  - go test -coverprofile=coverage.out ./...
+    # Merge coverage reports
+  - ./scripts/merge_coverage_profile.sh
+
+after_success:
+  - goveralls -coverprofile=.profile.cov
 
 after_script:
   - if [ "$TRAVIS_OS_NAME" = linux ]; then file /images/t.png; fi
