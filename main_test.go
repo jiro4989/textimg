@@ -39,16 +39,6 @@ func TestMainNormal(t *testing.T) {
 			want: 0,
 		},
 		{
-			desc: "不正な文字色",
-			in:   []string{"", "Sample", "-o", outDir + "/main_normal_red.png", "-g", "gggg", "-b", "blue"},
-			want: -1,
-		},
-		{
-			desc: "不正な背景色",
-			in:   []string{"", "Sample", "-o", outDir + "/main_normal_red.png", "-g", "green", "-b", "bbbb"},
-			want: -1,
-		},
-		{
 			desc: "Slackアイコンサイズで生成できる",
 			in:   []string{"", "Sample", "-o", outDir + "/main_slack.png", "--slack"},
 			want: 0,
@@ -57,6 +47,16 @@ func TestMainNormal(t *testing.T) {
 			desc: "SlackアイコンサイズでアニメーションGIFを生成できる",
 			in:   []string{"", "Sample", "-o", outDir + "/main_slack_anim.gif", "--slack", "-a"},
 			want: 0,
+		},
+		{
+			desc: "不正な文字色",
+			in:   []string{"", "Sample", "-o", outDir + "/main_normal_red.png", "-g", "gggg", "-b", "blue"},
+			want: -1,
+		},
+		{
+			desc: "不正な背景色",
+			in:   []string{"", "Sample", "-o", outDir + "/main_normal_red.png", "-g", "green", "-b", "bbbb"},
+			want: -1,
 		},
 	}
 	for _, tt := range tests {
