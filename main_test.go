@@ -50,12 +50,12 @@ func TestMainNormal(t *testing.T) {
 		},
 		{
 			desc: "Slackアイコンサイズで生成できる",
-			in:   []string{"", "Thank you", "-o", outDir + "/main_slack.png", "--slack"},
+			in:   []string{"", "Sample", "-o", outDir + "/main_slack.png", "--slack"},
 			want: 0,
 		},
 		{
 			desc: "SlackアイコンサイズでアニメーションGIFを生成できる",
-			in:   []string{"", "Thank you", "-o", outDir + "/main_slack_anim.gif", "--slack", "-a"},
+			in:   []string{"", "Sample", "-o", outDir + "/main_slack_anim.gif", "--slack", "-a"},
 			want: 0,
 		},
 	}
