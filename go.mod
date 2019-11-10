@@ -4,12 +4,12 @@ go 1.12
 
 require (
 	github.com/goki/freetype v0.0.0-20181231101311-fa8a33aabaff
-	github.com/inconshreveable/mousetrap v1.0.0 // indirect
-	github.com/mattn/go-runewidth v0.0.4
+	github.com/mattn/go-runewidth v0.0.6
 	github.com/pkg/errors v0.8.1
-	github.com/spf13/cobra v0.0.3
-	github.com/spf13/pflag v1.0.3 // indirect
+	github.com/spf13/cobra v0.0.5
+	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stretchr/testify v1.3.0
-	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550
-	golang.org/x/image v0.0.0-20190501045829-6d32002ffd75
+	golang.org/x/crypto v0.0.0-20191108234033-bd318be0434a
+	golang.org/x/image v0.0.0-20191009234506-e7c1f5e7dbb8
+	golang.org/x/sys v0.0.0-20191105231009-c1f44814a5cd // indirect
 )
