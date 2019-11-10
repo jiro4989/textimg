@@ -60,11 +60,11 @@ bootstrap: ## 外部ツールをインストールする
 
 .PHONY: docker-build
 docker-build: ## Dockerイメージをビルドする
-	docker-compose build
+	docker-compose build --no-cache
 
 .PHONY: docker-test
 docker-test: ## Docker環境でgo testを実行する
-	docker-compose run runtime go test -cover ./...
+	docker-compose run base go test -cover ./...
 
 .PHONY: docker-push
 docker-push: ## DockerHubにイメージをPushする
