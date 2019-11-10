@@ -48,6 +48,16 @@ func TestMainNormal(t *testing.T) {
 			in:   []string{"", "Sample", "-o", outDir + "/main_normal_red.png", "-g", "green", "-b", "bbbb"},
 			want: -1,
 		},
+		{
+			desc: "Slackアイコンサイズで生成できる",
+			in:   []string{"", "Thank you", "-o", outDir + "/main_slack.png", "--slack"},
+			want: 0,
+		},
+		{
+			desc: "SlackアイコンサイズでアニメーションGIFを生成できる",
+			in:   []string{"", "Thank you", "-o", outDir + "/main_slack_anim.gif", "--slack", "-a"},
+			want: 0,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.desc, func(t *testing.T) {
