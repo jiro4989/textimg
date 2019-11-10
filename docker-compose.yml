@@ -1,24 +1,14 @@
-version: '3'
+version: '3.7'
 
 services:
-  textimg:
+  base:
     build:
       context: ./
       dockerfile: ./build/textimg/Dockerfile
-    container_name: textimg
-    image: jiro4989/textimg
-    volumes:
-      - "$PWD:/go/src/github.com/jiro4989/textimg"
-      - "$PWD/images:/images"
-    depends_on:
-      - runtime
-
-  runtime:
-    build:
-      context: ./
-      dockerfile: ./build/runtime/Dockerfile
-    container_name: textimg_runtime
-    image: jiro4989/textimg-runtime
+      target: base
+    container_name: textimg_base
+    image: jiro4989/textimg-base
+    working_dir: /go/src/github.com/jiro4989/textimg
     volumes:
       - "$PWD:/go/src/github.com/jiro4989/textimg"
       - "$PWD/images:/images"
@@ -26,3 +16,12 @@ services:
       - TEXTIMG_FONT_FILE=/tmp/MyricaM.TTC
       - TEXTIMG_EMOJI_DIR=/usr/local/src/noto-emoji/png/128
       - TEXTIMG_EMOJI_FONT_FILE=/tmp/Symbola_hint.ttf
+
+  textimg:
+    build:
+      context: ./
+      dockerfile: ./build/textimg/Dockerfile
+    container_name: textimg
+    image: jiro4989/textimg
+    volumes:
+      - "$PWD/images:/images"
