@@ -32,6 +32,7 @@ type applicationConfig struct {
 	UseSlideAnimation bool        // スライドアニメーションする
 	SlideWidth        int         // スライドする幅
 	SlideForever      bool        // スライドを無限にスライドするように描画する
+	ToSlackIcon       bool        // Slackのアイコンサイズにする
 }
 
 const shellgeiEmojiFontPath = "/usr/share/fonts/truetype/ancient-scripts/Symbola_hint.ttf"
@@ -74,6 +75,7 @@ available image formats are [png | jpg | gif]`)
 	RootCommand.Flags().IntP("slide-width", "W", 1, "sliding animation width")
 	RootCommand.Flags().BoolP("forever", "E", false, "sliding forever")
 	RootCommand.Flags().BoolP("environments", "", false, "print environment variables")
+	RootCommand.Flags().BoolP("slack", "", false, "resize to slack icon size (128x128 px)")
 }
 
 var RootCommand = &cobra.Command{
@@ -196,6 +198,11 @@ var RootCommand = &cobra.Command{
 			return err
 		}
 
+		slack, err := f.GetBool("slack")
+		if err != nil {
+			return err
+		}
+
 		// }}}
 
 		appconf := applicationConfig{
@@ -212,6 +219,7 @@ var RootCommand = &cobra.Command{
 			UseSlideAnimation: useSlideAnimation,
 			SlideWidth:        slideWidth,
 			SlideForever:      slideForever,
+			ToSlackIcon:       slack,
 		}
 
 		// 引数にテキストの指定がなければ標準入力を使用する
@@ -304,6 +312,7 @@ var RootCommand = &cobra.Command{
 			UseAnimation:  useAnimation,
 			Delay:         delay,
 			LineCount:     lineCount,
+			ToSlackIcon:   slack,
 		}
 		if err := ioimage.Write(w, imgExt, texts, writeConf); err != nil {
 			return err
