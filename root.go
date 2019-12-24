@@ -256,8 +256,8 @@ var RootCommand = &cobra.Command{
 
 		var w *os.File
 		if outpath == "" {
-			// 出力先画像の指定がなく、且つ出力先がパイプならstdout + PNGとして
-			// 出力。なければそもそも画像処理しても意味が無いので終了
+			// 出力先画像の指定がなく、且つ出力先がパイプならstdout + PNG/GIFと
+			// して出力。なければそもそも画像処理しても意味が無いので終了
 			fd := os.Stdout.Fd()
 			if terminal.IsTerminal(int(fd)) {
 				fmt.Fprintln(os.Stderr, "textimg: Image data not written to a terminal. Use -o, -s, pipe or redirect.")
