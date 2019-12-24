@@ -265,7 +265,11 @@ var RootCommand = &cobra.Command{
 				return errors.New("No output target error")
 			}
 			w = os.Stdout
-			imgExt = ".png"
+			if useAnimation {
+				imgExt = ".gif"
+			} else {
+				imgExt = ".png"
+			}
 		} else {
 			var err error
 			w, err = os.Create(appconf.Outpath)
