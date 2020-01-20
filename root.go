@@ -19,31 +19,39 @@ import (
 )
 
 type applicationConfig struct {
-	Foreground        escseq.RGBA // 文字色
-	Background        escseq.RGBA // 背景色
-	Outpath           string      // 画像の出力ファイルパス
-	FontFile          string      // フォントファイルのパス
-	EmojiFontFile     string      // 絵文字用のフォントファイルのパス
-	UseEmojiFont      bool        // 絵文字TTFを使う
-	FontSize          int         // フォントサイズ
-	UseAnimation      bool        // アニメーションGIFを生成する
-	Delay             int         // アニメーションのディレイ時間
-	LineCount         int         // 入力データのうち何行を1フレーム画像に使うか
-	UseSlideAnimation bool        // スライドアニメーションする
-	SlideWidth        int         // スライドする幅
-	SlideForever      bool        // スライドを無限にスライドするように描画する
-	ToSlackIcon       bool        // Slackのアイコンサイズにする
+	Foreground               string // 文字色
+	Background               string // 背景色
+	Outpath                  string // 画像の出力ファイルパス
+	FontFile                 string // フォントファイルのパス
+	EmojiFontFile            string // 絵文字用のフォントファイルのパス
+	UseEmojiFont             bool   // 絵文字TTFを使う
+	FontSize                 int    // フォントサイズ
+	UseAnimation             bool   // アニメーションGIFを生成する
+	Delay                    int    // アニメーションのディレイ時間
+	LineCount                int    // 入力データのうち何行を1フレーム画像に使うか
+	UseSlideAnimation        bool   // スライドアニメーションする
+	SlideWidth               int    // スライドする幅
+	SlideForever             bool   // スライドを無限にスライドするように描画する
+	ToSlackIcon              bool   // Slackのアイコンサイズにする
+	PrintEnvironments        bool
+	UseShellgeiImagedir      bool
+	UseShellgeiEmojiFontfile bool
 }
 
 const shellgeiEmojiFontPath = "/usr/share/fonts/truetype/ancient-scripts/Symbola_hint.ttf"
 
+var (
+	appconf applicationConfig
+)
+
 func init() {
 	cobra.OnInitialize()
+
 	RootCommand.Flags().SortFlags = false
-	RootCommand.Flags().StringP("foreground", "g", "white", `foreground escseq.
+	RootCommand.Flags().StringVarP(&appconf.Foreground, "foreground", "g", "white", `foreground escseq.
 format is [black|red|green|yellow|blue|magenta|cyan|white]
 or (R,G,B,A(0~255))`)
-	RootCommand.Flags().StringP("background", "b", "black", `background escseq.
+	RootCommand.Flags().StringVarP(&appconf.Background, "background", "b", "black", `background escseq.
 color format is same as "foreground" option`)
 
 	font := "/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf"
@@ -54,28 +62,28 @@ color format is same as "foreground" option`)
 	if envFontFile != "" {
 		font = envFontFile
 	}
-	RootCommand.Flags().StringP("fontfile", "f", font, `font file path.
+	RootCommand.Flags().StringVarP(&appconf.FontFile, "fontfile", "f", font, `font file path.
 You can change this default value with environment variables TEXTIMG_FONT_FILE`)
 
 	envEmojiFontFile := os.Getenv(global.EnvNameEmojiFontFile)
-	RootCommand.Flags().StringP("emoji-fontfile", "e", envEmojiFontFile, "emoji font file")
+	RootCommand.Flags().StringVarP(&appconf.EmojiFontFile, "emoji-fontfile", "e", envEmojiFontFile, "emoji font file")
 
-	RootCommand.Flags().BoolP("use-emoji-font", "i", false, "use emoji font")
-	RootCommand.Flags().BoolP("shellgei-emoji-fontfile", "z", false, `emoji font file for shellgei-bot (path: "`+shellgeiEmojiFontPath+`")`)
+	RootCommand.Flags().BoolVarP(&appconf.UseEmojiFont, "use-emoji-font", "i", false, "use emoji font")
+	RootCommand.Flags().BoolVarP(&appconf.UseShellgeiEmojiFontfile, "shellgei-emoji-fontfile", "z", false, `emoji font file for shellgei-bot (path: "`+shellgeiEmojiFontPath+`")`)
 
-	RootCommand.Flags().IntP("fontsize", "F", 20, "font size")
-	RootCommand.Flags().StringP("out", "o", "", `output image file path.
+	RootCommand.Flags().IntVarP(&appconf.FontSize, "fontsize", "F", 20, "font size")
+	RootCommand.Flags().StringVarP(&appconf.Outpath, "out", "o", "", `output image file path.
 available image formats are [png | jpg | gif]`)
-	RootCommand.Flags().BoolP("shellgei-imagedir", "s", false, `image directory path for shellgei-bot (path: "/images/t.png")`)
+	RootCommand.Flags().BoolVarP(&appconf.UseShellgeiImagedir, "shellgei-imagedir", "s", false, `image directory path for shellgei-bot (path: "/images/t.png")`)
 
-	RootCommand.Flags().BoolP("animation", "a", false, "generate animation gif")
-	RootCommand.Flags().IntP("delay", "d", 20, "animation delay time")
-	RootCommand.Flags().IntP("line-count", "l", 1, "animation input line count")
-	RootCommand.Flags().BoolP("slide", "S", false, "use slide animation")
-	RootCommand.Flags().IntP("slide-width", "W", 1, "sliding animation width")
-	RootCommand.Flags().BoolP("forever", "E", false, "sliding forever")
-	RootCommand.Flags().BoolP("environments", "", false, "print environment variables")
-	RootCommand.Flags().BoolP("slack", "", false, "resize to slack icon size (128x128 px)")
+	RootCommand.Flags().BoolVarP(&appconf.UseAnimation, "animation", "a", false, "generate animation gif")
+	RootCommand.Flags().IntVarP(&appconf.Delay, "delay", "d", 20, "animation delay time")
+	RootCommand.Flags().IntVarP(&appconf.LineCount, "line-count", "l", 1, "animation input line count")
+	RootCommand.Flags().BoolVarP(&appconf.UseSlideAnimation, "slide", "S", false, "use slide animation")
+	RootCommand.Flags().IntVarP(&appconf.SlideWidth, "slide-width", "W", 1, "sliding animation width")
+	RootCommand.Flags().BoolVarP(&appconf.SlideForever, "forever", "E", false, "sliding forever")
+	RootCommand.Flags().BoolVarP(&appconf.PrintEnvironments, "environments", "", false, "print environment variables")
+	RootCommand.Flags().BoolVarP(&appconf.ToSlackIcon, "slack", "", false, "resize to slack icon size (128x128 px)")
 }
 
 var RootCommand = &cobra.Command{
@@ -83,247 +91,150 @@ var RootCommand = &cobra.Command{
 	Short:   global.AppName + " is command to convert from colored text (ANSI or 256) to image.",
 	Example: global.AppName + ` $'\x1b[31mRED\x1b[0m' -o out.png`,
 	Version: global.Version,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		f := cmd.Flags()
+	RunE:    runRootCommand,
+}
 
-		// コマンドライン引数の取得{{{
-		printEnv, err := f.GetBool("environments")
-		if err != nil {
-			return err
+func runRootCommand(cmd *cobra.Command, args []string) error {
+	// コマンドライン引数の取得{{{
+	if appconf.PrintEnvironments {
+		for _, envName := range global.EnvNames {
+			text := fmt.Sprintf("%s=%s", envName, os.Getenv(envName))
+			fmt.Println(text)
 		}
-		if printEnv {
-			for _, envName := range global.EnvNames {
-				text := fmt.Sprintf("%s=%s", envName, os.Getenv(envName))
-				fmt.Println(text)
-			}
-			return nil
-		}
-
-		foreground, err := f.GetString("foreground")
-		if err != nil {
-			return err
-		}
-
-		background, err := f.GetString("background")
-		if err != nil {
-			return err
-		}
-
-		outpath, err := f.GetString("out")
-		if err != nil {
-			return err
-		}
-
-		useAnimation, err := f.GetBool("animation")
-		if err != nil {
-			return err
-		}
-
-		delay, err := f.GetInt("delay")
-		if err != nil {
-			return err
-		}
-
-		lineCount, err := f.GetInt("line-count")
-		if err != nil {
-			return err
-		}
-
-		useShellGeiDir, err := f.GetBool("shellgei-imagedir")
-		if err != nil {
-			return err
-		}
-		if useShellGeiDir {
-			if useAnimation {
-				outpath = "/images/t.gif"
-			} else {
-				outpath = "/images/t.png"
-			}
-		}
-
-		fontpath, err := f.GetString("fontfile")
-		if err != nil {
-			return err
-		}
-
-		emojiFontpath, err := f.GetString("emoji-fontfile")
-		if err != nil {
-			return err
-		}
-
-		useEmojiFont, err := f.GetBool("use-emoji-font")
-		if err != nil {
-			return err
-		}
-
-		useShellGeiEmojiFont, err := f.GetBool("shellgei-emoji-fontfile")
-		if err != nil {
-			return err
-		}
-		if useShellGeiEmojiFont {
-			emojiFontpath = shellgeiEmojiFontPath
-			useEmojiFont = true
-		}
-
-		fontsize, err := f.GetInt("fontsize")
-		if err != nil {
-			return err
-		}
-
-		useSlideAnimation, err := f.GetBool("slide")
-		if err != nil {
-			return err
-		}
-		if useSlideAnimation {
-			useAnimation = true
-		}
-
-		slideWidth, err := f.GetInt("slide-width")
-		if err != nil {
-			return err
-		}
-
-		slideForever, err := f.GetBool("forever")
-		if err != nil {
-			return err
-		}
-
-		confForeground, err := optionColorStringToRGBA(foreground)
-		if err != nil {
-			return err
-		}
-
-		confBackground, err := optionColorStringToRGBA(background)
-		if err != nil {
-			return err
-		}
-
-		slack, err := f.GetBool("slack")
-		if err != nil {
-			return err
-		}
-
-		// }}}
-
-		appconf := applicationConfig{
-			Foreground:        confForeground,
-			Background:        confBackground,
-			Outpath:           outpath,
-			FontFile:          fontpath,
-			EmojiFontFile:     emojiFontpath,
-			UseEmojiFont:      useEmojiFont,
-			FontSize:          fontsize,
-			UseAnimation:      useAnimation,
-			Delay:             delay,
-			LineCount:         lineCount,
-			UseSlideAnimation: useSlideAnimation,
-			SlideWidth:        slideWidth,
-			SlideForever:      slideForever,
-			ToSlackIcon:       slack,
-		}
-
-		// 引数にテキストの指定がなければ標準入力を使用する
-		var texts []string
-		if len(args) < 1 {
-			texts = readStdin()
-		} else {
-			for _, v := range args {
-				for _, line := range strings.Split(v, "\n") {
-					texts = append(texts, line)
-				}
-			}
-		}
-
-		// textsが空のときは警告メッセージを出力して異常終了
-		var emptyCount int
-		for _, v := range texts {
-			if len(v) < 1 {
-				emptyCount++
-			}
-		}
-		if emptyCount == len(texts) {
-			err := errors.New("[WARN] Must need input texts.")
-			return err
-		}
-
-		// スライドアニメーションを使うときはテキストを加工する
-		if appconf.UseSlideAnimation {
-			texts = toSlideStrings(texts, appconf.LineCount, appconf.SlideWidth, appconf.SlideForever)
-		}
-
-		// 拡張子のみ取得
-		imgExt := filepath.Ext(strings.ToLower(outpath))
-
-		var w *os.File
-		if outpath == "" {
-			// 出力先画像の指定がなく、且つ出力先がパイプならstdout + PNG/GIFと
-			// して出力。なければそもそも画像処理しても意味が無いので終了
-			fd := os.Stdout.Fd()
-			if terminal.IsTerminal(int(fd)) {
-				fmt.Fprintln(os.Stderr, "textimg: Image data not written to a terminal. Use -o, -s, pipe or redirect.")
-				fmt.Fprintln(os.Stderr, "textimg: For help, type: textimg -h")
-				return errors.New("No output target error")
-			}
-			w = os.Stdout
-			if useAnimation {
-				imgExt = ".gif"
-			} else {
-				imgExt = ".png"
-			}
-		} else {
-			var err error
-			w, err = os.Create(appconf.Outpath)
-			if err != nil {
-				return err
-			}
-			defer w.Close()
-		}
-
-		// 拡張子は.png, .jpg, .jpeg, .gifのいずれかでなければならない
-		switch imgExt {
-		case ".png", ".jpg", ".jpeg", ".gif":
-			// 何もしない
-		default:
-			err := errors.New(fmt.Sprintf("%s is not supported extension.", imgExt))
-			return err
-		}
-
-		// タブ文字は画像描画時に表示されないので暫定対応で半角スペースに置換
-		for i, text := range texts {
-			texts[i] = strings.Replace(text, "\t", "  ", -1)
-		}
-
-		// ゼロ幅文字を削除
-		for i, text := range texts {
-			texts[i] = removeZeroWidthCharacters(text)
-		}
-
-		face := ioimage.ReadFace(appconf.FontFile, float64(appconf.FontSize))
-		var emojiFace font.Face
-		if appconf.EmojiFontFile != "" {
-			emojiFace = ioimage.ReadFace(appconf.EmojiFontFile, float64(appconf.FontSize))
-		}
-		emojiDir := os.Getenv(global.EnvNameEmojiDir)
-
-		writeConf := ioimage.WriteConfig{
-			Foreground:    confForeground,
-			Background:    confBackground,
-			FontFace:      face,
-			EmojiFontFace: emojiFace,
-			EmojiDir:      emojiDir,
-			UseEmojiFont:  useEmojiFont,
-			FontSize:      fontsize,
-			UseAnimation:  useAnimation,
-			Delay:         delay,
-			LineCount:     lineCount,
-			ToSlackIcon:   slack,
-		}
-		if err := ioimage.Write(w, imgExt, texts, writeConf); err != nil {
-			return err
-		}
-
 		return nil
-	},
+	}
+
+	// シェル芸イメージディレクトリの指定がある時はパスを変更する
+	if appconf.UseShellgeiImagedir {
+		if appconf.UseAnimation {
+			appconf.Outpath = "/images/t.gif"
+		} else {
+			appconf.Outpath = "/images/t.png"
+		}
+	}
+
+	if appconf.UseShellgeiEmojiFontfile {
+		appconf.EmojiFontFile = shellgeiEmojiFontPath
+		appconf.UseEmojiFont = true
+	}
+
+	if appconf.UseSlideAnimation {
+		appconf.UseAnimation = true
+	}
+
+	confForeground, err := optionColorStringToRGBA(appconf.Foreground)
+	if err != nil {
+		return err
+	}
+
+	confBackground, err := optionColorStringToRGBA(appconf.Background)
+	if err != nil {
+		return err
+	}
+
+	// }}}
+
+	// 引数にテキストの指定がなければ標準入力を使用する
+	var texts []string
+	if len(args) < 1 {
+		texts = readStdin()
+	} else {
+		for _, v := range args {
+			for _, line := range strings.Split(v, "\n") {
+				texts = append(texts, line)
+			}
+		}
+	}
+
+	// textsが空のときは警告メッセージを出力して異常終了
+	var emptyCount int
+	for _, v := range texts {
+		if len(v) < 1 {
+			emptyCount++
+		}
+	}
+	if emptyCount == len(texts) {
+		err := errors.New("[WARN] Must need input texts.")
+		return err
+	}
+
+	// スライドアニメーションを使うときはテキストを加工する
+	if appconf.UseSlideAnimation {
+		texts = toSlideStrings(texts, appconf.LineCount, appconf.SlideWidth, appconf.SlideForever)
+	}
+
+	// 拡張子のみ取得
+	imgExt := filepath.Ext(strings.ToLower(appconf.Outpath))
+
+	var w *os.File
+	if appconf.Outpath == "" {
+		// 出力先画像の指定がなく、且つ出力先がパイプならstdout + PNG/GIFと
+		// して出力。なければそもそも画像処理しても意味が無いので終了
+		fd := os.Stdout.Fd()
+		if terminal.IsTerminal(int(fd)) {
+			fmt.Fprintln(os.Stderr, "textimg: Image data not written to a terminal. Use -o, -s, pipe or redirect.")
+			fmt.Fprintln(os.Stderr, "textimg: For help, type: textimg -h")
+			return errors.New("No output target error")
+		}
+		w = os.Stdout
+		if appconf.UseAnimation {
+			imgExt = ".gif"
+		} else {
+			imgExt = ".png"
+		}
+	} else {
+		var err error
+		w, err = os.Create(appconf.Outpath)
+		if err != nil {
+			return err
+		}
+		defer w.Close()
+	}
+
+	// 拡張子は.png, .jpg, .jpeg, .gifのいずれかでなければならない
+	switch imgExt {
+	case ".png", ".jpg", ".jpeg", ".gif":
+		// 何もしない
+	default:
+		err := fmt.Errorf("%s is not supported extension.", imgExt)
+		return err
+	}
+
+	// タブ文字は画像描画時に表示されないので暫定対応で半角スペースに置換
+	for i, text := range texts {
+		texts[i] = strings.Replace(text, "\t", "  ", -1)
+	}
+
+	// ゼロ幅文字を削除
+	for i, text := range texts {
+		texts[i] = removeZeroWidthCharacters(text)
+	}
+
+	face := ioimage.ReadFace(appconf.FontFile, float64(appconf.FontSize))
+	var emojiFace font.Face
+	if appconf.EmojiFontFile != "" {
+		emojiFace = ioimage.ReadFace(appconf.EmojiFontFile, float64(appconf.FontSize))
+	}
+	emojiDir := os.Getenv(global.EnvNameEmojiDir)
+
+	writeConf := ioimage.WriteConfig{
+		Foreground:    confForeground,
+		Background:    confBackground,
+		FontFace:      face,
+		EmojiFontFace: emojiFace,
+		EmojiDir:      emojiDir,
+		UseEmojiFont:  appconf.UseEmojiFont,
+		FontSize:      appconf.FontSize,
+		UseAnimation:  appconf.UseAnimation,
+		Delay:         appconf.Delay,
+		LineCount:     appconf.LineCount,
+		ToSlackIcon:   appconf.ToSlackIcon,
+	}
+	if err := ioimage.Write(w, imgExt, texts, writeConf); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // オプション引数のbackgroundは２つの書き方を許容する。
