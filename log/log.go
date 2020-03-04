@@ -5,6 +5,8 @@ import (
 	"os"
 	"runtime"
 	"time"
+
+	"github.com/jiro4989/textimg/internal/global"
 )
 
 const (
@@ -14,7 +16,7 @@ const (
 	errorPrefix = "[ERROR]"
 )
 
-func log(lvl, msg string) {
+func log(lvl string, msg interface{}) {
 	_, f, l, ok := runtime.Caller(2)
 	if !ok {
 		fmt.Fprintln(os.Stderr, "something error occured.")
@@ -22,27 +24,27 @@ func log(lvl, msg string) {
 	}
 
 	now := time.Now().Format("2006/01/02 03:04:05")
-	text := fmt.Sprintf("%s %s %s:%d %s", now, lvl, f, l, msg)
+	text := fmt.Sprintf("%s %s %s %s:%d %v", now, global.AppName, lvl, f, l, msg)
 	fmt.Fprintln(os.Stderr, text)
 }
 
-func Debug(msg string) {
+func Debug(msg interface{}) {
 	log(debugPrefix, msg)
 }
 
-func Info(msg string) {
+func Info(msg interface{}) {
 	log(infoPrefix, msg)
 }
 
-func Warn(msg string) {
+func Warn(msg interface{}) {
 	log(warnPrefix, msg)
 }
 
-func Warnf(format, msg string) {
+func Warnf(format string, msg interface{}) {
 	text := fmt.Sprintf(format, msg)
 	log(warnPrefix, text)
 }
 
-func Error(msg string) {
+func Error(msg interface{}) {
 	log(errorPrefix, msg)
 }

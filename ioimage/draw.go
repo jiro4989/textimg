@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/jiro4989/textimg/escseq"
+	"github.com/jiro4989/textimg/log"
 	"github.com/mattn/go-runewidth"
 	xdraw "golang.org/x/image/draw"
 	"golang.org/x/image/font"
@@ -65,14 +66,14 @@ func drawLabel(img *image.RGBA, x, y int, r rune, col escseq.RGBA, face font.Fac
 func drawEmoji(img *image.RGBA, x, y int, emojiRune rune, path string, col escseq.RGBA, face font.Face) {
 	fp, err := os.Open(path)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		log.Error(err)
 		return
 	}
 	defer fp.Close()
 
 	emoji, _, err := image.Decode(fp)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		log.Error(err)
 		return
 	}
 
