@@ -12,6 +12,7 @@ import (
 	"github.com/jiro4989/textimg/escseq"
 	"github.com/jiro4989/textimg/internal/global"
 	"github.com/jiro4989/textimg/ioimage"
+	"github.com/jiro4989/textimg/log"
 	"golang.org/x/crypto/ssh/terminal"
 	"golang.org/x/image/font"
 
@@ -154,7 +155,7 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 		}
 	}
 	if emptyCount == len(texts) {
-		err := errors.New("[WARN] Must need input texts.")
+		err := errors.New("must need input texts.")
 		return err
 	}
 
@@ -172,9 +173,9 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 		// して出力。なければそもそも画像処理しても意味が無いので終了
 		fd := os.Stdout.Fd()
 		if terminal.IsTerminal(int(fd)) {
-			fmt.Fprintln(os.Stderr, "textimg: Image data not written to a terminal. Use -o, -s, pipe or redirect.")
-			fmt.Fprintln(os.Stderr, "textimg: For help, type: textimg -h")
-			return errors.New("No output target error")
+			log.Error("image data not written to a terminal. use -o, -s, pipe or redirect.")
+			log.Error("for help, type: textimg -h")
+			return errors.New("no output target error")
 		}
 		w = os.Stdout
 		if appconf.UseAnimation {
@@ -254,7 +255,7 @@ func optionColorStringToRGBA(colstr string) (escseq.RGBA, error) {
 	// カンマ区切りでの指定があれば返す
 	rgba := strings.Split(colstr, ",")
 	if len(rgba) != 4 {
-		return zeroColor, errors.New("RGBA指定が不正: " + colstr)
+		return zeroColor, errors.New("illegal RGBA format: " + colstr)
 	}
 
 	var (
