@@ -66,13 +66,9 @@ pkg_deb(
     architecture = "amd64",
     built_using = "unzip (6.0.1)",
     data = ":tar",
-    depends = [
-        "zlib1g-dev",
-        "unzip",
-    ],
-    description_file = "debian/description",
-    homepage = "http://bazel.build",
+    description_file = "description",
+    homepage = "https://github.com/jiro4989/textimg",
     maintainer = "The Bazel Authors <bazel-dev@googlegroups.com>",
-    package = "bazel",
+    package = "textimg",
     version = "0.1.1",
 )
