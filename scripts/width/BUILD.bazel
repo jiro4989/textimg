@@ -1,0 +1,15 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "go_default_library",
+    srcs = ["main.go"],
+    importpath = "github.com/jiro4989/textimg/scripts/width",
+    visibility = ["//visibility:private"],
+    deps = ["//vendor/github.com/mattn/go-runewidth:go_default_library"],
+)
+
+go_binary(
+    name = "width",
+    embed = [":go_default_library"],
+    visibility = ["//visibility:public"],
+)

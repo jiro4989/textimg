@@ -1,0 +1,9 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "go_default_library",
+    srcs = ["fixed.go"],
+    importmap = "github.com/jiro4989/textimg/vendor/golang.org/x/image/math/fixed",
+    importpath = "golang.org/x/image/math/fixed",
+    visibility = ["//visibility:public"],
+)

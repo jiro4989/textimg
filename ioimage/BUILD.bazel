@@ -1,0 +1,31 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "go_default_library",
+    srcs = [
+        "draw.go",
+        "face.go",
+        "image.go",
+        "scale.go",
+    ],
+    importpath = "github.com/jiro4989/textimg/ioimage",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//escseq:go_default_library",
+        "//log:go_default_library",
+        "//vendor/github.com/goki/freetype/truetype:go_default_library",
+        "//vendor/github.com/mattn/go-runewidth:go_default_library",
+        "//vendor/github.com/pkg/errors:go_default_library",
+        "//vendor/golang.org/x/image/draw:go_default_library",
+        "//vendor/golang.org/x/image/font:go_default_library",
+        "//vendor/golang.org/x/image/font/gofont/gomono:go_default_library",
+        "//vendor/golang.org/x/image/math/fixed:go_default_library",
+    ],
+)
+
+go_test(
+    name = "go_default_test",
+    srcs = ["image_test.go"],
+    embed = [":go_default_library"],
+    deps = ["//vendor/github.com/stretchr/testify/assert:go_default_library"],
+)

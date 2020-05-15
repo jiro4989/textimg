@@ -1,0 +1,14 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "go_default_library",
+    srcs = [
+        "draw.go",
+        "impl.go",
+        "scale.go",
+    ],
+    importmap = "github.com/jiro4989/textimg/vendor/golang.org/x/image/draw",
+    importpath = "golang.org/x/image/draw",
+    visibility = ["//visibility:public"],
+    deps = ["//vendor/golang.org/x/image/math/f64:go_default_library"],
+)
