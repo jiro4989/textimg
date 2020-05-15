@@ -1,4 +1,5 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
+load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar", "pkg_deb")
 load("@bazel_gazelle//:def.bzl", "gazelle")
 
 # gazelle:prefix github.com/jiro4989/textimg
@@ -31,7 +32,7 @@ go_binary(
 )
 
 go_test(
-    name = "go_default_test",
+    name = "test",
     srcs = [
         "cmd_test.go",
         "main_test.go",
@@ -45,19 +46,26 @@ go_test(
 )
 
 pkg_tar(
-    name = "debian-data",
+    name = "bin",
+    strip_prefix = "/src",
+    package_dir = "/usr/bin",
+    srcs = ["//:textimg"],
+    mode = "0755",
+)
+
+pkg_tar(
+    name = "tar",
     extension = "tar.gz",
     deps = [
-        ":bazel-bin",
-        ":bazel-tools",
+        ":bin",
     ],
 )
 
 pkg_deb(
-    name = "bazel-debian",
+    name = "deb",
     architecture = "amd64",
     built_using = "unzip (6.0.1)",
-    data = ":debian-data",
+    data = ":tar",
     depends = [
         "zlib1g-dev",
         "unzip",
