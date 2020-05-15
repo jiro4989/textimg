@@ -1,0 +1,45 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
+load("@bazel_gazelle//:def.bzl", "gazelle")
+
+# gazelle:prefix github.com/jiro4989/textimg
+gazelle(name = "gazelle")
+
+go_library(
+    name = "go_default_library",
+    srcs = [
+        "ioutil.go",
+        "main.go",
+        "root.go",
+    ],
+    importpath = "github.com/jiro4989/textimg",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//escseq:go_default_library",
+        "//internal/global:go_default_library",
+        "//ioimage:go_default_library",
+        "//log:go_default_library",
+        "//vendor/github.com/spf13/cobra:go_default_library",
+        "//vendor/golang.org/x/crypto/ssh/terminal:go_default_library",
+        "//vendor/golang.org/x/image/font:go_default_library",
+    ],
+)
+
+go_binary(
+    name = "textimg",
+    embed = [":go_default_library"],
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "go_default_test",
+    srcs = [
+        "cmd_test.go",
+        "main_test.go",
+        "root_test.go",
+    ],
+    embed = [":go_default_library"],
+    deps = [
+        "//escseq:go_default_library",
+        "//vendor/github.com/stretchr/testify/assert:go_default_library",
+    ],
+)
