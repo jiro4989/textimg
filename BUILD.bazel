@@ -43,3 +43,28 @@ go_test(
         "//vendor/github.com/stretchr/testify/assert:go_default_library",
     ],
 )
+
+pkg_tar(
+    name = "debian-data",
+    extension = "tar.gz",
+    deps = [
+        ":bazel-bin",
+        ":bazel-tools",
+    ],
+)
+
+pkg_deb(
+    name = "bazel-debian",
+    architecture = "amd64",
+    built_using = "unzip (6.0.1)",
+    data = ":debian-data",
+    depends = [
+        "zlib1g-dev",
+        "unzip",
+    ],
+    description_file = "debian/description",
+    homepage = "http://bazel.build",
+    maintainer = "The Bazel Authors <bazel-dev@googlegroups.com>",
+    package = "bazel",
+    version = "0.1.1",
+)
