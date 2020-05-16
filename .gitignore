@@ -4,3 +4,8 @@
 images/*
 !images/.gitkeep
 scripts/width/width
+
+bazel-bin
+bazel-out
+bazel-testlogs
+bazel-textimg
