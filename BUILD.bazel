@@ -63,12 +63,12 @@ pkg_tar(
 
 pkg_deb(
     name = "deb",
-    architecture = "amd64",
-    built_using = "unzip (6.0.1)",
     data = ":tar",
-    description_file = "description",
-    homepage = "https://github.com/jiro4989/textimg",
-    maintainer = "The Bazel Authors <bazel-dev@googlegroups.com>",
     package = "textimg",
+    architecture = "amd64",
+    maintainer = "The Bazel Authors <bazel-dev@googlegroups.com>",
     version = "0.1.1",
+    description_file = "description",
+    built_using = "unzip (6.0.1)",
+    homepage = "https://github.com/jiro4989/textimg",
 )
