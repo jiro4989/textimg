@@ -107,6 +107,7 @@ jobs:
     needs:
       - build-artifact
       - build-debian-packages
+      - build-rpm-packages
     steps:
       - uses: actions/checkout@v1
       - name: Generate changelog
