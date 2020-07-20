@@ -1,6 +1,5 @@
 FROM golang:1.12.10-alpine3.10 AS base
 
-ENV GO111MODULE off
 RUN go version \
     && echo $GOPATH \
     && apk update \
@@ -15,8 +14,8 @@ RUN go version \
 
 FROM base AS builder
 
-COPY . /go/src/github.com/jiro4989/textimg
-WORKDIR /go/src/github.com/jiro4989/textimg
+COPY . /app
+WORKDIR /app
 RUN go install
 
 ################################################################################
