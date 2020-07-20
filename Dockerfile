@@ -1,4 +1,4 @@
-FROM golang:1.12.10-alpine3.10 AS base
+FROM golang:1.14-alpine3.12 AS base
 
 RUN go version \
     && echo $GOPATH \
