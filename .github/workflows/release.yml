@@ -36,14 +36,14 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: artifact-${{ matrix.os }}-${{ matrix.arch }}
-          path: artifact-${{ matrix.os }}-${{ matrix.arch }}.zip
+          path: ${{ env.app }}-${{ matrix.os }}-${{ matrix.arch }}.zip
         if: matrix.os == 'windows'
 
       - name: Upload artifact (unix)
         uses: actions/upload-artifact@v2
         with:
           name: artifact-${{ matrix.os }}-${{ matrix.arch }}
-          path: artifact-${{ matrix.os }}-${{ matrix.arch }}.tar.gz
+          path: ${{ env.app }}-${{ matrix.os }}-${{ matrix.arch }}.tar.gz
         if: matrix.os != 'windows'
 
   create-release:
