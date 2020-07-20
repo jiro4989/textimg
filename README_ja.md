@@ -16,14 +16,7 @@ go version go1.12 linux/amd64
 以下のコマンドを実行する。
 
 ```bash
-make build
-```
-
-クロスコンパイルするには以下のコマンドを実行する。
-
-```bash
-make bootstrap
-make xbuild
+go build
 ```
 
 **Windows環境では動作確認していません。**
