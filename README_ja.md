@@ -1,6 +1,7 @@
 # textimg
 
-[![Build Status](https://travis-ci.org/jiro4989/textimg.svg?branch=master)](https://travis-ci.org/jiro4989/textimg)
+![test](https://github.com/jiro4989/textimg/workflows/test/badge.svg)
+[![codecov](https://codecov.io/gh/jiro4989/textimg/branch/master/graph/badge.svg)](https://codecov.io/gh/jiro4989/textimg)
 
 textimgは端末上の着色されたテキスト(ANSIまたは256色)を画像に変換するコマンドです。
 エスケープシーケンスを解釈して色を画像に再現します。
