@@ -2,8 +2,8 @@ name: release
 
 on:
   push:
-    # tags:
-    #   - 'v*.*.*'
+    tags:
+      - 'v*.*.*'
 
 env:
   app: textimg
@@ -45,3 +45,35 @@ jobs:
           name: ${{ env.app }}-${{ matrix.os }}-${{ matrix.arch }}
           path: ${{ env.app }}-${{ matrix.os }}-${{ matrix.arch }}.tar.gz
         if: matrix.os != 'windows'
+
+  create-release:
+    runs-on: ubuntu-latest
+    needs: build-artifact
+    steps:
+      - uses: actions/checkout@v1
+      - name: Generate changelog
+        run: |
+          wget https://github.com/git-chglog/git-chglog/releases/download/0.9.1/git-chglog_linux_amd64
+          chmod +x git-chglog_linux_amd64
+          mv git-chglog_linux_amd64 git-chglog
+          ./git-chglog --output ./changelog $(git describe --tags $(git rev-list --tags --max-count=1))
+
+      - name: Create Release
+        id: create-release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          body_path: ./changelog
+          draft: false
+          prerelease: false
+
+      - name: Write upload_url to file
+        run: echo '${{ steps.create-release.outputs.upload_url }}' > upload_url.txt
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: create-release
+          path: upload_url.txt
