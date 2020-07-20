@@ -76,7 +76,9 @@ jobs:
 
   create-release:
     runs-on: ubuntu-latest
-    needs: build-artifact
+    needs:
+      - build-artifact
+      - build-debian-packages
     steps:
       - uses: actions/checkout@v1
       - name: Generate changelog
