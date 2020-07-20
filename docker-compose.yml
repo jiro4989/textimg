@@ -25,3 +25,23 @@ services:
     image: jiro4989/textimg
     volumes:
       - "$PWD/images:/images"
+
+  coverage:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+      target: coverage
+    container_name: textimg_coverage
+    image: jiro4989/textimg-coverage
+    working_dir: /go/src/github.com/jiro4989/textimg
+    entrypoint:
+      - scripts/merge_coverage_profile.sh
+    depends_on:
+      - base
+    volumes:
+      - "$PWD:/go/src/github.com/jiro4989/textimg"
+      - "$PWD/images:/images"
+    environment:
+      - TEXTIMG_FONT_FILE=/tmp/MyricaM.TTC
+      - TEXTIMG_EMOJI_DIR=/usr/local/src/noto-emoji/png/128
+      - TEXTIMG_EMOJI_FONT_FILE=/tmp/Symbola_hint.ttf

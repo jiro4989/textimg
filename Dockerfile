@@ -21,6 +21,16 @@ RUN go install
 
 ################################################################################
 
+FROM base AS coverage
+
+RUN go get \
+       github.com/onsi/gomega \
+       github.com/onsi/ginkgo \
+       golang.org/x/tools/cmd/cover \
+       ;
+
+################################################################################
+
 FROM alpine:latest AS runtime
 COPY --from=builder /go/bin/textimg /usr/local/bin/
 COPY --from=builder /tmp/MyricaM.TTC /usr/share/fonts/truetype/myrica/MyricaM.TTC

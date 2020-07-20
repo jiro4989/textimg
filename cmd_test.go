@@ -22,7 +22,7 @@ type (
 
 const (
 	outDir               = "testdata/out"
-	bin                  = "bin/textimg"
+	bin                  = "./textimg"
 	ansiColorReset       = "\x1b[0m"
 	ansiColorFGBlack     = "\x1b[30m"
 	ansiColorFGRed       = "\x1b[31m"
@@ -81,7 +81,7 @@ func setup() {
 	// ディレクトリが存在しない場合はエラーになるけれど無視
 	os.RemoveAll(outDir)
 	os.MkdirAll(outDir, os.ModePerm)
-	if err := exec.Command("make", "build").Run(); err != nil {
+	if err := exec.Command("go", "build").Run(); err != nil {
 		panic(err)
 	}
 }
