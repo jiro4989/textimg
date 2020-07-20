@@ -16,9 +16,10 @@ trap cleanup INT QUIT TERM EXIT
 # メインの処理
 prof=${1:-"coverage.txt"}
 echo "mode: count" > $prof
-gopath1=$(echo $GOPATH | cut -d: -f1)
+pkgroot=$(go list)
 for pkg in $(go list ./...); do
-  tmpprof=$gopath1/src/$pkg/profile.tmp
+  dir=$(echo $pkg | sed "s,$pkgroot,.,")
+  tmpprof=$dir/profile.tmp
   go test -covermode=count -coverprofile=$tmpprof $pkg
   if [ -f $tmpprof ]; then
     cat $tmpprof | tail -n +2 >> $prof
