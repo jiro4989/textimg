@@ -1,0 +1,39 @@
+name: test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  skip:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Skip job"
+
+  before:
+    runs-on: ubuntu-latest
+    if: "! contains(github.event.head_commit.message, '[skip ci]')"
+    steps:
+      - run: echo "not contains '[skip ci]'"
+
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go: [ '1.11', '1.12', '1.13' ]
+    name: build go ${{ matrix.go }}
+    needs: before
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-go@v1
+        with:
+          go-version: ${{ matrix.go }}
+      - run: go build
+      - run: go install
+
+  test:
+    runs-on: ubuntu-latest
+    needs: before
+    steps:
+      - uses: actions/checkout@v1
+      - run: docker-compose run base go test -cover ./...
