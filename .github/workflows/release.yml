@@ -173,4 +173,4 @@ jobs:
           upload_url: ${{ steps.vars.outputs.upload_url }}
           asset_path: ${{ steps.vars.outputs.asset_name }}
           asset_name: ${{ steps.vars.outputs.asset_name }}
-          asset_content_type: ${{ matrix.asset_content_type }}
+          asset_content_type: 'application/vnd.debian.binary-package'
