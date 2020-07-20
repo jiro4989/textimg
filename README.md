@@ -17,14 +17,7 @@ go version go1.12 linux/amd64
 You run below.
 
 ```bash
-make build
-```
-
-You run below if you want to do cross compiling.
-
-```bash
-make bootstrap
-make xbuild
+go build
 ```
 
 **I didn't test on Windows.**
