@@ -67,12 +67,39 @@ jobs:
           version: ${{ github.ref }}
           arch: 'amd64'
           desc: '${{ env.app }} is command to convert from color text (ANSI or 256) to image.'
-
       - uses: actions/upload-artifact@v2
         with:
           name: artifact-deb
           path: |
             ./*.deb
+
+  build-rpm-packages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-go@v1
+        with:
+          go-version: ${{ env.goversion }}
+      - run: go build
+      - name: Create package
+        run: |
+          mkdir -p .rpmpkg/usr/bin
+          cp -p ./${{ env.app }} .rpmpkg/usr/bin/
+      - uses: jiro4989/build-rpm-action@v2
+        with:
+          summary: '${{ env.app }} is command to convert from color text (ANSI or 256) to image.'
+          package: ${{ env.app }}
+          package_root: .rpmpkg
+          maintainer: jiro4989
+          version: ${{ github.ref }}
+          arch: 'x86_64'
+          desc: '${{ env.app }} is command to convert from color text (ANSI or 256) to image.'
+      - uses: actions/upload-artifact@v2
+        with:
+          name: artifact-rpm
+          path: |
+            ./*.rpm
+            !./*-debuginfo-*.rpm
 
   create-release:
     runs-on: ubuntu-latest
@@ -147,9 +174,16 @@ jobs:
           asset_name: ${{ steps.vars.outputs.asset_name }}
           asset_content_type: ${{ matrix.asset_content_type }}
 
-  upload-debian-package:
+  upload-linux-package:
     runs-on: ubuntu-latest
     needs: create-release
+    strategy:
+      matrix:
+        include:
+          - pkg: deb
+            asset_content_type: application/vnd.debian.binary-package
+          - pkg: rpm
+            asset_content_type: application/x-rpm
     steps:
       - uses: actions/download-artifact@v2
         with:
@@ -162,7 +196,7 @@ jobs:
       - id: vars
         run: |
           echo "::set-output name=upload_url::$(cat upload_url.txt)"
-          echo "::set-output name=asset_name::$(ls *.deb | head -n 1)"
+          echo "::set-output name=asset_name::$(ls *.${{ matrix.pkg }} | head -n 1)"
 
       - name: Upload Release Asset
         id: upload-release-asset
@@ -173,4 +207,4 @@ jobs:
           upload_url: ${{ steps.vars.outputs.upload_url }}
           asset_path: ${{ steps.vars.outputs.asset_name }}
           asset_name: ${{ steps.vars.outputs.asset_name }}
-          asset_content_type: 'application/vnd.debian.binary-package'
+          asset_content_type: ${{ matrix.asset_content_type }}
