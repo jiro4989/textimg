@@ -4,7 +4,7 @@ services:
   base:
     build:
       context: ./
-      dockerfile: ./build/textimg/Dockerfile
+      dockerfile: ./Dockerfile
       target: base
     container_name: textimg_base
     image: jiro4989/textimg-base
@@ -20,7 +20,7 @@ services:
   textimg:
     build:
       context: ./
-      dockerfile: ./build/textimg/Dockerfile
+      dockerfile: ./Dockerfile
     container_name: textimg
     image: jiro4989/textimg
     volumes:
