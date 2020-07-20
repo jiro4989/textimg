@@ -37,3 +37,12 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - run: docker-compose run base go test -cover ./...
+
+  coverage:
+    runs-on: ubuntu-latest
+    needs: before
+    steps:
+      - uses: actions/checkout@v1
+      - name: Build base image
+        run: docker-compose run coverage
+      - uses: codecov/codecov-action@v1

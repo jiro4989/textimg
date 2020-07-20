@@ -14,7 +14,7 @@ cleanup() {
 trap cleanup INT QUIT TERM EXIT
 
 # メインの処理
-prof=${1:-".profile.cov"}
+prof=${1:-"coverage.txt"}
 echo "mode: count" > $prof
 gopath1=$(echo $GOPATH | cut -d: -f1)
 for pkg in $(go list ./...); do
