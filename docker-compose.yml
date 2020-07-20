@@ -10,7 +10,7 @@ services:
     image: jiro4989/textimg-base
     working_dir: /app
     volumes:
-      - "$PWD:/go/src/github.com/jiro4989/textimg"
+      - "$PWD:/app"
       - "$PWD/images:/images"
     environment:
       TEXTIMG_FONT_FILE: /tmp/MyricaM.TTC
