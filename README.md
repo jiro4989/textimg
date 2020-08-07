@@ -9,6 +9,33 @@ Drawn image keeps having colors of escape sequence.
 * [README on Japanese](./README_ja.md)
 
 <!--ts-->
+   * [textimg](#textimg)
+      * [Development](#development)
+         * [How to build](#how-to-build)
+         * [How to test](#how-to-test)
+      * [Usage examples](#usage-examples)
+         * [Simple examples](#simple-examples)
+         * [Rainbow examples](#rainbow-examples)
+            * [From ANSI color](#from-ansi-color)
+            * [From 256 color](#from-256-color)
+            * [From 256 RGB color](#from-256-rgb-color)
+            * [Animation GIF](#animation-gif)
+            * [Slide animation GIF](#slide-animation-gif)
+         * [Using on Docker](#using-on-docker)
+      * [Installation](#installation)
+         * [Linux users (Debian base distros)](#linux-users-debian-base-distros)
+         * [Linux users (RHEL compatible distros)](#linux-users-rhel-compatible-distros)
+         * [With Go](#with-go)
+         * [Manual](#manual)
+      * [Help](#help)
+      * [Fonts](#fonts)
+         * [Default font path](#default-font-path)
+         * [Emoji font (image file path)](#emoji-font-image-file-path)
+         * [Emoji font (TTF)](#emoji-font-ttf)
+      * [See also](#see-also)
+
+<!-- Added by: vagrant, at: Fri Aug  7 10:51:34 UTC 2020 -->
+
 <!--te-->
 
 ## Development
