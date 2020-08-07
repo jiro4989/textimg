@@ -8,6 +8,8 @@ Drawn image keeps having colors of escape sequence.
 
 * [README on Japanese](./README_ja.md)
 
+Table of contents:
+
 <!--ts-->
    * [textimg](#textimg)
       * [Development](#development)
