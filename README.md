@@ -182,13 +182,28 @@ docker-compose build
 docker-compose run textimg $'\x1b[31mHello\x1b[42mWorld\x1b[m' -s
 ```
 
-## Install
+## Installation
+
+### Linux users (Debian base distros)
+
+```bash
+wget https://github.com/jiro4989/textimg/releases/download/v2.3.12/textimg_2.3.12_amd64.deb
+sudo dpkg -i ./*.deb
+```
+
+### Linux users (RHEL compatible distros)
+
+```bash
+sudo yum install https://github.com/jiro4989/textimg/releases/download/v2.3.12/textimg-2.3.12-1.el7.x86_64.rpm
+```
+
+### With Go
 
 ```bash
 go get -u github.com/jiro4989/textimg
 ```
 
-or
+### Manual
 
 Download binary from [Releases](https://github.com/jiro4989/textimg/releases).
 
