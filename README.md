@@ -12,10 +12,7 @@ Table of contents:
 
 <!--ts-->
    * [textimg](#textimg)
-      * [Development](#development)
-         * [How to build](#how-to-build)
-         * [How to test](#how-to-test)
-      * [Usage examples](#usage-examples)
+      * [Usage](#usage)
          * [Simple examples](#simple-examples)
          * [Rainbow examples](#rainbow-examples)
             * [From ANSI color](#from-ansi-color)
@@ -34,13 +31,16 @@ Table of contents:
          * [Default font path](#default-font-path)
          * [Emoji font (image file path)](#emoji-font-image-file-path)
          * [Emoji font (TTF)](#emoji-font-ttf)
+      * [Development](#development)
+         * [How to build](#how-to-build)
+         * [How to test](#how-to-test)
       * [See also](#see-also)
 
-<!-- Added by: vagrant, at: Fri Aug  7 10:51:34 UTC 2020 -->
+<!-- Added by: vagrant, at: Fri Aug  7 10:54:31 UTC 2020 -->
 
 <!--te-->
 
-## Usage examples
+## Usage
 
 ### Simple examples
 
