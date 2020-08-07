@@ -11,6 +11,32 @@ textimgは端末上の着色されたテキスト(ANSIまたは256色)を画像�
 Table of contents:
 
 <!--ts-->
+   * [textimg](#textimg)
+      * [使用例](#使用例)
+         * [シンプルな使い方](#シンプルな使い方)
+         * [虹色に出力する例](#虹色に出力する例)
+            * [ANSIカラー](#ansiカラー)
+            * [256色指定](#256色指定)
+            * [RGB指定の例](#rgb指定の例)
+            * [アニメーションGIF](#アニメーションgif)
+            * [スライドアニメーション](#スライドアニメーション)
+         * [Dockerでの使用例](#dockerでの使用例)
+      * [インストール](#インストール)
+         * [Linux users (Debian base distros)](#linux-users-debian-base-distros)
+         * [Linux users (RHEL compatible distros)](#linux-users-rhel-compatible-distros)
+         * [With Go](#with-go)
+         * [手動インストール](#手動インストール)
+      * [ヘルプ](#ヘルプ)
+      * [フォント](#フォント)
+         * [デフォルトのフォントパス](#デフォルトのフォントパス)
+         * [絵文字フォント (画像ファイルのパス)](#絵文字フォント-画像ファイルのパス)
+         * [絵文字フォント (TTF)](#絵文字フォント-ttf)
+      * [開発](#開発)
+         * [ビルド方法](#ビルド方法)
+      * [参考](#参考)
+
+<!-- Added by: vagrant, at: Fri Aug  7 10:56:37 UTC 2020 -->
+
 <!--te-->
 
 ## 使用例
