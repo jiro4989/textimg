@@ -8,6 +8,9 @@ Drawn image keeps having colors of escape sequence.
 
 * [README on Japanese](./README_ja.md)
 
+<!--ts-->
+<!--te-->
+
 ## Development
 
 go version go1.12 linux/amd64
