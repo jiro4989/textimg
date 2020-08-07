@@ -40,27 +40,6 @@ Table of contents:
 
 <!--te-->
 
-## Development
-
-go version go1.12 linux/amd64
-
-### How to build
-
-You run below.
-
-```bash
-go build
-```
-
-**I didn't test on Windows.**
-
-### How to test
-
-```bash
-make docker-build
-make docker-test
-```
-
 ## Usage examples
 
 ### Simple examples
@@ -323,6 +302,27 @@ echo あ😃a👍！👀ん👄 | textimg -i -o emoji_symbola.png
 ```
 
 ![Symbola emoji example](img/emoji_symbola.png)
+
+## Development
+
+go version go1.12 linux/amd64
+
+### How to build
+
+You run below.
+
+```bash
+go build
+```
+
+**I didn't test on Windows.**
+
+### How to test
+
+```bash
+make docker-build
+make docker-test
+```
 
 ## See also
 
