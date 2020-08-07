@@ -8,19 +8,10 @@ textimgは端末上の着色されたテキスト(ANSIまたは256色)を画像�
 
 * [README (英語)](./README.md)
 
-## 開発
+Table of contents:
 
-go version go1.12 linux/amd64
-
-### ビルド方法
-
-以下のコマンドを実行する。
-
-```bash
-go build
-```
-
-**Windows環境では動作確認していません。**
+<!--ts-->
+<!--te-->
 
 ## 使用例
 
@@ -169,15 +160,30 @@ docker run -v $(pwd):/images -it jiro4989/textimg Testあいうえお😄 -o /im
 docker run -v $(pwd):/images -it jiro4989/textimg Testあいうえお😄 -s
 ```
 
-## インストール方法
+## インストール
+
+### Linux users (Debian base distros)
+
+```bash
+wget https://github.com/jiro4989/textimg/releases/download/v2.3.12/textimg_2.3.12_amd64.deb
+sudo dpkg -i ./*.deb
+```
+
+### Linux users (RHEL compatible distros)
+
+```bash
+sudo yum install https://github.com/jiro4989/textimg/releases/download/v2.3.12/textimg-2.3.12-1.el7.x86_64.rpm
+```
+
+### With Go
 
 ```bash
 go get -u github.com/jiro4989/textimg
 ```
 
-あるいは
+### 手動インストール
 
-[Releases](https://github.com/jiro4989/textimg/releases)からダウンロード。
+実行ファイルを[Releases](https://github.com/jiro4989/textimg/releases)からダウンロードしてください。
 
 ## ヘルプ
 
@@ -264,6 +270,20 @@ echo あ😃a👍！👀ん👄 | textimg -i -o emoji_symbola.png
 ```
 
 ![Symbola emoji example](img/emoji_symbola.png)
+
+## 開発
+
+go version go1.12 linux/amd64
+
+### ビルド方法
+
+以下のコマンドを実行する。
+
+```bash
+go build
+```
+
+**Windows環境では動作確認していません。**
 
 ## 参考
 
