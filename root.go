@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -13,6 +15,7 @@ import (
 	"github.com/jiro4989/textimg/internal/global"
 	"github.com/jiro4989/textimg/ioimage"
 	"github.com/jiro4989/textimg/log"
+	"github.com/skanehira/clipboard-image"
 	"golang.org/x/crypto/ssh/terminal"
 	"golang.org/x/image/font"
 
@@ -37,6 +40,7 @@ type applicationConfig struct {
 	PrintEnvironments        bool
 	UseShellgeiImagedir      bool
 	UseShellgeiEmojiFontfile bool
+	UseClipboard             bool
 }
 
 const shellgeiEmojiFontPath = "/usr/share/fonts/truetype/ancient-scripts/Symbola_hint.ttf"
@@ -75,6 +79,8 @@ You can change this default value with environment variables TEXTIMG_FONT_FILE`)
 	RootCommand.Flags().IntVarP(&appconf.FontSize, "fontsize", "F", 20, "font size")
 	RootCommand.Flags().StringVarP(&appconf.Outpath, "out", "o", "", `output image file path.
 available image formats are [png | jpg | gif]`)
+	RootCommand.Flags().BoolVarP(&appconf.UseClipboard, "use-clipboard", "c", false, `copy image to clipboard (require -o option)`)
+
 	RootCommand.Flags().BoolVarP(&appconf.UseShellgeiImagedir, "shellgei-imagedir", "s", false, `image directory path for shellgei-bot (path: "/images/t.png")`)
 
 	RootCommand.Flags().BoolVarP(&appconf.UseAnimation, "animation", "a", false, "generate animation gif")
@@ -167,8 +173,10 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 	// 拡張子のみ取得
 	imgExt := filepath.Ext(strings.ToLower(appconf.Outpath))
 
-	var w *os.File
-	if appconf.Outpath == "" {
+	var w io.ReadWriter
+	if appconf.UseClipboard {
+		w = new(bytes.Buffer)
+	} else if appconf.Outpath == "" {
 		// 出力先画像の指定がなく、且つ出力先がパイプならstdout + PNG/GIFと
 		// して出力。なければそもそも画像処理しても意味が無いので終了
 		fd := os.Stdout.Fd()
@@ -184,12 +192,12 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 			imgExt = ".png"
 		}
 	} else {
-		var err error
-		w, err = os.Create(appconf.Outpath)
+		f, err := os.Create(appconf.Outpath)
 		if err != nil {
 			return err
 		}
-		defer w.Close()
+		defer f.Close()
+		w = f
 	}
 
 	// 拡張子は.png, .jpg, .jpeg, .gifのいずれかでなければならない
@@ -233,6 +241,10 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 	}
 	if err := ioimage.Write(w, imgExt, texts, writeConf); err != nil {
 		return err
+	}
+
+	if appconf.UseClipboard {
+		return clipboard.CopyToClipboard(w)
 	}
 
 	return nil

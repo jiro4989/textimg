@@ -198,6 +198,8 @@ docker-compose run textimg $'\x1b[31mHello\x1b[42mWorld\x1b[m' -s
 ### Linux users (Debian base distros)
 
 ```bash
+# if use clipboard
+sudo apt install xclip
 wget https://github.com/jiro4989/textimg/releases/download/v2.3.12/textimg_2.3.12_amd64.deb
 sudo dpkg -i ./*.deb
 ```
@@ -205,6 +207,8 @@ sudo dpkg -i ./*.deb
 ### Linux users (RHEL compatible distros)
 
 ```bash
+# if use clipboard
+sudo yum install xclip
 sudo yum install https://github.com/jiro4989/textimg/releases/download/v2.3.12/textimg-2.3.12-1.el7.x86_64.rpm
 ```
 
@@ -243,6 +247,7 @@ Flags:
   -F, --fontsize int              font size (default 20)
   -o, --out string                output image file path.
                                   available image formats are [png | jpg | gif]
+  -c, --use-clipboard             copy image to clipboard (require -o option)
   -s, --shellgei-imagedir         image directory path for shellgei-bot (path: "/images/t.png")
   -a, --animation                 generate animation gif
   -d, --delay int                 animation delay time (default 20)
