@@ -3,7 +3,7 @@
 ![test](https://github.com/jiro4989/textimg/workflows/test/badge.svg)
 [![codecov](https://codecov.io/gh/jiro4989/textimg/branch/master/graph/badge.svg)](https://codecov.io/gh/jiro4989/textimg)
 
-textimg is command to convert from color text (ANSI or 256) to image. +
+textimg is command to convert from color text (ANSI or 256) to image.  
 Drawn image keeps having colors of escape sequence.
 
 * [README on Japanese](./README_ja.md)
