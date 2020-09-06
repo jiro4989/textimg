@@ -57,6 +57,30 @@ File extention of `-o` option defines output image format.
 Default image format is PNG. if you write image file with `>` redirect then
 image file will be saved as PNG file.
 
+### With other commands
+
+grep:
+
+```bash
+$ echo hello world | grep hello --color=always | textimg -o out.png
+```
+
+![image](https://user-images.githubusercontent.com/13825004/92329722-4e77d380-f0a4-11ea-97eb-0de316ebf6c7.png)
+
+screenfetch:
+
+```bash
+$ screenfetch | textimg -o out.png
+```
+
+[bat](https://github.com/sharkdp/bat):
+
+```bash
+$ bat --color=always /etc/profile | textimg -o out.png
+```
+
+![image](https://user-images.githubusercontent.com/13825004/92329806-03aa8b80-f0a5-11ea-95f4-d876c34d65d6.png)
+
 ### Rainbow examples
 
 #### From ANSI color
