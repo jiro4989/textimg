@@ -14,6 +14,7 @@ Table of contents:
    * [textimg](#textimg)
       * [Usage](#usage)
          * [Simple examples](#simple-examples)
+         * [With other commands](#with-other-commands)
          * [Rainbow examples](#rainbow-examples)
             * [From ANSI color](#from-ansi-color)
             * [From 256 color](#from-256-color)
