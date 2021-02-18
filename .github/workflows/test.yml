@@ -2,7 +2,13 @@ name: test
 
 on:
   push:
+    paths-ignore:
+      - README*
+      - LICENSE
   pull_request:
+    paths-ignore:
+      - README*
+      - LICENSE
 
 jobs:
   skip:
