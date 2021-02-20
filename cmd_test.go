@@ -80,7 +80,10 @@ func setup() {
 
 	// ディレクトリが存在しない場合はエラーになるけれど無視
 	os.RemoveAll(outDir)
-	os.MkdirAll(outDir, os.ModePerm)
+	err := os.MkdirAll(outDir, os.ModePerm)
+	if err != nil {
+		panic(err)
+	}
 	if err := exec.Command("go", "build").Run(); err != nil {
 		panic(err)
 	}
