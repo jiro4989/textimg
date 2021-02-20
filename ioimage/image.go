@@ -93,7 +93,7 @@ func Write(w io.Writer, imgExt string, texts []string, conf WriteConfig) error {
 				text := prefix
 				drawBackground(img, posX, posY-charHeight, text, bgCol, charWidth, charHeight)
 				// drawLabel(img, posX, posY-(charHeight/5), text, fgCol, face)
-				for _, r := range []rune(text) {
+				for _, r := range text {
 					drawText(img, posX, posY-(charHeight/5), r, fgCol, bgCol, face, emojiFace, conf.EmojiDir, conf.UseEmojiFont)
 					posX += runewidth.RuneWidth(r) * charWidth
 				}

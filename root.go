@@ -344,7 +344,7 @@ func removeZeroWidthCharacters(s string) string {
 	}
 	var ret []rune
 chars:
-	for _, v := range []rune(s) {
+	for _, v := range s {
 		for _, c := range zwc {
 			if v == c {
 				continue chars
