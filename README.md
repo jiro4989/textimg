@@ -330,7 +330,7 @@ echo あ😃a👍！👀ん👄 | textimg -i -o emoji_symbola.png
 
 ## Development
 
-go version go1.12 linux/amd64
+go version go1.15 linux/amd64
 
 ### How to build
 
