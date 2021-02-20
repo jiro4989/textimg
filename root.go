@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -153,7 +152,7 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 		}
 	}
 	if emptyCount == len(texts) {
-		err := errors.New("must need input texts.")
+		err := fmt.Errorf("must need input texts.")
 		return err
 	}
 
@@ -173,7 +172,7 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 		if terminal.IsTerminal(int(fd)) {
 			log.Error("image data not written to a terminal. use -o, -s, pipe or redirect.")
 			log.Error("for help, type: textimg -h")
-			return errors.New("no output target error")
+			return fmt.Errorf("no output target error")
 		}
 		w = os.Stdout
 		if appconf.UseAnimation {
@@ -253,7 +252,7 @@ func optionColorStringToRGBA(colstr string) (escseq.RGBA, error) {
 	// カンマ区切りでの指定があれば返す
 	rgba := strings.Split(colstr, ",")
 	if len(rgba) != 4 {
-		return zeroColor, errors.New("illegal RGBA format: " + colstr)
+		return zeroColor, fmt.Errorf("illegal RGBA format: " + colstr)
 	}
 
 	var (

@@ -1,7 +1,6 @@
 package escseq
 
 import (
-	"errors"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -119,7 +118,7 @@ func ParseColor(s string) (colors Colors) {
 				panic(err)
 			}
 			if n2 != 2 && n2 != 5 {
-				panic(errors.New(fmt.Sprintf("%v is illegal format.", s)))
+				panic(fmt.Errorf("%v is illegal format.", s))
 			}
 
 			var ct ColorType
