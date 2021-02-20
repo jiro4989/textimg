@@ -92,7 +92,7 @@ func drawEmoji(img *image.RGBA, x, y int, emojiRune rune, path string, col escse
 	xdraw.ApproxBiLinear.Scale(dst, rect, emoji, emoji.Bounds(), draw.Over, nil)
 
 	p := image.Pt(d.Dot.X.Floor(), d.Dot.Y.Floor()-d.Face.Metrics().Ascent.Floor())
-	draw.Draw(img, rect.Add(p), dst, image.ZP, draw.Over)
+	draw.Draw(img, rect.Add(p), dst, image.Point{}, draw.Over)
 }
 
 func drawBackground(img *image.RGBA, posX, posY int, label string, col escseq.RGBA, charWidth, charHeight int) {

@@ -12,7 +12,6 @@ import (
 
 	"github.com/jiro4989/textimg/escseq"
 	"github.com/mattn/go-runewidth"
-	"github.com/pkg/errors"
 	"golang.org/x/image/font"
 )
 
@@ -87,13 +86,13 @@ func Write(w io.Writer, imgExt string, texts []string, conf WriteConfig) error {
 			k, prefix, suffix := escseq.Prefix(line)
 			switch k {
 			case escseq.KindEmpty:
-				err := errors.New("input string is empty")
+				err := fmt.Errorf("input string is empty")
 				return err
 			case escseq.KindText:
 				text := prefix
 				drawBackground(img, posX, posY-charHeight, text, bgCol, charWidth, charHeight)
 				// drawLabel(img, posX, posY-(charHeight/5), text, fgCol, face)
-				for _, r := range []rune(text) {
+				for _, r := range text {
 					drawText(img, posX, posY-(charHeight/5), r, fgCol, bgCol, face, emojiFace, conf.EmojiDir, conf.UseEmojiFont)
 					posX += runewidth.RuneWidth(r) * charWidth
 				}
@@ -160,7 +159,7 @@ func Write(w io.Writer, imgExt string, texts []string, conf WriteConfig) error {
 		}
 	default:
 		// root.goで拡張子の判定をしているため、このブロックには到達しないはず
-		err = errors.New(fmt.Sprintf("%s is not supported extension.", imgExt))
+		err = fmt.Errorf("%s is not supported extension.", imgExt)
 	}
 	if err != nil {
 		return err
