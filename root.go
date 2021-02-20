@@ -141,9 +141,7 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 		texts = readStdin()
 	} else {
 		for _, v := range args {
-			for _, line := range strings.Split(v, "\n") {
-				texts = append(texts, line)
-			}
+			texts = append(texts, strings.Split(v, "\n")...)
 		}
 	}
 
