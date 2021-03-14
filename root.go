@@ -7,6 +7,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/jiro4989/textimg/escseq"
 	"github.com/jiro4989/textimg/internal/global"
@@ -22,6 +23,7 @@ type applicationConfig struct {
 	Foreground               string // 文字色
 	Background               string // 背景色
 	Outpath                  string // 画像の出力ファイルパス
+	AddTimeStamp             bool   // ファイル名末尾にタイムスタンプ付与
 	FontFile                 string // フォントファイルのパス
 	FontIndex                int    // フォントコレクションのインデックス
 	EmojiFontFile            string // 絵文字用のフォントファイルのパス
@@ -76,6 +78,7 @@ You can change this default value with environment variables TEXTIMG_FONT_FILE`)
 	RootCommand.Flags().IntVarP(&appconf.FontSize, "fontsize", "F", 20, "font size")
 	RootCommand.Flags().StringVarP(&appconf.Outpath, "out", "o", "", `output image file path.
 available image formats are [png | jpg | gif]`)
+	RootCommand.Flags().BoolVarP(&appconf.AddTimeStamp, "timestamp", "t", false, `add time stamp to output image file path.`)
 	RootCommand.Flags().BoolVarP(&appconf.UseShellgeiImagedir, "shellgei-imagedir", "s", false, `image directory path for shellgei-bot (path: "/images/t.png")`)
 
 	RootCommand.Flags().BoolVarP(&appconf.UseAnimation, "animation", "a", false, "generate animation gif")
@@ -173,10 +176,39 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 
 	// シェル芸イメージディレクトリの指定がある時はパスを変更する
 	if appconf.UseShellgeiImagedir {
+		outDir := os.Getenv(global.EnvNameOutDir)
+		if outDir == "" {
+			if runtime.GOOS == "windows" {
+				outDir = filepath.Join(os.Getenv("HOMEPATH"), "Pictures")
+			} else {
+				outDir = filepath.Join(os.Getenv("HOME"), "Pictures")
+			}
+		}
 		if appconf.UseAnimation {
-			appconf.Outpath = "/images/t.gif"
+			appconf.Outpath = filepath.Join(outDir, "t.gif")
 		} else {
-			appconf.Outpath = "/images/t.png"
+			appconf.Outpath = filepath.Join(outDir, "t.png")
+		}
+	}
+
+	if appconf.AddTimeStamp {
+		fileExt := filepath.Ext(appconf.Outpath)
+		fileName := strings.TrimSuffix(appconf.Outpath, fileExt)
+		timestamp := time.Now().Format("2006-01-02-150405")
+		appconf.Outpath = fileName + "_" + timestamp + fileExt
+	}
+
+	if _, err := os.Stat(appconf.Outpath); err == nil {
+		fileExt := filepath.Ext(appconf.Outpath)
+		fileName := strings.TrimSuffix(appconf.Outpath, fileExt)
+		i := 2
+		for {
+			appconf.Outpath = fmt.Sprintf("%s_%d%s", fileName, i, fileExt)
+			_, err := os.Stat(appconf.Outpath)
+			if err != nil {
+				break
+			}
+			i++
 		}
 	}
 
