@@ -56,10 +56,7 @@ or (R,G,B,A(0~255))`)
 	RootCommand.Flags().StringVarP(&appconf.Background, "background", "b", "black", `background text color.
 color types are same as "foreground" option`)
 
-	font := "/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf"
-	if runtime.GOOS == "darwin" {
-		font = "/Library/Fonts/AppleGothic.ttf"
-	}
+	var font string
 	envFontFile := os.Getenv(global.EnvNameFontFile)
 	if envFontFile != "" {
 		font = envFontFile
@@ -67,6 +64,27 @@ color types are same as "foreground" option`)
 	RootCommand.Flags().StringVarP(&appconf.FontFile, "fontfile", "f", font, `font file path.
 You can change this default value with environment variables TEXTIMG_FONT_FILE`)
 	RootCommand.Flags().IntVarP(&appconf.FontIndex, "fontindex", "x", 0, "")
+	if appconf.FontFile == "" {
+		switch runtime.GOOS {
+		case "linux":
+			if _, err := os.Stat("/proc/sys/fs/binfmt_misc/WSLInterop"); err == nil {
+				appconf.FontFile = "/mnt/c/Windows/Fonts/msgothic.ttc"
+				appconf.FontIndex = 0
+			} else {
+				appconf.FontFile = "/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf"
+			}
+		case "windows":
+			appconf.FontFile = "C:\\Windows\\Fonts\\msgothic.ttc"
+			appconf.FontIndex = 0
+		case "darwin":
+			appconf.FontFile = "/Library/Fonts/AppleGothic.ttf"
+		case "ios":
+			appconf.FontFile = "/System/Library/Fonts/AppFonts/AppleGothic.otf"
+		case "android":
+			appconf.FontFile = "/system/fonts/NotoSansCJK-Regular.ttc"
+			appconf.FontIndex = 4
+		}
+	}
 
 	envEmojiFontFile := os.Getenv(global.EnvNameEmojiFontFile)
 	RootCommand.Flags().StringVarP(&appconf.EmojiFontFile, "emoji-fontfile", "e", envEmojiFontFile, "emoji font file")
