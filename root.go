@@ -23,7 +23,9 @@ type applicationConfig struct {
 	Background               string // 背景色
 	Outpath                  string // 画像の出力ファイルパス
 	FontFile                 string // フォントファイルのパス
+	FontIndex                int    // フォントコレクションのインデックス
 	EmojiFontFile            string // 絵文字用のフォントファイルのパス
+	EmojiFontIndex           int    // 絵文字用のフォントコレクションのインデックス
 	UseEmojiFont             bool   // 絵文字TTFを使う
 	FontSize                 int    // フォントサイズ
 	UseAnimation             bool   // アニメーションGIFを生成する
@@ -64,9 +66,11 @@ color types are same as "foreground" option`)
 	}
 	RootCommand.Flags().StringVarP(&appconf.FontFile, "fontfile", "f", font, `font file path.
 You can change this default value with environment variables TEXTIMG_FONT_FILE`)
+	RootCommand.Flags().IntVarP(&appconf.FontIndex, "fontindex", "x", 0, "")
 
 	envEmojiFontFile := os.Getenv(global.EnvNameEmojiFontFile)
 	RootCommand.Flags().StringVarP(&appconf.EmojiFontFile, "emoji-fontfile", "e", envEmojiFontFile, "emoji font file")
+	RootCommand.Flags().IntVarP(&appconf.EmojiFontIndex, "emoji-fontindex", "X", 0, "")
 
 	RootCommand.Flags().BoolVarP(&appconf.UseEmojiFont, "use-emoji-font", "i", false, "use emoji font")
 	RootCommand.Flags().BoolVarP(&appconf.UseShellgeiEmojiFontfile, "shellgei-emoji-fontfile", "z", false, `emoji font file for shellgei-bot (path: "`+shellgeiEmojiFontPath+`")`)
@@ -208,10 +212,10 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 		texts[i] = removeZeroWidthCharacters(text)
 	}
 
-	face := ioimage.ReadFace(appconf.FontFile, float64(appconf.FontSize))
+	face := ioimage.ReadFace(appconf.FontFile, appconf.FontIndex, float64(appconf.FontSize))
 	var emojiFace font.Face
 	if appconf.EmojiFontFile != "" {
-		emojiFace = ioimage.ReadFace(appconf.EmojiFontFile, float64(appconf.FontSize))
+		emojiFace = ioimage.ReadFace(appconf.EmojiFontFile, appconf.EmojiFontIndex, float64(appconf.FontSize))
 	}
 	emojiDir := os.Getenv(global.EnvNameEmojiDir)
 

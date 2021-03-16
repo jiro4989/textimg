@@ -13,7 +13,7 @@ import (
 )
 
 // ReadFace はfontPathのフォントファイルからfaceを返す。
-func ReadFace(fontPath string, fontSize float64) font.Face {
+func ReadFace(fontPath string, fontIndex int, fontSize float64) font.Face {
 	ft := new(opentype.Font)
 
 	// ファイルが存在しなければビルトインのフォントをデフォルトとして使う
@@ -29,7 +29,7 @@ func ReadFace(fontPath string, fontSize float64) font.Face {
 			if err != nil {
 				panic(err)
 			}
-			ft, err = ftc.Font(0)
+			ft, err = ftc.Font(fontIndex)
 			if err != nil {
 				panic(err)
 			}
