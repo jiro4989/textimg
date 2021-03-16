@@ -4,10 +4,10 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/goki/freetype/truetype"
 	"github.com/jiro4989/textimg/log"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/gofont/gomono"
+	"golang.org/x/image/font/opentype"
 )
 
 // ReadFace はfontPathのフォントファイルからfaceを返す。
@@ -26,18 +26,18 @@ func ReadFace(fontPath string, fontSize float64) font.Face {
 		fontData = gomono.TTF
 	}
 
-	ft, err := truetype.Parse(fontData)
+	ft, err := opentype.Parse(fontData)
 	if err != nil {
 		panic(err)
 	}
-	opt := truetype.Options{
+	opt := opentype.FaceOptions{
 		Size:              fontSize,
-		DPI:               0,
+		DPI:               72,
 		Hinting:           0,
-		GlyphCacheEntries: 0,
-		SubPixelsX:        0,
-		SubPixelsY:        0,
 	}
-	face := truetype.NewFace(ft, &opt)
+	face, err := opentype.NewFace(ft, &opt)
+	if err != nil {
+		panic(err)
+	}
 	return face
 }
