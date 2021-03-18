@@ -71,7 +71,8 @@ You can change this default value with environment variables TEXTIMG_FONT_FILE`)
 				appconf.FontFile = "/mnt/c/Windows/Fonts/msgothic.ttc"
 				appconf.FontIndex = 0
 			} else {
-				appconf.FontFile = "/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf"
+				appconf.FontFile = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
+				appconf.FontIndex = 4
 			}
 		case "windows":
 			appconf.FontFile = "C:\\Windows\\Fonts\\msgothic.ttc"
