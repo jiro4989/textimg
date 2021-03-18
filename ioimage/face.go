@@ -14,7 +14,7 @@ import (
 
 // ReadFace はfontPathのフォントファイルからfaceを返す。
 func ReadFace(fontPath string, fontIndex int, fontSize float64) font.Face {
-	ft := new(opentype.Font)
+	var ft *opentype.Font
 
 	// ファイルが存在しなければビルトインのフォントをデフォルトとして使う
 	_, err := os.Stat(fontPath)
