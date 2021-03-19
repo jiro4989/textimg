@@ -78,9 +78,11 @@ You can change this default value with environment variables TEXTIMG_FONT_FILE`)
 			appconf.FontFile = "C:\\Windows\\Fonts\\msgothic.ttc"
 			appconf.FontIndex = 0
 		case "darwin":
-			appconf.FontFile = "/Library/Fonts/AppleGothic.ttf"
+			appconf.FontFile = "/System/Library/Fonts/AppleSDGothicNeo.ttc"
+			appconf.FontIndex = 0
 		case "ios":
-			appconf.FontFile = "/System/Library/Fonts/AppFonts/AppleGothic.otf"
+			appconf.FontFile = "/System/Library/Fonts/Core/AppleSDGothicNeo.ttc"
+			appconf.FontIndex = 0
 		case "android":
 			appconf.FontFile = "/system/fonts/NotoSansCJK-Regular.ttc"
 			appconf.FontIndex = 4
