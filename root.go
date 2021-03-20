@@ -107,7 +107,7 @@ func (a *applicationConfig) setFontFileAndFontIndex(runtimeOS string) {
 		}
 		a.FontIndex = 4
 	case "windows":
-		a.FontFile = "C:\\Windows\\Fonts\\msgothic.ttc"
+		a.FontFile = `C:\Windows\Fonts\msgothic.ttc`
 		a.FontIndex = 0
 	case "darwin":
 		a.FontFile = "/System/Library/Fonts/AppleSDGothicNeo.ttc"
