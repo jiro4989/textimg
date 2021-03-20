@@ -72,6 +72,9 @@ You can change this default value with environment variables TEXTIMG_FONT_FILE`)
 				appconf.FontIndex = 0
 			} else {
 				appconf.FontFile = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
+				if _, err := os.Stat(appconf.FontFile); err != nil {
+					appconf.FontFile = "/usr/share/fonts/noto-cjk/NotoSansCJK-Regular.ttc"
+				}
 				appconf.FontIndex = 4
 			}
 		case "windows":
