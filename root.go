@@ -88,13 +88,47 @@ available image formats are [png | jpg | gif]`)
 	RootCommand.Flags().BoolVarP(&appconf.ToSlackIcon, "slack", "", false, "resize to slack icon size (128x128 px)")
 }
 
+type osDefaultFont struct {
+	fontFile  string
+	fontIndex int
+	isLinux   bool
+}
+
 func (a *applicationConfig) setFontFileAndFontIndex(runtimeOS string) {
 	if a.FontFile != "" {
 		return
 	}
 
-	switch runtimeOS {
-	case "linux":
+	m := map[string]osDefaultFont{
+		"linux": {
+			isLinux: true,
+		},
+		"windows": {
+			fontFile:  `C:\Windows\Fonts\msgothic.ttc`,
+			fontIndex: 0,
+		},
+		"darwin": {
+			fontFile:  "/System/Library/Fonts/AppleSDGothicNeo.ttc",
+			fontIndex: 0,
+		},
+		"ios": {
+			fontFile:  "/System/Library/Fonts/Core/AppleSDGothicNeo.ttc",
+			fontIndex: 0,
+		},
+		"android": {
+			fontFile:  "/system/fonts/NotoSansCJK-Regular.ttc",
+			fontIndex: 4,
+		},
+	}
+
+	if f, ok := m[runtimeOS]; ok {
+		// linux だけ特殊なので特別に分岐
+		if !f.isLinux {
+			a.FontFile = f.fontFile
+			a.FontIndex = f.fontIndex
+			return
+		}
+
 		if _, err := os.Stat("/proc/sys/fs/binfmt_misc/WSLInterop"); err == nil {
 			a.FontFile = "/mnt/c/Windows/Fonts/msgothic.ttc"
 			a.FontIndex = 0
@@ -106,18 +140,7 @@ func (a *applicationConfig) setFontFileAndFontIndex(runtimeOS string) {
 			a.FontFile = "/usr/share/fonts/noto-cjk/NotoSansCJK-Regular.ttc"
 		}
 		a.FontIndex = 4
-	case "windows":
-		a.FontFile = `C:\Windows\Fonts\msgothic.ttc`
-		a.FontIndex = 0
-	case "darwin":
-		a.FontFile = "/System/Library/Fonts/AppleSDGothicNeo.ttc"
-		a.FontIndex = 0
-	case "ios":
-		a.FontFile = "/System/Library/Fonts/Core/AppleSDGothicNeo.ttc"
-		a.FontIndex = 0
-	case "android":
-		a.FontFile = "/system/fonts/NotoSansCJK-Regular.ttc"
-		a.FontIndex = 4
+		return
 	}
 }
 
