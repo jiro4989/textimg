@@ -64,33 +64,7 @@ color types are same as "foreground" option`)
 	RootCommand.Flags().StringVarP(&appconf.FontFile, "fontfile", "f", font, `font file path.
 You can change this default value with environment variables TEXTIMG_FONT_FILE`)
 	RootCommand.Flags().IntVarP(&appconf.FontIndex, "fontindex", "x", 0, "")
-	if appconf.FontFile == "" {
-		switch runtime.GOOS {
-		case "linux":
-			if _, err := os.Stat("/proc/sys/fs/binfmt_misc/WSLInterop"); err == nil {
-				appconf.FontFile = "/mnt/c/Windows/Fonts/msgothic.ttc"
-				appconf.FontIndex = 0
-			} else {
-				appconf.FontFile = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
-				if _, err := os.Stat(appconf.FontFile); err != nil {
-					appconf.FontFile = "/usr/share/fonts/noto-cjk/NotoSansCJK-Regular.ttc"
-				}
-				appconf.FontIndex = 4
-			}
-		case "windows":
-			appconf.FontFile = "C:\\Windows\\Fonts\\msgothic.ttc"
-			appconf.FontIndex = 0
-		case "darwin":
-			appconf.FontFile = "/System/Library/Fonts/AppleSDGothicNeo.ttc"
-			appconf.FontIndex = 0
-		case "ios":
-			appconf.FontFile = "/System/Library/Fonts/Core/AppleSDGothicNeo.ttc"
-			appconf.FontIndex = 0
-		case "android":
-			appconf.FontFile = "/system/fonts/NotoSansCJK-Regular.ttc"
-			appconf.FontIndex = 4
-		}
-	}
+	appconf.setFontFileAndFontIndex(runtime.GOOS)
 
 	envEmojiFontFile := os.Getenv(global.EnvNameEmojiFontFile)
 	RootCommand.Flags().StringVarP(&appconf.EmojiFontFile, "emoji-fontfile", "e", envEmojiFontFile, "emoji font file")
@@ -112,6 +86,36 @@ available image formats are [png | jpg | gif]`)
 	RootCommand.Flags().BoolVarP(&appconf.SlideForever, "forever", "E", false, "sliding forever")
 	RootCommand.Flags().BoolVarP(&appconf.PrintEnvironments, "environments", "", false, "print environment variables")
 	RootCommand.Flags().BoolVarP(&appconf.ToSlackIcon, "slack", "", false, "resize to slack icon size (128x128 px)")
+}
+
+func (a *applicationConfig) setFontFileAndFontIndex(runtimeOS string) {
+	if a.FontFile == "" {
+		switch runtimeOS {
+		case "linux":
+			if _, err := os.Stat("/proc/sys/fs/binfmt_misc/WSLInterop"); err == nil {
+				a.FontFile = "/mnt/c/Windows/Fonts/msgothic.ttc"
+				a.FontIndex = 0
+			} else {
+				a.FontFile = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
+				if _, err := os.Stat(a.FontFile); err != nil {
+					a.FontFile = "/usr/share/fonts/noto-cjk/NotoSansCJK-Regular.ttc"
+				}
+				a.FontIndex = 4
+			}
+		case "windows":
+			a.FontFile = "C:\\Windows\\Fonts\\msgothic.ttc"
+			a.FontIndex = 0
+		case "darwin":
+			a.FontFile = "/System/Library/Fonts/AppleSDGothicNeo.ttc"
+			a.FontIndex = 0
+		case "ios":
+			a.FontFile = "/System/Library/Fonts/Core/AppleSDGothicNeo.ttc"
+			a.FontIndex = 0
+		case "android":
+			a.FontFile = "/system/fonts/NotoSansCJK-Regular.ttc"
+			a.FontIndex = 4
+		}
+	}
 }
 
 var RootCommand = &cobra.Command{
