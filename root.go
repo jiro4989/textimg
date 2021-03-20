@@ -94,6 +94,15 @@ type osDefaultFont struct {
 	isLinux   bool
 }
 
+const (
+	defaultWindowsFont = `C:\Windows\Fonts\msgothic.ttc`
+	defaultDarwinFont  = "/System/Library/Fonts/AppleSDGothicNeo.ttc"
+	defaultIOSFont     = "/System/Library/Fonts/Core/AppleSDGothicNeo.ttc"
+	defaultAndroidFont = "/system/fonts/NotoSansCJK-Regular.ttc"
+	defaultLinuxFont1  = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
+	defaultLinuxFont2  = "/usr/share/fonts/noto-cjk/NotoSansCJK-Regular.ttc"
+)
+
 func (a *applicationConfig) setFontFileAndFontIndex(runtimeOS string) {
 	if a.FontFile != "" {
 		return
@@ -104,19 +113,19 @@ func (a *applicationConfig) setFontFileAndFontIndex(runtimeOS string) {
 			isLinux: true,
 		},
 		"windows": {
-			fontFile:  `C:\Windows\Fonts\msgothic.ttc`,
+			fontFile:  defaultWindowsFont,
 			fontIndex: 0,
 		},
 		"darwin": {
-			fontFile:  "/System/Library/Fonts/AppleSDGothicNeo.ttc",
+			fontFile:  defaultDarwinFont,
 			fontIndex: 0,
 		},
 		"ios": {
-			fontFile:  "/System/Library/Fonts/Core/AppleSDGothicNeo.ttc",
+			fontFile:  defaultIOSFont,
 			fontIndex: 0,
 		},
 		"android": {
-			fontFile:  "/system/fonts/NotoSansCJK-Regular.ttc",
+			fontFile:  defaultAndroidFont,
 			fontIndex: 4,
 		},
 	}
@@ -135,9 +144,9 @@ func (a *applicationConfig) setFontFileAndFontIndex(runtimeOS string) {
 			return
 		}
 
-		a.FontFile = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
+		a.FontFile = defaultLinuxFont1
 		if _, err := os.Stat(a.FontFile); err != nil {
-			a.FontFile = "/usr/share/fonts/noto-cjk/NotoSansCJK-Regular.ttc"
+			a.FontFile = defaultLinuxFont2
 		}
 		a.FontIndex = 4
 		return

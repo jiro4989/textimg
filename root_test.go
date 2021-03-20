@@ -286,3 +286,68 @@ func TestRemoveZeroWidthCharacters(t *testing.T) {
 		})
 	}
 }
+
+func TestApplicationConfigSetFontFileAndFontIndex(t *testing.T) {
+	type TestData struct {
+		desc          string
+		inFontFile    string
+		inFontIndex   int
+		inRuntimeOS   string
+		wantFontFile  string
+		wantFontIndex int
+	}
+	tests := []TestData{
+		{
+			desc:          "正常系: FontFileが設定済みの場合は変更なし",
+			inFontFile:    "/usr/share/fonts/寿司",
+			inFontIndex:   0,
+			inRuntimeOS:   "linux",
+			wantFontFile:  "/usr/share/fonts/寿司",
+			wantFontIndex: 0,
+		},
+		{
+			desc:          "正常系: フォント未設定でwindowsの場合はwindows用のフォントが設定される",
+			inRuntimeOS:   "windows",
+			wantFontFile:  defaultWindowsFont,
+			wantFontIndex: 0,
+		},
+		{
+			desc:          "正常系: フォント未設定でdarwinの場合はdarwin用のフォントが設定される",
+			inRuntimeOS:   "darwin",
+			wantFontFile:  defaultDarwinFont,
+			wantFontIndex: 0,
+		},
+		{
+			desc:          "正常系: フォント未設定でiosの場合はios用のフォントが設定される",
+			inRuntimeOS:   "ios",
+			wantFontFile:  defaultIOSFont,
+			wantFontIndex: 0,
+		},
+		{
+			desc:          "正常系: フォント未設定でandroidの場合はandroid用のフォントが設定される",
+			inRuntimeOS:   "android",
+			wantFontFile:  defaultAndroidFont,
+			wantFontIndex: 4,
+		},
+		{
+			desc:          "正常系: フォント未設定でlinuxの場合はlinux用のフォントが設定される。Linux用のフォントは2つ存在するが、1つ目のフォントはalpineコンテナ内にデフォルトでは存在しないため2つ目が設定される",
+			inRuntimeOS:   "linux",
+			wantFontFile:  defaultLinuxFont2,
+			wantFontIndex: 4,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.desc, func(t *testing.T) {
+			assert := assert.New(t)
+
+			a := applicationConfig{
+				FontFile:  tt.inFontFile,
+				FontIndex: tt.inFontIndex,
+			}
+			a.setFontFileAndFontIndex(tt.inRuntimeOS)
+
+			assert.Equal(tt.wantFontFile, a.FontFile)
+			assert.Equal(tt.wantFontIndex, a.FontIndex)
+		})
+	}
+}
