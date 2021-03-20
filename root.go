@@ -89,32 +89,34 @@ available image formats are [png | jpg | gif]`)
 }
 
 func (a *applicationConfig) setFontFileAndFontIndex(runtimeOS string) {
-	if a.FontFile == "" {
-		switch runtimeOS {
-		case "linux":
-			if _, err := os.Stat("/proc/sys/fs/binfmt_misc/WSLInterop"); err == nil {
-				a.FontFile = "/mnt/c/Windows/Fonts/msgothic.ttc"
-				a.FontIndex = 0
-			} else {
-				a.FontFile = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
-				if _, err := os.Stat(a.FontFile); err != nil {
-					a.FontFile = "/usr/share/fonts/noto-cjk/NotoSansCJK-Regular.ttc"
-				}
-				a.FontIndex = 4
+	if a.FontFile != "" {
+		return
+	}
+
+	switch runtimeOS {
+	case "linux":
+		if _, err := os.Stat("/proc/sys/fs/binfmt_misc/WSLInterop"); err == nil {
+			a.FontFile = "/mnt/c/Windows/Fonts/msgothic.ttc"
+			a.FontIndex = 0
+		} else {
+			a.FontFile = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
+			if _, err := os.Stat(a.FontFile); err != nil {
+				a.FontFile = "/usr/share/fonts/noto-cjk/NotoSansCJK-Regular.ttc"
 			}
-		case "windows":
-			a.FontFile = "C:\\Windows\\Fonts\\msgothic.ttc"
-			a.FontIndex = 0
-		case "darwin":
-			a.FontFile = "/System/Library/Fonts/AppleSDGothicNeo.ttc"
-			a.FontIndex = 0
-		case "ios":
-			a.FontFile = "/System/Library/Fonts/Core/AppleSDGothicNeo.ttc"
-			a.FontIndex = 0
-		case "android":
-			a.FontFile = "/system/fonts/NotoSansCJK-Regular.ttc"
 			a.FontIndex = 4
 		}
+	case "windows":
+		a.FontFile = "C:\\Windows\\Fonts\\msgothic.ttc"
+		a.FontIndex = 0
+	case "darwin":
+		a.FontFile = "/System/Library/Fonts/AppleSDGothicNeo.ttc"
+		a.FontIndex = 0
+	case "ios":
+		a.FontFile = "/System/Library/Fonts/Core/AppleSDGothicNeo.ttc"
+		a.FontIndex = 0
+	case "android":
+		a.FontFile = "/system/fonts/NotoSansCJK-Regular.ttc"
+		a.FontIndex = 4
 	}
 }
 
