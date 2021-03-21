@@ -9,10 +9,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jiro4989/textimg/escseq"
-	"github.com/jiro4989/textimg/internal/global"
-	"github.com/jiro4989/textimg/ioimage"
-	"github.com/jiro4989/textimg/log"
+	"github.com/jiro4989/textimg/v3/escseq"
+	"github.com/jiro4989/textimg/v3/internal/global"
+	"github.com/jiro4989/textimg/v3/ioimage"
+	"github.com/jiro4989/textimg/v3/log"
 	"golang.org/x/image/font"
 	"golang.org/x/term"
 
