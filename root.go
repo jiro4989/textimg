@@ -12,8 +12,8 @@ import (
 	"github.com/jiro4989/textimg/internal/global"
 	"github.com/jiro4989/textimg/ioimage"
 	"github.com/jiro4989/textimg/log"
-	"golang.org/x/crypto/ssh/terminal"
 	"golang.org/x/image/font"
+	"golang.org/x/term"
 
 	"github.com/spf13/cobra"
 )
@@ -236,7 +236,7 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 		// 出力先画像の指定がなく、且つ出力先がパイプならstdout + PNG/GIFと
 		// して出力。なければそもそも画像処理しても意味が無いので終了
 		fd := os.Stdout.Fd()
-		if terminal.IsTerminal(int(fd)) {
+		if term.IsTerminal(int(fd)) {
 			log.Error("image data not written to a terminal. use -o, -s, pipe or redirect.")
 			log.Error("for help, type: textimg -h")
 			return fmt.Errorf("no output target error")
