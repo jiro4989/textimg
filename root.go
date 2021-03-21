@@ -171,6 +171,27 @@ func (a *applicationConfig) addTimeStampToOutPath(t time.Time) {
 	a.Outpath = file + "_" + timestamp + ext
 }
 
+// addTimeStampToOutPath はOutpathに指定日時のタイムスタンプを付与する。
+func (a *applicationConfig) addNumberSuffixToOutPath() {
+	if !a.SaveNumberedFile {
+		return
+	}
+
+	if _, err := os.Stat(a.Outpath); err == nil {
+		fileExt := filepath.Ext(a.Outpath)
+		fileName := strings.TrimSuffix(a.Outpath, fileExt)
+		i := 2
+		for {
+			a.Outpath = fmt.Sprintf("%s_%d%s", fileName, i, fileExt)
+			_, err := os.Stat(a.Outpath)
+			if err != nil {
+				break
+			}
+			i++
+		}
+	}
+}
+
 var RootCommand = &cobra.Command{
 	Use:     global.AppName,
 	Short:   global.AppName + " is command to convert from colored text (ANSI or 256) to image.",
@@ -199,22 +220,7 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 	}
 
 	appconf.addTimeStampToOutPath(time.Now())
-
-	if appconf.SaveNumberedFile {
-		if _, err := os.Stat(appconf.Outpath); err == nil {
-			fileExt := filepath.Ext(appconf.Outpath)
-			fileName := strings.TrimSuffix(appconf.Outpath, fileExt)
-			i := 2
-			for {
-				appconf.Outpath = fmt.Sprintf("%s_%d%s", fileName, i, fileExt)
-				_, err := os.Stat(appconf.Outpath)
-				if err != nil {
-					break
-				}
-				i++
-			}
-		}
-	}
+	appconf.addNumberSuffixToOutPath()
 
 	if appconf.UseShellgeiEmojiFontfile {
 		appconf.EmojiFontFile = shellgeiEmojiFontPath
