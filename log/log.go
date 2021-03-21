@@ -6,7 +6,7 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/jiro4989/textimg/internal/global"
+	"github.com/jiro4989/textimg/v3/internal/global"
 )
 
 const (

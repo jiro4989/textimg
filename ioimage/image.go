@@ -10,7 +10,7 @@ import (
 	"image/png"
 	"io"
 
-	"github.com/jiro4989/textimg/escseq"
+	"github.com/jiro4989/textimg/v3/escseq"
 	"github.com/mattn/go-runewidth"
 	"golang.org/x/image/font"
 )

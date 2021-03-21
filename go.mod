@@ -1,4 +1,4 @@
-module github.com/jiro4989/textimg
+module github.com/jiro4989/textimg/v3
 
 go 1.16
 

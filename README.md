@@ -11,31 +11,31 @@ Drawn image keeps having colors of escape sequence.
 Table of contents:
 
 <!--ts-->
-   * [textimg](#textimg)
-      * [Usage](#usage)
-         * [Simple examples](#simple-examples)
-         * [With other commands](#with-other-commands)
-         * [Rainbow examples](#rainbow-examples)
-            * [From ANSI color](#from-ansi-color)
-            * [From 256 color](#from-256-color)
-            * [From 256 RGB color](#from-256-rgb-color)
-            * [Animation GIF](#animation-gif)
-            * [Slide animation GIF](#slide-animation-gif)
-         * [Using on Docker](#using-on-docker)
-      * [Installation](#installation)
-         * [Linux users (Debian base distros)](#linux-users-debian-base-distros)
-         * [Linux users (RHEL compatible distros)](#linux-users-rhel-compatible-distros)
-         * [With Go](#with-go)
-         * [Manual](#manual)
-      * [Help](#help)
-      * [Fonts](#fonts)
-         * [Default font path](#default-font-path)
-         * [Emoji font (image file path)](#emoji-font-image-file-path)
-         * [Emoji font (TTF)](#emoji-font-ttf)
-      * [Development](#development)
-         * [How to build](#how-to-build)
-         * [How to test](#how-to-test)
-      * [See also](#see-also)
+* [textimg](#textimg)
+  * [Usage](#usage)
+    * [Simple examples](#simple-examples)
+    * [With other commands](#with-other-commands)
+    * [Rainbow examples](#rainbow-examples)
+      * [From ANSI color](#from-ansi-color)
+      * [From 256 color](#from-256-color)
+      * [From 256 RGB color](#from-256-rgb-color)
+      * [Animation GIF](#animation-gif)
+      * [Slide animation GIF](#slide-animation-gif)
+    * [Using on Docker](#using-on-docker)
+  * [Installation](#installation)
+    * [Linux users (Debian base distros)](#linux-users-debian-base-distros)
+    * [Linux users (RHEL compatible distros)](#linux-users-rhel-compatible-distros)
+    * [With Go](#with-go)
+    * [Manual](#manual)
+  * [Help](#help)
+  * [Fonts](#fonts)
+    * [Default font path](#default-font-path)
+    * [Emoji font (image file path)](#emoji-font-image-file-path)
+    * [Emoji font (TTF)](#emoji-font-ttf)
+  * [Development](#development)
+    * [How to build](#how-to-build)
+    * [How to test](#how-to-test)
+  * [See also](#see-also)
 
 <!-- Added by: vagrant, at: Fri Aug  7 10:54:31 UTC 2020 -->
 
@@ -63,7 +63,7 @@ image file will be saved as PNG file.
 grep:
 
 ```bash
-$ echo hello world | grep hello --color=always | textimg -o out.png
+echo hello world | grep hello --color=always | textimg -o out.png
 ```
 
 ![image](https://user-images.githubusercontent.com/13825004/92329722-4e77d380-f0a4-11ea-97eb-0de316ebf6c7.png)
@@ -71,13 +71,13 @@ $ echo hello world | grep hello --color=always | textimg -o out.png
 screenfetch:
 
 ```bash
-$ screenfetch | textimg -o out.png
+screenfetch | textimg -o out.png
 ```
 
 [bat](https://github.com/sharkdp/bat):
 
 ```bash
-$ bat --color=always /etc/profile | textimg -o out.png
+bat --color=always /etc/profile | textimg -o out.png
 ```
 
 ![image](https://user-images.githubusercontent.com/13825004/92329806-03aa8b80-f0a5-11ea-95f4-d876c34d65d6.png)
@@ -236,7 +236,7 @@ sudo yum install https://github.com/jiro4989/textimg/releases/download/v2.3.12/t
 ### With Go
 
 ```bash
-go get -u github.com/jiro4989/textimg
+go get -u github.com/jiro4989/textimg/v3
 ```
 
 ### Manual
@@ -351,4 +351,5 @@ make docker-test
 
 ## See also
 
-- https://misc.flogisoft.com/bash/tip_colors_and_formatting
+* <https://misc.flogisoft.com/bash/tip_colors_and_formatting>
+

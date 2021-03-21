@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/jiro4989/textimg/escseq"
+	"github.com/jiro4989/textimg/v3/escseq"
 	"github.com/stretchr/testify/assert"
 )
 
