@@ -7,6 +7,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/jiro4989/textimg/escseq"
 	"github.com/jiro4989/textimg/internal/global"
@@ -22,6 +23,8 @@ type applicationConfig struct {
 	Foreground               string // 文字色
 	Background               string // 背景色
 	Outpath                  string // 画像の出力ファイルパス
+	AddTimeStamp             bool   // ファイル名末尾にタイムスタンプ付与
+	SaveNumberedFile         bool   // 保存しようとしたファイルがすでに存在する場合に連番を付与する
 	FontFile                 string // フォントファイルのパス
 	FontIndex                int    // フォントコレクションのインデックス
 	EmojiFontFile            string // 絵文字用のフォントファイルのパス
@@ -76,6 +79,9 @@ You can change this default value with environment variables TEXTIMG_FONT_FILE`)
 	RootCommand.Flags().IntVarP(&appconf.FontSize, "fontsize", "F", 20, "font size")
 	RootCommand.Flags().StringVarP(&appconf.Outpath, "out", "o", "", `output image file path.
 available image formats are [png | jpg | gif]`)
+	RootCommand.Flags().BoolVarP(&appconf.AddTimeStamp, "timestamp", "t", false, `add time stamp to output image file path.`)
+	RootCommand.Flags().BoolVarP(&appconf.SaveNumberedFile, "numbered", "n", false, `add number-suffix to filename when the output file was existed.
+ex: t_2.png`)
 	RootCommand.Flags().BoolVarP(&appconf.UseShellgeiImagedir, "shellgei-imagedir", "s", false, `image directory path for shellgei-bot (path: "/images/t.png")`)
 
 	RootCommand.Flags().BoolVarP(&appconf.UseAnimation, "animation", "a", false, "generate animation gif")
@@ -153,6 +159,43 @@ func (a *applicationConfig) setFontFileAndFontIndex(runtimeOS string) {
 	}
 }
 
+// addTimeStampToOutPath はOutpathに指定日時のタイムスタンプを付与する。
+func (a *applicationConfig) addTimeStampToOutPath(t time.Time) {
+	if !a.AddTimeStamp {
+		return
+	}
+
+	ext := filepath.Ext(a.Outpath)
+	file := strings.TrimSuffix(a.Outpath, ext)
+	timestamp := t.Format("2006-01-02-150405")
+	a.Outpath = file + "_" + timestamp + ext
+}
+
+// addTimeStampToOutPath はOutpathに指定日時のタイムスタンプを付与する。
+func (a *applicationConfig) addNumberSuffixToOutPath() {
+	if !a.SaveNumberedFile {
+		return
+	}
+
+	// ファイルが存在しない時は何もしない
+	// NOTE: 並列に実行されるとチェックしきれない場合があるけれど許容する
+	if _, err := os.Stat(a.Outpath); err != nil {
+		return
+	}
+
+	fileExt := filepath.Ext(a.Outpath)
+	fileName := strings.TrimSuffix(a.Outpath, fileExt)
+	i := 2
+	for {
+		a.Outpath = fmt.Sprintf("%s_%d%s", fileName, i, fileExt)
+		_, err := os.Stat(a.Outpath)
+		if err != nil {
+			return
+		}
+		i++
+	}
+}
+
 var RootCommand = &cobra.Command{
 	Use:     global.AppName,
 	Short:   global.AppName + " is command to convert from colored text (ANSI or 256) to image.",
@@ -173,12 +216,16 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 
 	// シェル芸イメージディレクトリの指定がある時はパスを変更する
 	if appconf.UseShellgeiImagedir {
-		if appconf.UseAnimation {
-			appconf.Outpath = "/images/t.gif"
-		} else {
-			appconf.Outpath = "/images/t.png"
+		var err error
+		outDir := os.Getenv(global.EnvNameOutputDir)
+		appconf.Outpath, err = outputImageDir(outDir, appconf.UseAnimation)
+		if err != nil {
+			return err
 		}
 	}
+
+	appconf.addTimeStampToOutPath(time.Now())
+	appconf.addNumberSuffixToOutPath()
 
 	if appconf.UseShellgeiEmojiFontfile {
 		appconf.EmojiFontFile = shellgeiEmojiFontPath
@@ -306,6 +353,23 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
+}
+
+// outputImageDir は `-s` オプションで保存するさきのディレクトリパスを返す。
+func outputImageDir(outDir string, useAnimation bool) (string, error) {
+	if outDir == "" {
+		homeDir, err := os.UserHomeDir()
+		if err != nil {
+			return "", err
+		}
+		outDir = filepath.Join(homeDir, "Pictures")
+	}
+
+	if useAnimation {
+		return filepath.Join(outDir, "t.gif"), nil
+	}
+
+	return filepath.Join(outDir, "t.png"), nil
 }
 
 // オプション引数のbackgroundは２つの書き方を許容する。

@@ -9,8 +9,6 @@ import (
 )
 
 func TestMainNormal(t *testing.T) {
-	testdataDir := filepath.Join(".", "testdata", "in")
-
 	tests := []struct {
 		desc string
 		in   []string
@@ -57,6 +55,21 @@ func TestMainNormal(t *testing.T) {
 			want: 0,
 		},
 		{
+			desc: "正常系: 連番付与オプションのテスト",
+			in:   []string{"", "Sample", "-o", outDir + "/main_numbering.gif", "-n"},
+			want: 0,
+		},
+		{
+			desc: "正常系: 同じファイルがすでに存在するため別名で保存される (_2)",
+			in:   []string{"", "Sample", "-o", outDir + "/main_numbering.gif", "-n"},
+			want: 0,
+		},
+		{
+			desc: "正常系: 同じファイルがすでに存在するため別名で保存される (_3)",
+			in:   []string{"", "Sample", "-o", outDir + "/main_numbering.gif", "-n"},
+			want: 0,
+		},
+		{
 			desc: "異常系: 不正な文字色",
 			in:   []string{"", "Sample", "-o", outDir + "/main_normal_red.png", "-g", "gggg", "-b", "blue"},
 			want: -1,
@@ -68,21 +81,29 @@ func TestMainNormal(t *testing.T) {
 		},
 		{
 			desc: "異常系: 不正なフォントを指定",
-			in:   []string{"", "Sample", "-o", outDir + "/illegal_case1.png", "-f", filepath.Join(testdataDir, "illegal_font.ttc")},
+			in:   []string{"", "Sample", "-o", outDir + "/illegal_case1.png", "-f", filepath.Join(testdataInputDir, "illegal_font.ttc")},
 			want: -1,
 		},
 		{
 			desc: "異常系: 不正な絵文字フォントを指定",
-			in:   []string{"", "Sample", "-o", outDir + "/illegal_case2.png", "-e", filepath.Join(testdataDir, "illegal_font.ttc")},
+			in:   []string{"", "Sample", "-o", outDir + "/illegal_case2.png", "-e", filepath.Join(testdataInputDir, "illegal_font.ttc")},
 			want: -1,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.desc, func(t *testing.T) {
+			assert := assert.New(t)
+
 			os.Args = tt.in
 			got := Main()
-			assert.Equal(t, tt.want, got, tt.desc)
+			assert.Equal(tt.want, got, tt.desc)
+
 		})
 	}
 
+	_, err := os.Stat(outDir + "/main_numbering_2.gif")
+	assert.NoError(t, err)
+
+	_, err = os.Stat(outDir + "/main_numbering_3.gif")
+	assert.NoError(t, err)
 }

@@ -20,7 +20,7 @@ pkgroot=$(go list)
 for pkg in $(go list ./...); do
   dir=$(echo $pkg | sed "s,$pkgroot,.,")
   tmpprof=$dir/profile.tmp
-  go test -covermode=count -coverprofile=$tmpprof $pkg
+  go test -tags ondocker -covermode=count -coverprofile=$tmpprof $pkg
   if [ -f $tmpprof ]; then
     cat $tmpprof | tail -n +2 >> $prof
     rm $tmpprof

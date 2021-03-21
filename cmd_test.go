@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -64,6 +65,8 @@ var (
 		{text: "light_gray", escapeSequence: ansiColorBGLightGray},
 	}
 	fgBgLine string
+
+	testdataInputDir = filepath.Join(".", "testdata", "in")
 )
 
 func setup() {
