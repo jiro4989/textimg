@@ -19,7 +19,7 @@ func TestReadFace(t *testing.T) {
 	tests := []TestData{
 		{
 			desc:          "正常系: font.Faceが取得できる",
-			inFontPath:    "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+			inFontPath:    "/tmp/MyricaM.TTC",
 			inFontIndex: 0,
 			wantErr: false,
 		},
