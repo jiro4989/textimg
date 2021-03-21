@@ -177,18 +177,22 @@ func (a *applicationConfig) addNumberSuffixToOutPath() {
 		return
 	}
 
-	if _, err := os.Stat(a.Outpath); err == nil {
-		fileExt := filepath.Ext(a.Outpath)
-		fileName := strings.TrimSuffix(a.Outpath, fileExt)
-		i := 2
-		for {
-			a.Outpath = fmt.Sprintf("%s_%d%s", fileName, i, fileExt)
-			_, err := os.Stat(a.Outpath)
-			if err != nil {
-				break
-			}
-			i++
+	// ファイルが存在しない時は何もしない
+	// NOTE: 並列に実行されるとチェックしきれない場合があるけれど許容する
+	if _, err := os.Stat(a.Outpath); err != nil {
+		return
+	}
+
+	fileExt := filepath.Ext(a.Outpath)
+	fileName := strings.TrimSuffix(a.Outpath, fileExt)
+	i := 2
+	for {
+		a.Outpath = fmt.Sprintf("%s_%d%s", fileName, i, fileExt)
+		_, err := os.Stat(a.Outpath)
+		if err != nil {
+			return
 		}
+		i++
 	}
 }
 
