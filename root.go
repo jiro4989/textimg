@@ -176,18 +176,10 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 
 	// シェル芸イメージディレクトリの指定がある時はパスを変更する
 	if appconf.UseShellgeiImagedir {
-		outDir := os.Getenv(global.EnvNameOutputDir)
-		if outDir == "" {
-			homeDir, err := os.UserHomeDir()
-			if err != nil {
-				return err
-			}
-			outDir = filepath.Join(homeDir, "Pictures")
-		}
-		if appconf.UseAnimation {
-			appconf.Outpath = filepath.Join(outDir, "t.gif")
-		} else {
-			appconf.Outpath = filepath.Join(outDir, "t.png")
+		var err error
+		appconf.Outpath, err = outputImageDir(appconf.UseAnimation)
+		if err != nil {
+			return err
 		}
 	}
 
@@ -338,6 +330,24 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
+}
+
+// outputImageDir は `-s` オプションで保存するさきのディレクトリパスを返す。
+func outputImageDir(useAnimation bool) (string, error) {
+	outDir := os.Getenv(global.EnvNameOutputDir)
+	if outDir == "" {
+		homeDir, err := os.UserHomeDir()
+		if err != nil {
+			return "", err
+		}
+		outDir = filepath.Join(homeDir, "Pictures")
+	}
+
+	if useAnimation {
+		return filepath.Join(outDir, "t.gif"), nil
+	}
+
+	return filepath.Join(outDir, "t.png"), nil
 }
 
 // オプション引数のbackgroundは２つの書き方を許容する。
