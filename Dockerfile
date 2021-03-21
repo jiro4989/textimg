@@ -37,6 +37,7 @@ COPY --from=builder /usr/local/src/noto-emoji/png/128 /usr/share/emoji-image
 COPY --from=builder /tmp/Symbola_hint.ttf /usr/share/fonts/truetype/symbola/
 COPY --from=builder /tmp/Symbola_hint.ttf /usr/share/fonts/truetype/ancient-scripts/
 
+ENV TEXTIMG_OUTPUT_DIR /images
 ENV TEXTIMG_FONT_FILE /usr/share/fonts/truetype/myrica/MyricaM.TTC
 ENV TEXTIMG_EMOJI_DIR /usr/share/emoji-image
 ENV TEXTIMG_EMOJI_FONT_FILE /usr/share/fonts/truetype/symbola/Symbola_hint.ttf
