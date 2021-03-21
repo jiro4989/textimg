@@ -11,6 +11,7 @@ services:
     working_dir: /app
     volumes:
       - "$PWD:/app"
+      - "gopkg:/go/pkg" # 名前付きボリュームで依存パッケージを永続化
       - "$PWD/images:/images"
     environment:
       TEXTIMG_FONT_FILE: /tmp/MyricaM.TTC
@@ -38,3 +39,6 @@ services:
       - base
     entrypoint:
       - scripts/merge_coverage_profile.sh
+
+volumes:
+  gopkg:
