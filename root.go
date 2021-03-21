@@ -178,11 +178,11 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 	if appconf.UseShellgeiImagedir {
 		outDir := os.Getenv(global.EnvNameOutputDir)
 		if outDir == "" {
-			if runtime.GOOS == "windows" {
-				outDir = filepath.Join(os.Getenv("HOMEPATH"), "Pictures")
-			} else {
-				outDir = filepath.Join(os.Getenv("HOME"), "Pictures")
+			homeDir, err := os.UserHomeDir()
+			if err != nil {
+				return err
 			}
+			outDir = filepath.Join(homeDir, "Pictures")
 		}
 		if appconf.UseAnimation {
 			appconf.Outpath = filepath.Join(outDir, "t.gif")
