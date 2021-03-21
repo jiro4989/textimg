@@ -60,7 +60,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Tests
-        run: docker-compose run base go test -cover ./...
+        run: make docker-test
 
   lint:
     runs-on: ubuntu-latest
