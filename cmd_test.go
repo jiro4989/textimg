@@ -66,7 +66,7 @@ var (
 	}
 	fgBgLine string
 
-	testdataInputDir  = filepath.Join(".", "testdata", "in")
+	testdataInputDir = filepath.Join(".", "testdata", "in")
 )
 
 func setup() {
