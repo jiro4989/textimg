@@ -275,10 +275,16 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 		texts[i] = removeZeroWidthCharacters(text)
 	}
 
-	face := ioimage.ReadFace(appconf.FontFile, appconf.FontIndex, float64(appconf.FontSize))
+	face, err := ioimage.ReadFace(appconf.FontFile, appconf.FontIndex, float64(appconf.FontSize))
+	if err != nil {
+		return err
+	}
 	var emojiFace font.Face
 	if appconf.EmojiFontFile != "" {
-		emojiFace = ioimage.ReadFace(appconf.EmojiFontFile, appconf.EmojiFontIndex, float64(appconf.FontSize))
+		emojiFace, err = ioimage.ReadFace(appconf.EmojiFontFile, appconf.EmojiFontIndex, float64(appconf.FontSize))
+		if err != nil {
+			return err
+		}
 	}
 	emojiDir := os.Getenv(global.EnvNameEmojiDir)
 

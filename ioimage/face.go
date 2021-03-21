@@ -13,7 +13,7 @@ import (
 )
 
 // ReadFace はfontPathのフォントファイルからfaceを返す。
-func ReadFace(fontPath string, fontIndex int, fontSize float64) font.Face {
+func ReadFace(fontPath string, fontIndex int, fontSize float64) (font.Face, error) {
 	var ft *opentype.Font
 
 	// ファイルが存在しなければビルトインのフォントをデフォルトとして使う
@@ -21,29 +21,29 @@ func ReadFace(fontPath string, fontIndex int, fontSize float64) font.Face {
 	if err == nil {
 		fontData, err := ioutil.ReadFile(fontPath)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 		switch strings.ToLower(filepath.Ext(fontPath)) {
 		case ".otc", ".ttc":
 			ftc, err := opentype.ParseCollection(fontData)
 			if err != nil {
-				panic(err)
+				return nil, err
 			}
 			ft, err = ftc.Font(fontIndex)
 			if err != nil {
-				panic(err)
+				return nil, err
 			}
 		default:
 			ft, err = opentype.Parse(fontData)
 			if err != nil {
-				panic(err)
+				return nil, err
 			}
 		}
 	} else {
 		log.Warnf("%s is not found. please set font path with `-f` option", fontPath)
 		ft, err = opentype.Parse(gomono.TTF)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 	}
 
@@ -54,7 +54,7 @@ func ReadFace(fontPath string, fontIndex int, fontSize float64) font.Face {
 	}
 	face, err := opentype.NewFace(ft, &opt)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	return face
+	return face, nil
 }
