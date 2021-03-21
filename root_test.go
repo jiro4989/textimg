@@ -1,9 +1,12 @@
 package main
 
 import (
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/jiro4989/textimg/escseq"
+	"github.com/jiro4989/textimg/internal/global"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -348,6 +351,60 @@ func TestApplicationConfigSetFontFileAndFontIndex(t *testing.T) {
 
 			assert.Equal(tt.wantFontFile, a.FontFile)
 			assert.Equal(tt.wantFontIndex, a.FontIndex)
+		})
+	}
+}
+
+func TestOutputImageDir(t *testing.T) {
+	home, err := os.UserHomeDir()
+	assert.NoError(t, err)
+	pictDir := filepath.Join(home, "Pictures")
+
+	type TestData struct {
+		desc           string
+		inEnvDir       string
+		inUseAnimation bool
+		wantPath       string
+		wantErr        bool
+	}
+	tests := []TestData{
+		{
+			desc:           "正常系: Env未設定の場合はホームディレクトリ配下のPictures配下が返る",
+			inEnvDir:       "",
+			inUseAnimation: false,
+			wantPath:       filepath.Join(pictDir, "t.png"),
+			wantErr:        false,
+		},
+		{
+			desc:           "正常系: animation trueの場合は Basenameが t.gif になる",
+			inEnvDir:       "",
+			inUseAnimation: true,
+			wantPath:       filepath.Join(pictDir, "t.gif"),
+			wantErr:        false,
+		},
+		{
+			desc:           "正常系: Envが設定されている場合は設定されている値が優先される",
+			inEnvDir:       filepath.Join(".", "sushi"),
+			inUseAnimation: false,
+			wantPath:       filepath.Join(".", "sushi", "t.png"),
+			wantErr:        false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.desc, func(t *testing.T) {
+			assert := assert.New(t)
+
+			os.Setenv(global.EnvNameOutputDir, tt.inEnvDir)
+
+			got, err := outputImageDir(tt.inUseAnimation)
+			if tt.wantErr {
+				assert.Equal("", got)
+				assert.Error(err)
+				return
+			}
+
+			assert.NoError(err)
+			assert.Equal(tt.wantPath, got)
 		})
 	}
 }
