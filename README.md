@@ -218,6 +218,33 @@ docker-compose build
 docker-compose run textimg $'\x1b[31mHello\x1b[42mWorld\x1b[m' -s
 ```
 
+### Saving shortcut
+
+`textimg` saves an image as `t.png` to `$HOME/Pictures` (`%USERPROFILE%` on
+Windows) with `-s` options.  You can change this directory with
+`TEXTIMG_OUTPUT_DIR` environment variables.
+
+`textimg` adds current timestamp to the file suffix when activate `-t` options.
+
+```bash
+$ textimg 寿司 -st
+
+$ ls ~/Pictures/
+t_2021-03-21-194959.png
+```
+
+And, `textimg` adds number to the file suffix when activate `-n` options and
+the file has existed.
+
+```bash
+$ textimg 寿司 -sn
+
+$ textimg 寿司 -sn
+
+$ ls ~/Pictures/
+t.png  t_2.png
+```
+
 ## Installation
 
 ### Linux users (Debian base distros)

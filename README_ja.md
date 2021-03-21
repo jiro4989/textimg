@@ -186,6 +186,33 @@ docker run -v $(pwd):/images -it jiro4989/textimg Testあいうえお😄 -o /im
 docker run -v $(pwd):/images -it jiro4989/textimg Testあいうえお😄 -s
 ```
 
+### 保存先ショートカット
+
+`-s` オプションを使うと `$HOME/Pictures` (Windowsでは `%USERPROFILE%` ) に
+`t.png` という名前でファイルを保存します。この保存先ディレクトリは
+`TEXTIMG_OUTPUT_DIR` という環境変数で変更できます。
+
+`-t` を組み合わせると、保存時にファイル名末尾に現在日時を付与できます。
+
+```bash
+$ textimg 寿司 -st
+
+$ ls ~/Pictures/
+t_2021-03-21-194959.png
+```
+
+また、 `-n` を組み合わせることで、保存しようとしたファイルがすでに存在した時に、
+ファイル名末尾に番号を付与して、別名で保存します。
+
+```bash
+$ textimg 寿司 -sn
+
+$ textimg 寿司 -sn
+
+$ ls ~/Pictures/
+t.png  t_2.png
+```
+
 ## インストール
 
 ### Linux users (Debian base distros)
