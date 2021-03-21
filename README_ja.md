@@ -223,19 +223,24 @@ Examples:
 textimg $'\x1b[31mRED\x1b[0m' -o out.png
 
 Flags:
-  -g, --foreground string         foreground escseq.
-                                  format is [black|red|green|yellow|blue|magenta|cyan|white]
+  -g, --foreground string         foreground text color.
+                                  available color types are [black|red|green|yellow|blue|magenta|cyan|white]
                                   or (R,G,B,A(0~255)) (default "white")
-  -b, --background string         background escseq.
-                                  color format is same as "foreground" option (default "black")
+  -b, --background string         background text color.
+                                  color types are same as "foreground" option (default "black")
   -f, --fontfile string           font file path.
-                                  You can change this default value with environment variables TEXTIMG_FONT_FILE (default "/usr/share/fonts/truetype/hack-gen/HackGen-Regular.ttf")
+                                  You can change this default value with environment variables TEXTIMG_FONT_FILE
+  -x, --fontindex int             
   -e, --emoji-fontfile string     emoji font file
+  -X, --emoji-fontindex int       
   -i, --use-emoji-font            use emoji font
   -z, --shellgei-emoji-fontfile   emoji font file for shellgei-bot (path: "/usr/share/fonts/truetype/ancient-scripts/Symbola_hint.ttf")
   -F, --fontsize int              font size (default 20)
   -o, --out string                output image file path.
                                   available image formats are [png | jpg | gif]
+  -t, --timestamp                 add time stamp to output image file path.
+  -n, --numbered                  add number-suffix to filename when the output file was existed.
+                                  ex: t_2.png
   -s, --shellgei-imagedir         image directory path for shellgei-bot (path: "/images/t.png")
   -a, --animation                 generate animation gif
   -d, --delay int                 animation delay time (default 20)
@@ -244,8 +249,9 @@ Flags:
   -W, --slide-width int           sliding animation width (default 1)
   -E, --forever                   sliding forever
       --environments              print environment variables
+      --slack                     resize to slack icon size (128x128 px)
   -h, --help                      help for textimg
-      --version                   version for textimg
+  -v, --version                   version for textimg
 ```
 
 ## フォント
