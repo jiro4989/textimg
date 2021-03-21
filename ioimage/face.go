@@ -3,41 +3,58 @@ package ioimage
 import (
 	"io/ioutil"
 	"os"
+	"path/filepath"
+	"strings"
 
-	"github.com/goki/freetype/truetype"
 	"github.com/jiro4989/textimg/log"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/gofont/gomono"
+	"golang.org/x/image/font/opentype"
 )
 
 // ReadFace はfontPathのフォントファイルからfaceを返す。
-func ReadFace(fontPath string, fontSize float64) font.Face {
-	var fontData []byte
+func ReadFace(fontPath string, fontIndex int, fontSize float64) (font.Face, error) {
+	var ft *opentype.Font
 
 	// ファイルが存在しなければビルトインのフォントをデフォルトとして使う
 	_, err := os.Stat(fontPath)
 	if err == nil {
-		fontData, err = ioutil.ReadFile(fontPath)
+		fontData, err := ioutil.ReadFile(fontPath)
 		if err != nil {
-			panic(err)
+			return nil, err
+		}
+		switch strings.ToLower(filepath.Ext(fontPath)) {
+		case ".otc", ".ttc":
+			ftc, err := opentype.ParseCollection(fontData)
+			if err != nil {
+				return nil, err
+			}
+			ft, err = ftc.Font(fontIndex)
+			if err != nil {
+				return nil, err
+			}
+		default:
+			ft, err = opentype.Parse(fontData)
+			if err != nil {
+				return nil, err
+			}
 		}
 	} else {
 		log.Warnf("%s is not found. please set font path with `-f` option", fontPath)
-		fontData = gomono.TTF
+		ft, err = opentype.Parse(gomono.TTF)
+		if err != nil {
+			return nil, err
+		}
 	}
 
-	ft, err := truetype.Parse(fontData)
+	opt := opentype.FaceOptions{
+		Size:    fontSize,
+		DPI:     72,
+		Hinting: 0,
+	}
+	face, err := opentype.NewFace(ft, &opt)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	opt := truetype.Options{
-		Size:              fontSize,
-		DPI:               0,
-		Hinting:           0,
-		GlyphCacheEntries: 0,
-		SubPixelsX:        0,
-		SubPixelsY:        0,
-	}
-	face := truetype.NewFace(ft, &opt)
-	return face
+	return face, nil
 }

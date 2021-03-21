@@ -23,7 +23,9 @@ type applicationConfig struct {
 	Background               string // 背景色
 	Outpath                  string // 画像の出力ファイルパス
 	FontFile                 string // フォントファイルのパス
+	FontIndex                int    // フォントコレクションのインデックス
 	EmojiFontFile            string // 絵文字用のフォントファイルのパス
+	EmojiFontIndex           int    // 絵文字用のフォントコレクションのインデックス
 	UseEmojiFont             bool   // 絵文字TTFを使う
 	FontSize                 int    // フォントサイズ
 	UseAnimation             bool   // アニメーションGIFを生成する
@@ -54,19 +56,19 @@ or (R,G,B,A(0~255))`)
 	RootCommand.Flags().StringVarP(&appconf.Background, "background", "b", "black", `background text color.
 color types are same as "foreground" option`)
 
-	font := "/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf"
-	if runtime.GOOS == "darwin" {
-		font = "/Library/Fonts/AppleGothic.ttf"
-	}
+	var font string
 	envFontFile := os.Getenv(global.EnvNameFontFile)
 	if envFontFile != "" {
 		font = envFontFile
 	}
 	RootCommand.Flags().StringVarP(&appconf.FontFile, "fontfile", "f", font, `font file path.
 You can change this default value with environment variables TEXTIMG_FONT_FILE`)
+	RootCommand.Flags().IntVarP(&appconf.FontIndex, "fontindex", "x", 0, "")
+	appconf.setFontFileAndFontIndex(runtime.GOOS)
 
 	envEmojiFontFile := os.Getenv(global.EnvNameEmojiFontFile)
 	RootCommand.Flags().StringVarP(&appconf.EmojiFontFile, "emoji-fontfile", "e", envEmojiFontFile, "emoji font file")
+	RootCommand.Flags().IntVarP(&appconf.EmojiFontIndex, "emoji-fontindex", "X", 0, "")
 
 	RootCommand.Flags().BoolVarP(&appconf.UseEmojiFont, "use-emoji-font", "i", false, "use emoji font")
 	RootCommand.Flags().BoolVarP(&appconf.UseShellgeiEmojiFontfile, "shellgei-emoji-fontfile", "z", false, `emoji font file for shellgei-bot (path: "`+shellgeiEmojiFontPath+`")`)
@@ -84,6 +86,71 @@ available image formats are [png | jpg | gif]`)
 	RootCommand.Flags().BoolVarP(&appconf.SlideForever, "forever", "E", false, "sliding forever")
 	RootCommand.Flags().BoolVarP(&appconf.PrintEnvironments, "environments", "", false, "print environment variables")
 	RootCommand.Flags().BoolVarP(&appconf.ToSlackIcon, "slack", "", false, "resize to slack icon size (128x128 px)")
+}
+
+type osDefaultFont struct {
+	fontFile  string
+	fontIndex int
+	isLinux   bool
+}
+
+const (
+	defaultWindowsFont = `C:\Windows\Fonts\msgothic.ttc`
+	defaultDarwinFont  = "/System/Library/Fonts/AppleSDGothicNeo.ttc"
+	defaultIOSFont     = "/System/Library/Fonts/Core/AppleSDGothicNeo.ttc"
+	defaultAndroidFont = "/system/fonts/NotoSansCJK-Regular.ttc"
+	defaultLinuxFont1  = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
+	defaultLinuxFont2  = "/usr/share/fonts/noto-cjk/NotoSansCJK-Regular.ttc"
+)
+
+func (a *applicationConfig) setFontFileAndFontIndex(runtimeOS string) {
+	if a.FontFile != "" {
+		return
+	}
+
+	m := map[string]osDefaultFont{
+		"linux": {
+			isLinux: true,
+		},
+		"windows": {
+			fontFile:  defaultWindowsFont,
+			fontIndex: 0,
+		},
+		"darwin": {
+			fontFile:  defaultDarwinFont,
+			fontIndex: 0,
+		},
+		"ios": {
+			fontFile:  defaultIOSFont,
+			fontIndex: 0,
+		},
+		"android": {
+			fontFile:  defaultAndroidFont,
+			fontIndex: 4,
+		},
+	}
+
+	if f, ok := m[runtimeOS]; ok {
+		// linux だけ特殊なので特別に分岐
+		if !f.isLinux {
+			a.FontFile = f.fontFile
+			a.FontIndex = f.fontIndex
+			return
+		}
+
+		if _, err := os.Stat("/proc/sys/fs/binfmt_misc/WSLInterop"); err == nil {
+			a.FontFile = "/mnt/c/Windows/Fonts/msgothic.ttc"
+			a.FontIndex = 0
+			return
+		}
+
+		a.FontFile = defaultLinuxFont1
+		if _, err := os.Stat(a.FontFile); err != nil {
+			a.FontFile = defaultLinuxFont2
+		}
+		a.FontIndex = 4
+		return
+	}
 }
 
 var RootCommand = &cobra.Command{
@@ -208,10 +275,16 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 		texts[i] = removeZeroWidthCharacters(text)
 	}
 
-	face := ioimage.ReadFace(appconf.FontFile, float64(appconf.FontSize))
+	face, err := ioimage.ReadFace(appconf.FontFile, appconf.FontIndex, float64(appconf.FontSize))
+	if err != nil {
+		return err
+	}
 	var emojiFace font.Face
 	if appconf.EmojiFontFile != "" {
-		emojiFace = ioimage.ReadFace(appconf.EmojiFontFile, float64(appconf.FontSize))
+		emojiFace, err = ioimage.ReadFace(appconf.EmojiFontFile, appconf.EmojiFontIndex, float64(appconf.FontSize))
+		if err != nil {
+			return err
+		}
 	}
 	emojiDir := os.Getenv(global.EnvNameEmojiDir)
 
