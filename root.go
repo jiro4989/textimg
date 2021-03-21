@@ -156,6 +156,18 @@ func (a *applicationConfig) setFontFileAndFontIndex(runtimeOS string) {
 	}
 }
 
+// addTimeStampToOutPath はOutpathに指定日時のタイムスタンプを付与する。
+func (a *applicationConfig) addTimeStampToOutPath(t time.Time) {
+	if !a.AddTimeStamp {
+		return
+	}
+
+	ext := filepath.Ext(a.Outpath)
+	file := strings.TrimSuffix(a.Outpath, ext)
+	timestamp := t.Format("2006-01-02-150405")
+	a.Outpath = file + "_" + timestamp + ext
+}
+
 var RootCommand = &cobra.Command{
 	Use:     global.AppName,
 	Short:   global.AppName + " is command to convert from colored text (ANSI or 256) to image.",
@@ -183,12 +195,7 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	if appconf.AddTimeStamp {
-		fileExt := filepath.Ext(appconf.Outpath)
-		fileName := strings.TrimSuffix(appconf.Outpath, fileExt)
-		timestamp := time.Now().Format("2006-01-02-150405")
-		appconf.Outpath = fileName + "_" + timestamp + fileExt
-	}
+	appconf.addTimeStampToOutPath(time.Now())
 
 	if _, err := os.Stat(appconf.Outpath); err == nil {
 		fileExt := filepath.Ext(appconf.Outpath)
