@@ -217,7 +217,8 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 	// シェル芸イメージディレクトリの指定がある時はパスを変更する
 	if appconf.UseShellgeiImagedir {
 		var err error
-		appconf.Outpath, err = outputImageDir(appconf.UseAnimation)
+		outDir := os.Getenv(global.EnvNameOutputDir)
+		appconf.Outpath, err = outputImageDir(outDir, appconf.UseAnimation)
 		if err != nil {
 			return err
 		}
@@ -355,8 +356,7 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 }
 
 // outputImageDir は `-s` オプションで保存するさきのディレクトリパスを返す。
-func outputImageDir(useAnimation bool) (string, error) {
-	outDir := os.Getenv(global.EnvNameOutputDir)
+func outputImageDir(outDir string, useAnimation bool) (string, error) {
 	if outDir == "" {
 		homeDir, err := os.UserHomeDir()
 		if err != nil {

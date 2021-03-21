@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/jiro4989/textimg/escseq"
-	"github.com/jiro4989/textimg/internal/global"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -455,9 +454,7 @@ func TestOutputImageDir(t *testing.T) {
 		t.Run(tt.desc, func(t *testing.T) {
 			assert := assert.New(t)
 
-			os.Setenv(global.EnvNameOutputDir, tt.inEnvDir)
-
-			got, err := outputImageDir(tt.inUseAnimation)
+			got, err := outputImageDir(tt.inEnvDir, tt.inUseAnimation)
 			if tt.wantErr {
 				assert.Equal("", got)
 				assert.Error(err)
