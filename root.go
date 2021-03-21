@@ -24,6 +24,7 @@ type applicationConfig struct {
 	Background               string // 背景色
 	Outpath                  string // 画像の出力ファイルパス
 	AddTimeStamp             bool   // ファイル名末尾にタイムスタンプ付与
+	SaveNumberedFile         bool   // 保存しようとしたファイルがすでに存在する場合に連番を付与する
 	FontFile                 string // フォントファイルのパス
 	FontIndex                int    // フォントコレクションのインデックス
 	EmojiFontFile            string // 絵文字用のフォントファイルのパス
@@ -79,6 +80,8 @@ You can change this default value with environment variables TEXTIMG_FONT_FILE`)
 	RootCommand.Flags().StringVarP(&appconf.Outpath, "out", "o", "", `output image file path.
 available image formats are [png | jpg | gif]`)
 	RootCommand.Flags().BoolVarP(&appconf.AddTimeStamp, "timestamp", "t", false, `add time stamp to output image file path.`)
+	RootCommand.Flags().BoolVarP(&appconf.SaveNumberedFile, "numbered", "n", false, `add number-suffix to filename when the output file was existed.
+ex: t_2.png`)
 	RootCommand.Flags().BoolVarP(&appconf.UseShellgeiImagedir, "shellgei-imagedir", "s", false, `image directory path for shellgei-bot (path: "/images/t.png")`)
 
 	RootCommand.Flags().BoolVarP(&appconf.UseAnimation, "animation", "a", false, "generate animation gif")
@@ -197,17 +200,19 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 
 	appconf.addTimeStampToOutPath(time.Now())
 
-	if _, err := os.Stat(appconf.Outpath); err == nil {
-		fileExt := filepath.Ext(appconf.Outpath)
-		fileName := strings.TrimSuffix(appconf.Outpath, fileExt)
-		i := 2
-		for {
-			appconf.Outpath = fmt.Sprintf("%s_%d%s", fileName, i, fileExt)
-			_, err := os.Stat(appconf.Outpath)
-			if err != nil {
-				break
+	if appconf.SaveNumberedFile {
+		if _, err := os.Stat(appconf.Outpath); err == nil {
+			fileExt := filepath.Ext(appconf.Outpath)
+			fileName := strings.TrimSuffix(appconf.Outpath, fileExt)
+			i := 2
+			for {
+				appconf.Outpath = fmt.Sprintf("%s_%d%s", fileName, i, fileExt)
+				_, err := os.Stat(appconf.Outpath)
+				if err != nil {
+					break
+				}
+				i++
 			}
-			i++
 		}
 	}
 
