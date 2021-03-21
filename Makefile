@@ -26,7 +26,7 @@ docker-build: ## Dockerイメージをビルドする
 
 .PHONY: docker-test
 docker-test: ## Docker環境でgo testを実行する
-	docker-compose run base go test -cover ./...
+	docker-compose run --rm base go test -cover ./...
 
 .PHONY: docker-push
 docker-push: ## DockerHubにイメージをPushする
