@@ -44,6 +44,11 @@ func TestMainNormal(t *testing.T) {
 			want: 0,
 		},
 		{
+			desc: "正常系: FontIndex, EmojiFontIndexを指定できる",
+			in:   []string{"", "Sample", "-o", outDir + "/main_font_index.png", "-x", "0", "-X", "0"},
+			want: 0,
+		},
+		{
 			desc: "正常系: SlackアイコンサイズでアニメーションGIFを生成できる",
 			in:   []string{"", "Sample", "-o", outDir + "/main_slack_anim.gif", "--slack", "-a"},
 			want: 0,
