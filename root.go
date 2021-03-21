@@ -176,7 +176,7 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 
 	// シェル芸イメージディレクトリの指定がある時はパスを変更する
 	if appconf.UseShellgeiImagedir {
-		outDir := os.Getenv(global.EnvNameOutDir)
+		outDir := os.Getenv(global.EnvNameOutputDir)
 		if outDir == "" {
 			if runtime.GOOS == "windows" {
 				outDir = filepath.Join(os.Getenv("HOMEPATH"), "Pictures")
