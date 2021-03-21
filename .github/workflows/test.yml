@@ -47,9 +47,7 @@ jobs:
           go-version: '1.x'
       - run: |
           go mod download
-          result="$(go fmt ./...)"
-          echo "$result"
-          count="$(echo "$result" | wc -l)"
+          count="$(go fmt ./... | wc -l)"
           if [[ "$count" -ne 0 ]]; then
             echo "[ERR] go fmt してください" >&2
             exit 1
