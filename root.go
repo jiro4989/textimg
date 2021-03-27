@@ -132,7 +132,7 @@ func (a *applicationConfig) setFontFileAndFontIndex(runtimeOS string) {
 		},
 		"android": {
 			fontFile:  defaultAndroidFont,
-			fontIndex: 4,
+			fontIndex: 5,
 		},
 	}
 
@@ -154,7 +154,7 @@ func (a *applicationConfig) setFontFileAndFontIndex(runtimeOS string) {
 		if _, err := os.Stat(a.FontFile); err != nil {
 			a.FontFile = defaultLinuxFont2
 		}
-		a.FontIndex = 4
+		a.FontIndex = 5
 		return
 	}
 }

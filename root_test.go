@@ -330,13 +330,13 @@ func TestApplicationConfigSetFontFileAndFontIndex(t *testing.T) {
 			desc:          "正常系: フォント未設定でandroidの場合はandroid用のフォントが設定される",
 			inRuntimeOS:   "android",
 			wantFontFile:  defaultAndroidFont,
-			wantFontIndex: 4,
+			wantFontIndex: 5,
 		},
 		{
 			desc:          "正常系: フォント未設定でlinuxの場合はlinux用のフォントが設定される。Linux用のフォントは2つ存在するが、1つ目のフォントはalpineコンテナ内にデフォルトでは存在しないため2つ目が設定される",
 			inRuntimeOS:   "linux",
 			wantFontFile:  defaultLinuxFont2,
-			wantFontIndex: 4,
+			wantFontIndex: 5,
 		},
 	}
 	for _, tt := range tests {
