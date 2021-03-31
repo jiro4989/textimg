@@ -15,6 +15,11 @@ import (
 	"golang.org/x/image/math/fixed"
 )
 
+func init() {
+	// Unicode Neutral で定義されている絵文字(例: 👁)を幅2として扱う
+	runewidth.StrictEmojiNeutral = false
+}
+
 func drawText(img *image.RGBA, x, y int, r rune, fgCol, bgCol escseq.RGBA, face, emojiFace font.Face, emojiDir string, useEmoji bool) {
 	path := fmt.Sprintf("%s/emoji_u%.4x.png", emojiDir, r)
 	_, err := os.Stat(path)
