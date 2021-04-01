@@ -22,7 +22,7 @@ import (
 func main() {
 	args := os.Args
 	fmt.Println("Char CodePoint Width")
-	runewidth.StrictEmojiNeutral = false
+	runewidth.DefaultCondition.StrictEmojiNeutral = false
 	for _, c := range args[1] {
 		text := fmt.Sprintf("%v %d %d", string(c), c, runewidth.RuneWidth(c))
 		fmt.Println(text)
