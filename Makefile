@@ -1,11 +1,4 @@
 APPNAME := $(shell basename `pwd`)
-VERSION := $(shell grep Version internal/global/version.go | grep -Eo '`.*$$' | tr -d '`')
-SRCS := $(shell find . -name "*.go" -type f )
-XBUILD_TARGETS := \
-	-os="windows linux darwin" \
-	-arch="386 amd64" 
-DIST_DIR := dist
-README := README.*
 
 .PHONY: help
 help: ## ドキュメントのヘルプを表示する。
@@ -18,7 +11,6 @@ test: ## テストコードを実行する
 .PHONY: clean
 clean: ## バイナリ、配布物ディレクトリを削除する
 	-rm -rf bin
-	-rm -rf $(DIST_DIR)
 
 .PHONY: docker-build
 docker-build: ## Dockerイメージをビルドする
