@@ -41,6 +41,7 @@ ENV TEXTIMG_OUTPUT_DIR /images
 ENV TEXTIMG_FONT_FILE /usr/share/fonts/truetype/myrica/MyricaM.TTC
 ENV TEXTIMG_EMOJI_DIR /usr/share/emoji-image
 ENV TEXTIMG_EMOJI_FONT_FILE /usr/share/fonts/truetype/symbola/Symbola_hint.ttf
+ENV LANG ja_JP.UTF-8
 RUN mkdir /images
 
 ENTRYPOINT ["/usr/local/bin/textimg"]
