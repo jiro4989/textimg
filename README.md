@@ -321,9 +321,12 @@ Default fonts that to use are below.
 
 |OS     |Font path |
 |-------|----------|
-|Linux  |/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf |
-|MacOS  |/Library/Fonts/AppleGothic.ttf |
-|Windows|Not supported (Welcome Pull Request!) |
+|Linux  |/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc |
+|Linux  |/usr/share/fonts/noto-cjk/NotoSansCJK-Regular.ttc |
+|MacOS  |/System/Library/Fonts/AppleSDGothicNeo.ttc |
+|iOS    |/System/Library/Fonts/Core/AppleSDGothicNeo.ttc |
+|Android|/system/fonts/NotoSansCJK-Regular.ttc |
+|Windows|C:\Windows\Fonts\msgothic.ttc |
 
 You can change this font path with environment variables `TEXTIMG_FONT_FILE` .
 

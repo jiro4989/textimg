@@ -289,9 +289,12 @@ Flags:
 
 |OS     |Font path |
 |-------|----------|
-|Linux  |/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf |
-|MacOS  |/Library/Fonts/AppleGothic.ttf |
-|Windows|サポートしていません(PRお待ちしています) |
+|Linux  |/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc |
+|Linux  |/usr/share/fonts/noto-cjk/NotoSansCJK-Regular.ttc |
+|MacOS  |/System/Library/Fonts/AppleSDGothicNeo.ttc |
+|iOS    |/System/Library/Fonts/Core/AppleSDGothicNeo.ttc |
+|Android|/system/fonts/NotoSansCJK-Regular.ttc |
+|Windows|C:\Windows\Fonts\msgothic.ttc |
 
 `TEXTIMG_FONT_FILE`環境変数でフォントを変更できます。
 
