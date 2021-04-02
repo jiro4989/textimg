@@ -56,6 +56,46 @@ echo -e '\x1b[31mRED\x1b[0m' | textimg --background black -o out.gif
 デフォルトの画像フォーマットはPNGです。
 リダイレクトなどの標準出力へ画像を出力する際は、PNGとして出力します。
 
+### 外部コマンドとの連携
+
+grep:
+
+```bash
+echo hello world | grep hello --color=always | textimg -o out.png
+```
+
+![image](https://user-images.githubusercontent.com/13825004/92329722-4e77d380-f0a4-11ea-97eb-0de316ebf6c7.png)
+
+screenfetch:
+
+```bash
+screenfetch | textimg -o out.png
+```
+
+[bat](https://github.com/sharkdp/bat):
+
+```bash
+bat --color=always /etc/profile | textimg -o out.png
+```
+
+![image](https://user-images.githubusercontent.com/13825004/92329806-03aa8b80-f0a5-11ea-95f4-d876c34d65d6.png)
+
+ccze:
+
+```bash
+ls -lah | ccze -A | textimg -o out.png
+```
+
+![image](https://user-images.githubusercontent.com/13825004/113440487-7e633b80-9427-11eb-8e03-4888308780a7.png)
+
+lolcat:
+
+```bash
+seq -f 'seq %g | xargs' 18 | bash | lolcat -f --freq=0.5 | textimg -o out.png
+```
+
+![image](https://user-images.githubusercontent.com/13825004/113440659-ce420280-9427-11eb-933b-7f9b1b618264.png)
+
 ### 虹色に出力する例
 
 #### ANSIカラー

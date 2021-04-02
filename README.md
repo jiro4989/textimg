@@ -82,6 +82,22 @@ bat --color=always /etc/profile | textimg -o out.png
 
 ![image](https://user-images.githubusercontent.com/13825004/92329806-03aa8b80-f0a5-11ea-95f4-d876c34d65d6.png)
 
+ccze:
+
+```bash
+ls -lah | ccze -A | textimg -o out.png
+```
+
+![image](https://user-images.githubusercontent.com/13825004/113440487-7e633b80-9427-11eb-8e03-4888308780a7.png)
+
+lolcat:
+
+```bash
+seq -f 'seq %g | xargs' 18 | bash | lolcat -f --freq=0.5 | textimg -o out.png
+```
+
+![image](https://user-images.githubusercontent.com/13825004/113440659-ce420280-9427-11eb-933b-7f9b1b618264.png)
+
 ### Rainbow examples
 
 #### From ANSI color
