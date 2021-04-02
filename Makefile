@@ -22,7 +22,7 @@ clean: ## バイナリ、配布物ディレクトリを削除する
 
 .PHONY: docker-build
 docker-build: ## Dockerイメージをビルドする
-	docker-compose build --no-cache
+	docker-compose build
 
 .PHONY: docker-test
 docker-test: ## Docker環境でgo testを実行する
