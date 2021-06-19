@@ -5,4 +5,5 @@ images/*
 !images/.gitkeep
 scripts/width/width
 
+!completions/*/textimg
 textimg
