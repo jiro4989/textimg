@@ -14,6 +14,7 @@ Table of contents:
 * [textimg](#textimg)
   * [使用例](#使用例)
     * [シンプルな使い方](#シンプルな使い方)
+    * [外部コマンドとの連携](#外部コマンドとの連携)
     * [虹色に出力する例](#虹色に出力する例)
       * [ANSIカラー](#ansiカラー)
       * [256色指定](#256色指定)
@@ -21,6 +22,7 @@ Table of contents:
       * [アニメーションGIF](#アニメーションgif)
       * [スライドアニメーション](#スライドアニメーション)
     * [Dockerでの使用例](#dockerでの使用例)
+    * [保存先ショートカット](#保存先ショートカット)
   * [インストール](#インストール)
     * [Linux users (Debian base distros)](#linux-users-debian-base-distros)
     * [Linux users (RHEL compatible distros)](#linux-users-rhel-compatible-distros)
@@ -31,11 +33,15 @@ Table of contents:
     * [デフォルトのフォントパス](#デフォルトのフォントパス)
     * [絵文字フォント (画像ファイルのパス)](#絵文字フォント-画像ファイルのパス)
     * [絵文字フォント (TTF)](#絵文字フォント-ttf)
+  * [Tab Completions](#tab-completions)
+    * [Bash](#bash)
+    * [Zsh](#zsh)
+    * [Fish](#fish)
   * [開発](#開発)
     * [ビルド方法](#ビルド方法)
   * [参考](#参考)
 
-<!-- Added by: vagrant, at: Fri Aug  7 10:56:37 UTC 2020 -->
+<!-- Added by: jiro4989, at: Sat Jun 19 17:56:01 JST 2021 -->
 
 <!--te-->
 
@@ -373,6 +379,38 @@ echo あ😃a👍！👀ん👄 | textimg -i -o emoji_symbola.png
 ```
 
 ![Symbola emoji example](img/emoji_symbola.png)
+
+## Tab Completions
+
+各種シェルのcompletions用ファイルをサポートしています。
+シェルのタブ補完が使いたい場合は、このセクションの手順を実施してください。
+
+### Bash
+
+以下のコマンドを実行します。
+
+```bash
+sudo cp -p completions/bash/textimg /usr/share/bash-completion/completions/textimg
+```
+
+### Zsh
+
+以下のコマンドを実行します。
+
+```bash
+sudo cp -p completions/zsh/textimg /usr/share/zsh/functions/Completion/_textimg
+
+# or
+# sudo cp -p completions/zsh/textimg {path to your $fpath}
+```
+
+### Fish
+
+以下のコマンドを実行します。
+
+```bash
+ln -sfn completions/fish/textimg.fish $HOME/.config/fish/completions/textimg.fish
+```
 
 ## 開発
 
