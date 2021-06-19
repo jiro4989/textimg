@@ -1,0 +1,26 @@
+# textimg(1) completion                                       -*- shell-script -*-
+
+_textimg_module() {
+  local cur prev cword
+  _get_comp_words_by_ref -n : cur prev cword
+
+  case "${cword}" in
+    1)
+      local opts="-g --foreground -b --background -f --fontfile -x --fontindex -e --emoji-fontfile -X --emoji-fontindex -i --use-emoji-font -z --shellgei-emoji-fontfile -F --fontsize -o --out -t --timestamp -n --numbered -s --shellgei-imagedir -a --animation -d --delay -l --line-count -S --slide -W --slide-width -E --forever --environments --slack -h --help -v --version"
+      COMPREPLY=($(compgen -W "${opts}" -- "${cur}"))
+      ;;
+    2)
+      case "${prev}" in
+        -g|--foreground|-b|--background)
+          local opts="black red green yellow blue magenta cyan white"
+          COMPREPLY=($(compgen -W "${opts}" -- "${cur}"))
+          ;;
+        -f|--fontfile|-e|--emoji-fontfile|-o|--out)
+          COMPREPLY=($(compgen -f -- "${cur}"))
+          ;;
+      esac
+      ;;
+  esac
+}
+
+complete -F _textimg_module textimg
