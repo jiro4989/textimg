@@ -47,7 +47,7 @@ jobs:
           go-version: '1.16'
       - name: Check code format
         run: |
-          go build
+          go mod download
           count="$(go fmt ./... | wc -l)"
           if [[ "$count" -ne 0 ]]; then
             echo "[ERR] 'go fmt ./...' してください" >&2
