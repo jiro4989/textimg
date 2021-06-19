@@ -17,3 +17,9 @@ docker-test: ## Docker環境でgo testを実行する
 .PHONY: docker-push
 docker-push: ## DockerHubにイメージをPushする
 	docker push jiro4989/textimg
+
+.PHONY: setup-tools
+setup-tools: ## 開発時に使うツールをインストールする
+	wget https://raw.githubusercontent.com/ekalinin/github-markdown-toc/master/gh-md-toc
+	sudo install -m 0755 ./gh-md-toc /usr/local/bin/
+	-rm -f gh-md-toc
