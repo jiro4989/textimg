@@ -1,0 +1,43 @@
+#compdef textimg
+
+_textimg() {
+  _arguments \
+    {-g,--foreground}'[foreground text color]: :->color' \
+    {-b,--background}'[background text color]: :->color' \
+    {-f,--fontfile}'[font file path]: :->etc' \
+    {-x,--fontindex}': :->etc' \
+    {-e,--emoji-fontfile}'[emoji font file]: :->etc' \
+    {-X,--emoji-fontindex}': :->etc' \
+    {-i,--use-emoji-font}': :->etc' \
+    {-z,--shellgei-emoji-fontfile}'[emoji font file for shellgei-bot]: :->etc' \
+    {-F,--fontsize}'[font size (default 20)]: :->etc' \
+    {-o,--out}'[output image file path. available image formats are png or jpg or gif]: :->etc' \
+    {-t,--timestamp}'[add time stamp to output image file path.]: :->etc' \
+    {-n,--numbered}'[add number-suffix to filename when the output file was existed.]: :->etc' \
+    {-s,--shellgei-imagedir}'[image directory path]: :->etc' \
+    {-a,--animation}'[generate animation gif]: :->etc' \
+    {-d,--delay}'[animation delay time (default 20)]: :->etc' \
+    {-l,--line-count}'[animation input line count (default 1)]: :->etc' \
+    {-S,--slide}'[use slide animation]: :->etc' \
+    {-W,--slide-width}'[sliding animation width (default 1)]: :->etc' \
+    {-E,--forever}'[sliding forever]: :->etc' \
+    --environments'[print environment variables]: :->etc' \
+    --slack'[resize toslack icon size (128x128x px)]: :->etc' \
+    {-h,--help}'[help for textimg]: :->etc' \
+    {-v,--version}'[version for textimg]: :->etc'
+
+  case "$state" in
+    color)
+      _values \
+        'color' \
+        black red green yellow blue magenta cyan white
+      ;;
+    etc)
+      # nothing to do
+      ;;
+  esac
+}
+
+compdef _textimg textimg
+
+# vim: ft=zsh
