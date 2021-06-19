@@ -381,6 +381,37 @@ echo あ😃a👍！👀ん👄 | textimg -i -o emoji_symbola.png
 
 ![Symbola emoji example](img/emoji_symbola.png)
 
+## Tab Completions
+
+You can use TAB completions.
+
+### Bash
+
+Run below.
+
+```bash
+sudo cp -p completions/bash/textimg /usr/share/bash-completion/completions/textimg
+```
+
+### Zsh
+
+Run below.
+
+```bash
+sudo cp -p completions/zsh/textimg /usr/share/zsh/functions/Completion/_textimg
+
+# or
+# sudo cp -p completions/zsh/textimg {path to your $fpath}
+```
+
+### Fish
+
+Run below.
+
+```bash
+ln -sfn completions/fish/textimg.fish $HOME/.config/fish/completions/textimg.fish
+```
+
 ## Development
 
 go version go1.15 linux/amd64
