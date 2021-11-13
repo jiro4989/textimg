@@ -42,6 +42,8 @@ type applicationConfig struct {
 	UseShellgeiImagedir      bool
 	UseShellgeiEmojiFontfile bool
 	UseRawPixel              bool // ピクセルデータをエンコードせずにByteデータとして出力する
+	ResizeWidth              int  // 画像の横幅
+	ResizeHeight             int  // 画像の縦幅
 }
 
 const shellgeiEmojiFontPath = "/usr/share/fonts/truetype/ancient-scripts/Symbola_hint.ttf"
@@ -94,6 +96,8 @@ ex: t_2.png`)
 	RootCommand.Flags().BoolVarP(&appconf.PrintEnvironments, "environments", "", false, "print environment variables")
 	RootCommand.Flags().BoolVarP(&appconf.ToSlackIcon, "slack", "", false, "resize to slack icon size (128x128 px)")
 	RootCommand.Flags().BoolVarP(&appconf.ToSlackIcon, "raw-pixel", "r", false, "print raw pixel data")
+	RootCommand.Flags().IntVarP(&appconf.ResizeWidth, "resize-width", "", -1, "resize width")
+	RootCommand.Flags().IntVarP(&appconf.ResizeHeight, "resize-height", "", -1, "resize height")
 }
 
 type osDefaultFont struct {
@@ -349,6 +353,8 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 		Delay:         appconf.Delay,
 		LineCount:     appconf.LineCount,
 		ToSlackIcon:   appconf.ToSlackIcon,
+		ResizeWidth:   appconf.ResizeWidth,
+		ResizeHeight:  appconf.ResizeHeight,
 	}
 	if err := ioimage.Write(w, imgExt, texts, writeConf); err != nil {
 		return err
