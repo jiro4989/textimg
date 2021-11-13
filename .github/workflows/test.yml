@@ -2,6 +2,8 @@ name: test
 
 on:
   push:
+    branches:
+      - master
     paths-ignore:
       - README*
       - LICENSE
@@ -11,24 +13,15 @@ on:
       - LICENSE
 
 jobs:
-  skip:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Skip job"
-
-  before:
-    runs-on: ubuntu-latest
-    if: "! contains(github.event.head_commit.message, '[skip ci]')"
-    steps:
-      - run: echo "not contains '[skip ci]'"
-
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go: [ '1.15', '1.x' ]
+        go:
+          - '1.16'
+          - '1.17'
+          - '1.x'
     name: build go ${{ matrix.go }}
-    needs: before
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v1
@@ -39,7 +32,6 @@ jobs:
 
   format:
     runs-on: ubuntu-latest
-    needs: before
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v1
@@ -56,15 +48,20 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    needs: before
+    strategy:
+      matrix:
+        go:
+          - '1.16'
+          - '1.17'
     steps:
       - uses: actions/checkout@v2
       - name: Tests
-        run: make docker-test
+        run: |
+          docker-compose build --build-arg GO_VERSION=${{ matrix.go }} base
+          make docker-test
 
   lint:
     runs-on: ubuntu-latest
-    needs: before
     steps:
       - uses: actions/checkout@v2
       - name: golangci-lint
@@ -74,7 +71,6 @@ jobs:
 
   coverage:
     runs-on: ubuntu-latest
-    needs: before
     steps:
       - uses: actions/checkout@v2
       - name: Build base image
