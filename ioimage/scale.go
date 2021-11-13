@@ -41,5 +41,5 @@ func complementWidthHeight(x, y, w, h int) (int, int) {
 		h = int(float64(y) * d)
 		return w, h
 	}
-	return w, h
+	return x, y
 }
