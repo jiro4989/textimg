@@ -28,7 +28,6 @@ type (
 		Delay         int         // アニメーションのディレイ時間
 		LineCount     int         // 入力データのうち何行を1フレーム画像に使うか
 		ToSlackIcon   bool        // Slackのアイコンサイズにする
-		UseRawPixel   bool        // ピクセルデータをエンコードせずにByteデータとして出力する
 		ResizeWidth   int         // 画像の横幅
 		ResizeHeight  int         // 画像の縦幅
 	}
@@ -151,14 +150,6 @@ func Write(w io.Writer, imgExt string, texts []string, conf WriteConfig) error {
 		}
 	} else {
 		img = scale(img, opt)
-	}
-
-	// ピクセルデータをエンコードせずに生データとして書き出す
-	if conf.UseRawPixel {
-		if _, err := w.Write(img.Pix); err != nil {
-			return err
-		}
-		return nil
 	}
 
 	var err error
