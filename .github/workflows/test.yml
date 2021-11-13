@@ -48,10 +48,17 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go:
+          - '1.16'
+          - '1.17'
     steps:
       - uses: actions/checkout@v2
       - name: Tests
-        run: make docker-test
+        run: |
+          docker-compose build --build-arg GO_VERSION=${{ matrix.go }} base
+          make docker-test
 
   lint:
     runs-on: ubuntu-latest
