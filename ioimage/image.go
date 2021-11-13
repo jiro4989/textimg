@@ -30,6 +30,7 @@ type (
 		ToSlackIcon   bool        // Slackのアイコンサイズにする
 		ResizeWidth   int         // 画像の横幅
 		ResizeHeight  int         // 画像の縦幅
+		UseRawPixel   bool        // ピクセルデータをエンコードせずにByteデータとして出力する
 	}
 )
 
@@ -150,6 +151,14 @@ func Write(w io.Writer, imgExt string, texts []string, conf WriteConfig) error {
 		}
 	} else {
 		img = scale(img, opt)
+	}
+
+	// ピクセルデータをエンコードせずに生データとして書き出す
+	if conf.UseRawPixel {
+		if _, err := w.Write(img.Pix); err != nil {
+			return err
+		}
+		return nil
 	}
 
 	var err error

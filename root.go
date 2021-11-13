@@ -41,8 +41,9 @@ type applicationConfig struct {
 	PrintEnvironments        bool
 	UseShellgeiImagedir      bool
 	UseShellgeiEmojiFontfile bool
-	ResizeWidth              int // 画像の横幅
-	ResizeHeight             int // 画像の縦幅
+	ResizeWidth              int  // 画像の横幅
+	ResizeHeight             int  // 画像の縦幅
+	UseRawPixel              bool // ピクセルデータをエンコードせずにByteデータとして出力する
 }
 
 const shellgeiEmojiFontPath = "/usr/share/fonts/truetype/ancient-scripts/Symbola_hint.ttf"
@@ -96,6 +97,7 @@ ex: t_2.png`)
 	RootCommand.Flags().BoolVarP(&appconf.ToSlackIcon, "slack", "", false, "resize to slack icon size (128x128 px)")
 	RootCommand.Flags().IntVarP(&appconf.ResizeWidth, "resize-width", "", 0, "resize width")
 	RootCommand.Flags().IntVarP(&appconf.ResizeHeight, "resize-height", "", 0, "resize height")
+	RootCommand.Flags().BoolVarP(&appconf.UseRawPixel, "raw-pixel", "r", false, "print raw pixel data")
 }
 
 type osDefaultFont struct {
