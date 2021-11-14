@@ -28,6 +28,8 @@ type (
 		Delay         int         // アニメーションのディレイ時間
 		LineCount     int         // 入力データのうち何行を1フレーム画像に使うか
 		ToSlackIcon   bool        // Slackのアイコンサイズにする
+		ResizeWidth   int         // 画像の横幅
+		ResizeHeight  int         // 画像の縦幅
 	}
 )
 
@@ -136,25 +138,33 @@ func Write(w io.Writer, imgExt string, texts []string, conf WriteConfig) error {
 		}
 	}
 
+	// 画像の拡縮処理
+	opt := scaleOption{
+		w:           conf.ResizeWidth,
+		h:           conf.ResizeHeight,
+		toSlackIcon: conf.ToSlackIcon,
+	}
+	if conf.UseAnimation {
+		for i := 0; i < len(imgs); i++ {
+			imgs[i] = scale(imgs[i], opt)
+		}
+	} else {
+		img = scale(img, opt)
+	}
+
 	var err error
 	switch imgExt {
 	case ".png":
-		img = scaleToSlackIconSize(img, conf.ToSlackIcon)
 		err = png.Encode(w, img)
 	case ".jpg", ".jpeg":
-		img = scaleToSlackIconSize(img, conf.ToSlackIcon)
 		err = jpeg.Encode(w, img, nil)
 	case ".gif":
 		if conf.UseAnimation {
-			for i := 0; i < len(imgs); i++ {
-				imgs[i] = scaleToSlackIconSize(imgs[i], conf.ToSlackIcon)
-			}
 			err = gif.EncodeAll(w, &gif.GIF{
 				Image: toPalettes(imgs),
 				Delay: delays,
 			})
 		} else {
-			img = scaleToSlackIconSize(img, conf.ToSlackIcon)
 			err = gif.Encode(w, img, nil)
 		}
 	default:

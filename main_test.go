@@ -45,6 +45,21 @@ func TestMainNormal(t *testing.T) {
 			want: 0,
 		},
 		{
+			desc: "正常系: width, height指定でresizeできる",
+			in:   []string{"", "Sample", "-o", outDir + "/main_resize_width_height.png", "--resize-width", "1000", "--resize-height", "200"},
+			want: 0,
+		},
+		{
+			desc: "正常系: widthのみ指定した場合、heightが調整される",
+			in:   []string{"", "Sample", "-o", outDir + "/main_resize_width.png", "--resize-width", "600"},
+			want: 0,
+		},
+		{
+			desc: "正常系: heightのみ指定した場合、heightが調整される",
+			in:   []string{"", "Sample", "-o", outDir + "/main_resize_height.png", "--resize-height", "600"},
+			want: 0,
+		},
+		{
 			desc: "正常系: FontIndex, EmojiFontIndexを指定できる",
 			in:   []string{"", "Sample", "-o", outDir + "/main_font_index.png", "-x", "0", "-X", "0"},
 			want: 0,
@@ -97,7 +112,6 @@ func TestMainNormal(t *testing.T) {
 			os.Args = tt.in
 			got := Main()
 			assert.Equal(tt.want, got, tt.desc)
-
 		})
 	}
 
