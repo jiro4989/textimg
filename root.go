@@ -94,8 +94,8 @@ ex: t_2.png`)
 	RootCommand.Flags().BoolVarP(&appconf.SlideForever, "forever", "E", false, "sliding forever")
 	RootCommand.Flags().BoolVarP(&appconf.PrintEnvironments, "environments", "", false, "print environment variables")
 	RootCommand.Flags().BoolVarP(&appconf.ToSlackIcon, "slack", "", false, "resize to slack icon size (128x128 px)")
-	RootCommand.Flags().IntVarP(&appconf.ResizeWidth, "resize-width", "", -1, "resize width")
-	RootCommand.Flags().IntVarP(&appconf.ResizeHeight, "resize-height", "", -1, "resize height")
+	RootCommand.Flags().IntVarP(&appconf.ResizeWidth, "resize-width", "", 0, "resize width")
+	RootCommand.Flags().IntVarP(&appconf.ResizeHeight, "resize-height", "", 0, "resize height")
 }
 
 type osDefaultFont struct {

@@ -14,7 +14,7 @@ type scaleOption struct {
 // scale は w, h の幅に画像を拡縮する。
 func scale(img *image.RGBA, opt scaleOption) *image.RGBA {
 	// w, hが両方とも初期値の場合はスケール処理をしない
-	if opt.w == -1 && opt.h == -1 {
+	if !opt.toSlackIcon && opt.w == 0 && opt.h == 0 {
 		return img
 	}
 
@@ -30,15 +30,15 @@ func scale(img *image.RGBA, opt scaleOption) *image.RGBA {
 	return dst
 }
 
-// complementWidthHeight は width, height の片方が -1 の時、サイズを調整する。
+// complementWidthHeight は width, height の片方が 0 の時、サイズを調整する。
 func complementWidthHeight(x, y, w, h int) (int, int) {
-	if w == -1 {
+	if w == 0 {
 		hh := y
 		d := float64(h) / float64(hh)
 		w = int(float64(x) * d)
 		return w, h
 	}
-	if h == -1 {
+	if h == 0 {
 		ww := x
 		d := float64(w) / float64(ww)
 		h = int(float64(y) * d)
