@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestScale(t *testing.T) {
+func TestComplementWidthHeight(t *testing.T) {
 	type TestData struct {
 		desc       string
 		x, y, w, h int
