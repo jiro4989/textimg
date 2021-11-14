@@ -355,6 +355,7 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 		ToSlackIcon:   appconf.ToSlackIcon,
 		ResizeWidth:   appconf.ResizeWidth,
 		ResizeHeight:  appconf.ResizeHeight,
+		UseRawPixel:   appconf.UseRawPixel,
 	}
 	if err := ioimage.Write(w, imgExt, texts, writeConf); err != nil {
 		return err
