@@ -112,7 +112,6 @@ func TestMainNormal(t *testing.T) {
 			os.Args = tt.in
 			got := Main()
 			assert.Equal(tt.want, got, tt.desc)
-
 		})
 	}
 
