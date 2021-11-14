@@ -22,9 +22,10 @@ func scale(img *image.RGBA, opt scaleOption) *image.RGBA {
 	w, h := opt.w, opt.h
 	if opt.toSlackIcon {
 		w, h = 128, 128
+	} else {
+		size := rect.Size()
+		w, h = complementWidthHeight(size.X, size.Y, w, h)
 	}
-	size := rect.Size()
-	w, h = complementWidthHeight(size.X, size.Y, w, h)
 	dst := image.NewRGBA(image.Rect(0, 0, w, h))
 	draw.CatmullRom.Scale(dst, dst.Bounds(), img, rect, draw.Over, nil)
 	return dst
