@@ -19,7 +19,7 @@ jobs:
         arch: [amd64]
     steps:
       - uses: actions/checkout@v2.4.0
-      - uses: actions/setup-go@v2.1.5
+      - uses: actions/setup-go@v2.2.0
         with:
           go-version: ${{ env.goversion }}
       - name: Build
@@ -52,7 +52,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.4.0
-      - uses: actions/setup-go@v2.1.5
+      - uses: actions/setup-go@v2.2.0
         with:
           go-version: ${{ env.goversion }}
       - run: go build ${{ env.build_opts }}
@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.4.0
-      - uses: actions/setup-go@v2.1.5
+      - uses: actions/setup-go@v2.2.0
         with:
           go-version: ${{ env.goversion }}
       - run: go build ${{ env.build_opts }}
