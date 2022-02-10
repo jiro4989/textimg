@@ -24,7 +24,7 @@ jobs:
     name: build go ${{ matrix.go }}
     steps:
       - uses: actions/checkout@v2.4.0
-      - uses: actions/setup-go@v2.1.5
+      - uses: actions/setup-go@v2.2.0
         with:
           go-version: ${{ matrix.go }}
       - run: go build
@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.4.0
-      - uses: actions/setup-go@v2.1.5
+      - uses: actions/setup-go@v2.2.0
         with:
           go-version: '1.16'
       - name: Check code format
