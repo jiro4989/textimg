@@ -7,8 +7,8 @@ import (
 	"image/draw"
 	"os"
 
-	"github.com/jiro4989/textimg/v3/escseq"
 	"github.com/jiro4989/textimg/v3/log"
+	"github.com/jiro4989/textimg/v3/parser"
 	"github.com/mattn/go-runewidth"
 	xdraw "golang.org/x/image/draw"
 	"golang.org/x/image/font"
@@ -20,7 +20,7 @@ func init() {
 	runewidth.DefaultCondition.StrictEmojiNeutral = false
 }
 
-func drawText(img *image.RGBA, x, y int, r rune, fgCol, bgCol escseq.RGBA, face, emojiFace font.Face, emojiDir string, useEmoji bool) {
+func drawText(img *image.RGBA, x, y int, r rune, fgCol, bgCol parser.RGBA, face, emojiFace font.Face, emojiDir string, useEmoji bool) {
 	path := fmt.Sprintf("%s/emoji_u%.4x.png", emojiDir, r)
 	_, err := os.Stat(path)
 	if err == nil && !isExceptionallyCodePoint(r) {
@@ -42,7 +42,7 @@ func drawText(img *image.RGBA, x, y int, r rune, fgCol, bgCol escseq.RGBA, face,
 }
 
 // drawBackgroundAll はimgにbgを背景色として描画する。
-func drawBackgroundAll(img *image.RGBA, bg escseq.RGBA) {
+func drawBackgroundAll(img *image.RGBA, bg parser.RGBA) {
 	var (
 		bounds = img.Bounds().Max
 		width  = bounds.X
@@ -56,7 +56,7 @@ func drawBackgroundAll(img *image.RGBA, bg escseq.RGBA) {
 }
 
 // drawLabel はimgにラベルを描画する。
-func drawLabel(img *image.RGBA, x, y int, r rune, col escseq.RGBA, face font.Face) {
+func drawLabel(img *image.RGBA, x, y int, r rune, col parser.RGBA, face font.Face) {
 	point := fixed.Point26_6{fixed.Int26_6(x * 64), fixed.Int26_6(y * 64)}
 	d := &font.Drawer{
 		Dst:  img,
@@ -68,7 +68,7 @@ func drawLabel(img *image.RGBA, x, y int, r rune, col escseq.RGBA, face font.Fac
 }
 
 // 絵文字を画像ファイルから読み取って描画する。
-func drawEmoji(img *image.RGBA, x, y int, emojiRune rune, path string, col escseq.RGBA, face font.Face) {
+func drawEmoji(img *image.RGBA, x, y int, emojiRune rune, path string, col parser.RGBA, face font.Face) {
 	fp, err := os.Open(path)
 	if err != nil {
 		log.Error(err)
@@ -100,7 +100,7 @@ func drawEmoji(img *image.RGBA, x, y int, emojiRune rune, path string, col escse
 	draw.Draw(img, rect.Add(p), dst, image.Point{}, draw.Over)
 }
 
-func drawBackground(img *image.RGBA, posX, posY int, label string, col escseq.RGBA, charWidth, charHeight int) {
+func drawBackground(img *image.RGBA, posX, posY int, label string, col parser.RGBA, charWidth, charHeight int) {
 	var (
 		tw     = runewidth.StringWidth(label)
 		width  = tw * charWidth

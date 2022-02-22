@@ -1,4 +1,4 @@
-package escseq
+package parser
 
 import (
 	"fmt"

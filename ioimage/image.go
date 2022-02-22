@@ -10,15 +10,15 @@ import (
 	"image/png"
 	"io"
 
-	"github.com/jiro4989/textimg/v3/escseq"
+	"github.com/jiro4989/textimg/v3/parser"
 	"github.com/mattn/go-runewidth"
 	"golang.org/x/image/font"
 )
 
 type (
 	WriteConfig struct {
-		Foreground    escseq.RGBA // 文字色
-		Background    escseq.RGBA // 背景色
+		Foreground    parser.RGBA // 文字色
+		Background    parser.RGBA // 背景色
 		FontFace      font.Face   // フォントファイル
 		EmojiFontFace font.Face   // 絵文字用のフォントファイル
 		EmojiDir      string      // 絵文字画像ファイルの存在するディレクトリ
@@ -60,7 +60,7 @@ func Write(w io.Writer, imgExt string, texts []string, conf WriteConfig) error {
 	var (
 		charWidth   = conf.FontSize / 2
 		charHeight  = int(float64(conf.FontSize) * 1.1)
-		imageWidth  = escseq.StringWidth(texts) * charWidth
+		imageWidth  = parser.StringWidth(texts) * charWidth
 		imageHeight = len(texts) * charHeight
 	)
 
@@ -85,12 +85,12 @@ func Write(w io.Writer, imgExt string, texts []string, conf WriteConfig) error {
 		bgCol := conf.Background
 		for line != "" {
 			// 色文字列の句切れごとに画像に色指定して書き込む
-			k, prefix, suffix := escseq.Prefix(line)
+			k, prefix, suffix := parser.Prefix(line)
 			switch k {
-			case escseq.KindEmpty:
+			case parser.KindEmpty:
 				err := fmt.Errorf("input string is empty")
 				return err
-			case escseq.KindText:
+			case parser.KindText:
 				text := prefix
 				drawBackground(img, posX, posY-charHeight, text, bgCol, charWidth, charHeight)
 				// drawLabel(img, posX, posY-(charHeight/5), text, fgCol, face)
@@ -98,24 +98,24 @@ func Write(w io.Writer, imgExt string, texts []string, conf WriteConfig) error {
 					drawText(img, posX, posY-(charHeight/5), r, fgCol, bgCol, face, emojiFace, conf.EmojiDir, conf.UseEmojiFont)
 					posX += runewidth.RuneWidth(r) * charWidth
 				}
-			case escseq.KindColor:
-				colors := escseq.ParseColor(prefix)
+			case parser.KindColor:
+				colors := parser.ParseColor(prefix)
 				for _, v := range colors {
 					switch v.ColorType {
-					case escseq.ColorTypeReset:
+					case parser.ColorTypeReset:
 						fgCol = conf.Foreground
 						bgCol = conf.Background
-					case escseq.ColorTypeReverse:
+					case parser.ColorTypeReverse:
 						fgCol, bgCol = bgCol, fgCol
-					case escseq.ColorTypeForeground:
+					case parser.ColorTypeForeground:
 						fgCol = v.Color
-					case escseq.ColorTypeBackground:
+					case parser.ColorTypeBackground:
 						bgCol = v.Color
 					default:
 						// 未実装のcolorTypeでは何もしない
 					}
 				}
-			case escseq.KindNotColor:
+			case parser.KindNotColor:
 				// 色出力と関係のないエスケープシーケンスの場合は何もしない
 			default:
 				// 到達しないはず
