@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/jiro4989/textimg/v3/parser"
+	"github.com/jiro4989/textimg/v3/color"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -14,21 +14,21 @@ func TestOptionColorStringToRGBA(t *testing.T) {
 	type TestData struct {
 		desc   string
 		colstr string
-		expect parser.RGBA
+		expect color.RGBA
 	}
 	tds := []TestData{
-		{desc: "BLACK", colstr: "BLACK", expect: parser.RGBABlack},
-		{desc: "black", colstr: "black", expect: parser.RGBABlack},
-		{desc: "red", colstr: "red", expect: parser.RGBARed},
-		{desc: "green", colstr: "green", expect: parser.RGBAGreen},
-		{desc: "yellow", colstr: "yellow", expect: parser.RGBAYellow},
-		{desc: "blue", colstr: "blue", expect: parser.RGBABlue},
-		{desc: "magenta", colstr: "magenta", expect: parser.RGBAMagenta},
-		{desc: "cyan", colstr: "cyan", expect: parser.RGBACyan},
-		{desc: "white", colstr: "white", expect: parser.RGBAWhite},
-		{desc: "0,0,0,255", colstr: "0,0,0,255", expect: parser.RGBA{R: 0, G: 0, B: 0, A: 255}},
-		{desc: "255,255,255,255", colstr: "255,255,255,255", expect: parser.RGBA{R: 255, G: 255, B: 255, A: 255}},
-		{desc: "0,0,0,0", colstr: "0,0,0,0", expect: parser.RGBA{R: 0, G: 0, B: 0, A: 0}},
+		{desc: "BLACK", colstr: "BLACK", expect: color.RGBABlack},
+		{desc: "black", colstr: "black", expect: color.RGBABlack},
+		{desc: "red", colstr: "red", expect: color.RGBARed},
+		{desc: "green", colstr: "green", expect: color.RGBAGreen},
+		{desc: "yellow", colstr: "yellow", expect: color.RGBAYellow},
+		{desc: "blue", colstr: "blue", expect: color.RGBABlue},
+		{desc: "magenta", colstr: "magenta", expect: color.RGBAMagenta},
+		{desc: "cyan", colstr: "cyan", expect: color.RGBACyan},
+		{desc: "white", colstr: "white", expect: color.RGBAWhite},
+		{desc: "0,0,0,255", colstr: "0,0,0,255", expect: color.RGBA{R: 0, G: 0, B: 0, A: 255}},
+		{desc: "255,255,255,255", colstr: "255,255,255,255", expect: color.RGBA{R: 255, G: 255, B: 255, A: 255}},
+		{desc: "0,0,0,0", colstr: "0,0,0,0", expect: color.RGBA{R: 0, G: 0, B: 0, A: 0}},
 	}
 	for _, v := range tds {
 		t.Run(v.desc, func(t *testing.T) {

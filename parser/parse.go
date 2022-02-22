@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/jiro4989/textimg/v3/color"
 	"github.com/mattn/go-runewidth"
 )
 
@@ -14,7 +15,7 @@ type (
 	ColorType int // 文字色か背景色か
 	Color     struct {
 		ColorType ColorType
-		Color     RGBA
+		Color     color.RGBA
 	}
 	Colors []Color
 )
@@ -70,7 +71,7 @@ func ParseColor(s string) (colors Colors) {
 
 	colorReset := Color{
 		ColorType: ColorTypeReset,
-		Color:     RGBA{},
+		Color:     color.RGBA{},
 	}
 
 	for i := 0; i < len(spl); i++ {
@@ -96,7 +97,7 @@ func ParseColor(s string) (colors Colors) {
 		if (30 <= n && n <= 37) || (90 <= n && n <= 97) {
 			c := Color{
 				ColorType: ColorTypeForeground,
-				Color:     ANSIMap[n],
+				Color:     color.ANSIMap[n],
 			}
 			colors = append(colors, c)
 			continue
@@ -105,7 +106,7 @@ func ParseColor(s string) (colors Colors) {
 		if (40 <= n && n <= 47) || (100 <= n && n <= 107) {
 			c := Color{
 				ColorType: ColorTypeBackground,
-				Color:     ANSIMap[n],
+				Color:     color.ANSIMap[n],
 			}
 			colors = append(colors, c)
 			continue
@@ -153,7 +154,7 @@ func ParseColor(s string) (colors Colors) {
 				}
 				c := Color{
 					ColorType: ct,
-					Color:     RGBA{R: uint8(r), G: uint8(g), B: uint8(b), A: 255},
+					Color:     color.RGBA{R: uint8(r), G: uint8(g), B: uint8(b), A: 255},
 				}
 				colors = append(colors, c)
 				i = i + 4
@@ -167,7 +168,7 @@ func ParseColor(s string) (colors Colors) {
 			}
 			c := Color{
 				ColorType: ct,
-				Color:     Map256[c255],
+				Color:     color.Map256[c255],
 			}
 			colors = append(colors, c)
 			i = i + 2

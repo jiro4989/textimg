@@ -1,4 +1,4 @@
-package parser
+package color
 
 import (
 	c "image/color"

@@ -3,6 +3,7 @@ package parser
 import (
 	"testing"
 
+	"github.com/jiro4989/textimg/v3/color"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -13,32 +14,32 @@ func TestParseColor(t *testing.T) {
 		expect Colors
 	}
 	tds := []TestData{
-		{desc: "ANSI 文字色 黒", s: "\x1b[30m", expect: Colors{{ColorType: ColorTypeForeground, Color: RGBABlack}}},
-		{desc: "ANSI 文字色 赤", s: "\x1b[31m", expect: Colors{{ColorType: ColorTypeForeground, Color: RGBARed}}},
-		{desc: "ANSI 文字色 灰", s: "\x1b[37m", expect: Colors{{ColorType: ColorTypeForeground, Color: RGBALightGray}}},
-		{desc: "ANSI 文字色 黒", s: "\x1b[90m", expect: Colors{{ColorType: ColorTypeForeground, Color: RGBADarkGray}}},
-		{desc: "ANSI 文字色 白", s: "\x1b[97m", expect: Colors{{ColorType: ColorTypeForeground, Color: RGBAWhite}}},
+		{desc: "ANSI 文字色 黒", s: "\x1b[30m", expect: Colors{{ColorType: ColorTypeForeground, Color: color.RGBABlack}}},
+		{desc: "ANSI 文字色 赤", s: "\x1b[31m", expect: Colors{{ColorType: ColorTypeForeground, Color: color.RGBARed}}},
+		{desc: "ANSI 文字色 灰", s: "\x1b[37m", expect: Colors{{ColorType: ColorTypeForeground, Color: color.RGBALightGray}}},
+		{desc: "ANSI 文字色 黒", s: "\x1b[90m", expect: Colors{{ColorType: ColorTypeForeground, Color: color.RGBADarkGray}}},
+		{desc: "ANSI 文字色 白", s: "\x1b[97m", expect: Colors{{ColorType: ColorTypeForeground, Color: color.RGBAWhite}}},
 
-		{desc: "ANSI 背景色 黒", s: "\x1b[40m", expect: Colors{{ColorType: ColorTypeBackground, Color: RGBABlack}}},
-		{desc: "ANSI 背景色 赤", s: "\x1b[41m", expect: Colors{{ColorType: ColorTypeBackground, Color: RGBARed}}},
-		{desc: "ANSI 背景色 灰", s: "\x1b[47m", expect: Colors{{ColorType: ColorTypeBackground, Color: RGBALightGray}}},
-		{desc: "ANSI 背景色 黒", s: "\x1b[100m", expect: Colors{{ColorType: ColorTypeBackground, Color: RGBADarkGray}}},
-		{desc: "ANSI 背景色 白", s: "\x1b[107m", expect: Colors{{ColorType: ColorTypeBackground, Color: RGBAWhite}}},
-		{desc: "ANSI リセット", s: "\x1b[0m", expect: Colors{{ColorType: ColorTypeReset, Color: RGBA{}}}},
-		{desc: "ANSI リセット(省略記法)", s: "\x1b[m", expect: Colors{{ColorType: ColorTypeReset, Color: RGBA{}}}},
+		{desc: "ANSI 背景色 黒", s: "\x1b[40m", expect: Colors{{ColorType: ColorTypeBackground, Color: color.RGBABlack}}},
+		{desc: "ANSI 背景色 赤", s: "\x1b[41m", expect: Colors{{ColorType: ColorTypeBackground, Color: color.RGBARed}}},
+		{desc: "ANSI 背景色 灰", s: "\x1b[47m", expect: Colors{{ColorType: ColorTypeBackground, Color: color.RGBALightGray}}},
+		{desc: "ANSI 背景色 黒", s: "\x1b[100m", expect: Colors{{ColorType: ColorTypeBackground, Color: color.RGBADarkGray}}},
+		{desc: "ANSI 背景色 白", s: "\x1b[107m", expect: Colors{{ColorType: ColorTypeBackground, Color: color.RGBAWhite}}},
+		{desc: "ANSI リセット", s: "\x1b[0m", expect: Colors{{ColorType: ColorTypeReset, Color: color.RGBA{}}}},
+		{desc: "ANSI リセット(省略記法)", s: "\x1b[m", expect: Colors{{ColorType: ColorTypeReset, Color: color.RGBA{}}}},
 		{desc: "ANSI リセットと文字色と背景色", s: "\x1b[0;31;42;01m", expect: Colors{
-			{ColorType: ColorTypeReset, Color: RGBA{}},
-			{ColorType: ColorTypeForeground, Color: RGBARed},
-			{ColorType: ColorTypeBackground, Color: RGBAGreen},
-			{ColorType: ColorTypeBold, Color: RGBA{}},
+			{ColorType: ColorTypeReset, Color: color.RGBA{}},
+			{ColorType: ColorTypeForeground, Color: color.RGBARed},
+			{ColorType: ColorTypeBackground, Color: color.RGBAGreen},
+			{ColorType: ColorTypeBold, Color: color.RGBA{}},
 		}},
-		{desc: "拡張256色記法 文字色 赤", s: "\x1b[38;5;25m", expect: Colors{{ColorType: ColorTypeForeground, Color: Map256[25]}}},
-		{desc: "拡張256色記法 背景色 赤", s: "\x1b[48;5;25m", expect: Colors{{ColorType: ColorTypeBackground, Color: Map256[25]}}},
-		{desc: "拡張256色RGB記法 文字色 赤", s: "\x1b[38;2;255;0;0m", expect: Colors{{ColorType: ColorTypeForeground, Color: RGBARed}}},
-		{desc: "拡張256色RGB記法 背景色 赤", s: "\x1b[48;2;255;0;0m", expect: Colors{{ColorType: ColorTypeBackground, Color: RGBARed}}},
+		{desc: "拡張256色記法 文字色 赤", s: "\x1b[38;5;25m", expect: Colors{{ColorType: ColorTypeForeground, Color: color.Map256[25]}}},
+		{desc: "拡張256色記法 背景色 赤", s: "\x1b[48;5;25m", expect: Colors{{ColorType: ColorTypeBackground, Color: color.Map256[25]}}},
+		{desc: "拡張256色RGB記法 文字色 赤", s: "\x1b[38;2;255;0;0m", expect: Colors{{ColorType: ColorTypeForeground, Color: color.RGBARed}}},
+		{desc: "拡張256色RGB記法 背景色 赤", s: "\x1b[48;2;255;0;0m", expect: Colors{{ColorType: ColorTypeBackground, Color: color.RGBARed}}},
 		{desc: "拡張記法混在", s: "\x1b[38;5;25;48;2;255;0;0m", expect: Colors{
-			{ColorType: ColorTypeForeground, Color: Map256[25]},
-			{ColorType: ColorTypeBackground, Color: RGBARed},
+			{ColorType: ColorTypeForeground, Color: color.Map256[25]},
+			{ColorType: ColorTypeBackground, Color: color.RGBARed},
 		}},
 	}
 	for _, v := range tds {

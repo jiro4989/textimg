@@ -10,6 +10,7 @@ import (
 	"image/png"
 	"io"
 
+	"github.com/jiro4989/textimg/v3/color"
 	"github.com/jiro4989/textimg/v3/parser"
 	"github.com/mattn/go-runewidth"
 	"golang.org/x/image/font"
@@ -17,19 +18,19 @@ import (
 
 type (
 	WriteConfig struct {
-		Foreground    parser.RGBA // 文字色
-		Background    parser.RGBA // 背景色
-		FontFace      font.Face   // フォントファイル
-		EmojiFontFace font.Face   // 絵文字用のフォントファイル
-		EmojiDir      string      // 絵文字画像ファイルの存在するディレクトリ
-		UseEmojiFont  bool        // 絵文字TTFを使う
-		FontSize      int         // フォントサイズ
-		UseAnimation  bool        // アニメーションGIFを生成する
-		Delay         int         // アニメーションのディレイ時間
-		LineCount     int         // 入力データのうち何行を1フレーム画像に使うか
-		ToSlackIcon   bool        // Slackのアイコンサイズにする
-		ResizeWidth   int         // 画像の横幅
-		ResizeHeight  int         // 画像の縦幅
+		Foreground    color.RGBA // 文字色
+		Background    color.RGBA // 背景色
+		FontFace      font.Face  // フォントファイル
+		EmojiFontFace font.Face  // 絵文字用のフォントファイル
+		EmojiDir      string     // 絵文字画像ファイルの存在するディレクトリ
+		UseEmojiFont  bool       // 絵文字TTFを使う
+		FontSize      int        // フォントサイズ
+		UseAnimation  bool       // アニメーションGIFを生成する
+		Delay         int        // アニメーションのディレイ時間
+		LineCount     int        // 入力データのうち何行を1フレーム画像に使うか
+		ToSlackIcon   bool       // Slackのアイコンサイズにする
+		ResizeWidth   int        // 画像の横幅
+		ResizeHeight  int        // 画像の縦幅
 	}
 )
 

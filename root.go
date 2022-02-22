@@ -9,10 +9,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jiro4989/textimg/v3/color"
 	"github.com/jiro4989/textimg/v3/internal/global"
 	"github.com/jiro4989/textimg/v3/ioimage"
 	"github.com/jiro4989/textimg/v3/log"
-	"github.com/jiro4989/textimg/v3/parser"
 	"golang.org/x/image/font"
 	"golang.org/x/term"
 
@@ -383,11 +383,11 @@ func outputImageDir(outDir string, useAnimation bool) (string, error) {
 // 2. RGBAのカンマ区切り指定
 //    書式: R,G,B,A
 //    赤色の例: 255,0,0,255
-func optionColorStringToRGBA(colstr string) (parser.RGBA, error) {
+func optionColorStringToRGBA(colstr string) (color.RGBA, error) {
 	// "black"といった色名称でマッチするものがあれば返す
 	colstr = strings.ToLower(colstr)
-	col := parser.StringMap[colstr]
-	zeroColor := parser.RGBA{}
+	col := color.StringMap[colstr]
+	zeroColor := color.RGBA{}
 	if col != zeroColor {
 		return col, nil
 	}
@@ -425,7 +425,7 @@ func optionColorStringToRGBA(colstr string) (parser.RGBA, error) {
 	if err != nil {
 		return zeroColor, err
 	}
-	c := parser.RGBA{
+	c := color.RGBA{
 		R: uint8(r),
 		G: uint8(g),
 		B: uint8(b),
