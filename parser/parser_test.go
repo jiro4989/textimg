@@ -69,6 +69,27 @@ func TestParse(t *testing.T) {
 			},
 			wantErr: false,
 		},
+		{
+			desc: "正常系: 0埋めありの指定",
+			s:    "\x1b[032;00043mhello world",
+			want: token.Tokens{
+				{
+					Kind:      token.KindColor,
+					ColorType: token.ColorTypeForeground,
+					Color:     color.RGBAGreen,
+				},
+				{
+					Kind:      token.KindColor,
+					ColorType: token.ColorTypeBackground,
+					Color:     color.RGBAYellow,
+				},
+				{
+					Kind: token.KindText,
+					Text: "hello world",
+				},
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tds {
 		t.Run(tt.desc, func(t *testing.T) {

@@ -15,7 +15,7 @@ text <-
   < [^\e] + > { p.pushText(text) }
 
 color <-
-  reset_color / standard_color / extended_color
+  standard_color / extended_color / reset_color
 
 reset_color <-
   '0'+ { p.pushResetColor() }

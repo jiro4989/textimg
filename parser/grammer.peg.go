@@ -564,26 +564,26 @@ func (p *Parser) Init(options ...func(*Parser) error) error {
 			position, tokenIndex = position15, tokenIndex15
 			return false
 		},
-		/* 4 color <- <(reset_color / standard_color / extended_color)> */
+		/* 4 color <- <(standard_color / extended_color / reset_color)> */
 		func() bool {
 			position22, tokenIndex22 := position, tokenIndex
 			{
 				position23 := position
 				{
 					position24, tokenIndex24 := position, tokenIndex
-					if !_rules[rulereset_color]() {
+					if !_rules[rulestandard_color]() {
 						goto l25
 					}
 					goto l24
 				l25:
 					position, tokenIndex = position24, tokenIndex24
-					if !_rules[rulestandard_color]() {
+					if !_rules[ruleextended_color]() {
 						goto l26
 					}
 					goto l24
 				l26:
 					position, tokenIndex = position24, tokenIndex24
-					if !_rules[ruleextended_color]() {
+					if !_rules[rulereset_color]() {
 						goto l22
 					}
 				}
