@@ -66,6 +66,7 @@ func NewExtendedColor(text string) Token {
 	return Token{
 		Kind:      KindColor,
 		ColorType: colorType(n),
+		Color: color.RGBA{ A: 255 },
 	}
 }
 
