@@ -71,8 +71,8 @@ func TestParse(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			desc: "正常系: 前景色と背景色の同時指定",
-			s:    "\x1b[32;43mhello world",
+			desc: "正常系: 前景色と背景色の同時指定 + リセット省略系",
+			s:    "\x1b[32;43mhello world\x1b[m",
 			want: token.Tokens{
 				{
 					Kind:      token.KindColor,
@@ -87,6 +87,10 @@ func TestParse(t *testing.T) {
 				{
 					Kind: token.KindText,
 					Text: "hello world",
+				},
+				{
+					Kind:      token.KindColor,
+					ColorType: token.ColorTypeReset,
 				},
 			},
 			wantErr: false,
