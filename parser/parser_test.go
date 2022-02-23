@@ -258,6 +258,18 @@ func TestParse(t *testing.T) {
 			},
 			wantErr: false,
 		},
+		{
+			desc: "異常系: 拡張系 256色で数値がuint8を超えた場合はMap256の最後の値が設定される",
+			s:    "\x1b[38;5;256m",
+			want: token.Tokens{
+				{
+					Kind:      token.KindColor,
+					ColorType: token.ColorTypeForeground,
+					Color:     color.Map256[255],
+				},
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tds {
 		t.Run(tt.desc, func(t *testing.T) {
