@@ -91,7 +91,7 @@ func newImage(w, h int) *image.RGBA {
 	return image.NewRGBA(image.Rect(0, 0, w, h))
 }
 
-func (i *Image) Write(tokens token.Tokens) error {
+func (i *Image) Draw(tokens token.Tokens) error {
 	i.drawBackgroundAll()
 
 	for _, t := range tokens {
