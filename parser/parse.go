@@ -65,49 +65,6 @@ var (
 	}
 )
 
-func newResetColor() Color {
-	return Color{
-		Kind:      KindNotColor,
-		ColorType: ColorTypeReset,
-	}
-}
-
-func newText(text string) Color {
-	return Color{
-		Kind: KindText,
-		Text: text,
-	}
-}
-
-func newStandardColorWithCategory(text string) Color {
-	n, _ := strconv.Atoi(text)
-	var t ColorType
-	switch n / 10 {
-	case 3, 9:
-		t = ColorTypeForeground
-	case 4, 10:
-		t = ColorTypeBackground
-	}
-	return Color{
-		Kind:      KindColor,
-		ColorType: t,
-		Color:     color.ANSIMap[n],
-	}
-}
-
-func newExtendedColor256(text string) Color {
-	n, _ := strconv.Atoi(text)
-	return Color{
-		Kind:  KindColor,
-		Color: color.Map256[n],
-	}
-}
-
-func newExtendedColorRGB() Color {
-	return Color{
-		Kind: KindColor,
-	}
-}
 
 // ParseColor は色のエスケープシーケンスを解析してRGBAに変換する。
 func ParseColor(s string) (colors Colors) {

@@ -12,7 +12,7 @@ colors <-
   / prefix color (delimiter color)* color_suffix
 
 text <-
-  < .+ > { p.pushText(text) }
+  < [^\e] + > { p.pushText(text) }
 
 color <-
   reset_color / standard_color / extended_color

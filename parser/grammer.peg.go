@@ -512,19 +512,39 @@ func (p *Parser) Init(options ...func(*Parser) error) error {
 			position, tokenIndex = position9, tokenIndex9
 			return false
 		},
-		/* 3 text <- <(<.+> Action1)> */
+		/* 3 text <- <(<(!'\x1b' .)+> Action1)> */
 		func() bool {
 			position15, tokenIndex15 := position, tokenIndex
 			{
 				position16 := position
 				{
 					position17 := position
+					{
+						position20, tokenIndex20 := position, tokenIndex
+						if buffer[position] != rune('\x1b') {
+							goto l20
+						}
+						position++
+						goto l15
+					l20:
+						position, tokenIndex = position20, tokenIndex20
+					}
 					if !matchDot() {
 						goto l15
 					}
 				l18:
 					{
 						position19, tokenIndex19 := position, tokenIndex
+						{
+							position21, tokenIndex21 := position, tokenIndex
+							if buffer[position] != rune('\x1b') {
+								goto l21
+							}
+							position++
+							goto l19
+						l21:
+							position, tokenIndex = position21, tokenIndex21
+						}
 						if !matchDot() {
 							goto l19
 						}
@@ -546,454 +566,454 @@ func (p *Parser) Init(options ...func(*Parser) error) error {
 		},
 		/* 4 color <- <(reset_color / standard_color / extended_color)> */
 		func() bool {
-			position20, tokenIndex20 := position, tokenIndex
+			position22, tokenIndex22 := position, tokenIndex
 			{
-				position21 := position
+				position23 := position
 				{
-					position22, tokenIndex22 := position, tokenIndex
+					position24, tokenIndex24 := position, tokenIndex
 					if !_rules[rulereset_color]() {
-						goto l23
+						goto l25
 					}
-					goto l22
-				l23:
-					position, tokenIndex = position22, tokenIndex22
+					goto l24
+				l25:
+					position, tokenIndex = position24, tokenIndex24
 					if !_rules[rulestandard_color]() {
-						goto l24
+						goto l26
 					}
-					goto l22
-				l24:
-					position, tokenIndex = position22, tokenIndex22
+					goto l24
+				l26:
+					position, tokenIndex = position24, tokenIndex24
 					if !_rules[ruleextended_color]() {
-						goto l20
+						goto l22
 					}
 				}
-			l22:
-				add(rulecolor, position21)
+			l24:
+				add(rulecolor, position23)
 			}
 			return true
-		l20:
-			position, tokenIndex = position20, tokenIndex20
+		l22:
+			position, tokenIndex = position22, tokenIndex22
 			return false
 		},
 		/* 5 reset_color <- <('0'+ Action2)> */
 		func() bool {
-			position25, tokenIndex25 := position, tokenIndex
+			position27, tokenIndex27 := position, tokenIndex
 			{
-				position26 := position
+				position28 := position
 				if buffer[position] != rune('0') {
-					goto l25
+					goto l27
 				}
 				position++
-			l27:
+			l29:
 				{
-					position28, tokenIndex28 := position, tokenIndex
+					position30, tokenIndex30 := position, tokenIndex
 					if buffer[position] != rune('0') {
-						goto l28
+						goto l30
 					}
 					position++
-					goto l27
-				l28:
-					position, tokenIndex = position28, tokenIndex28
+					goto l29
+				l30:
+					position, tokenIndex = position30, tokenIndex30
 				}
 				if !_rules[ruleAction2]() {
-					goto l25
+					goto l27
 				}
-				add(rulereset_color, position26)
+				add(rulereset_color, position28)
 			}
 			return true
-		l25:
-			position, tokenIndex = position25, tokenIndex25
+		l27:
+			position, tokenIndex = position27, tokenIndex27
 			return false
 		},
 		/* 6 standard_color <- <(zero <(('3' / '4' / '9' / ('1' '0')) [0-7])> Action3)> */
 		func() bool {
-			position29, tokenIndex29 := position, tokenIndex
+			position31, tokenIndex31 := position, tokenIndex
 			{
-				position30 := position
+				position32 := position
 				if !_rules[rulezero]() {
-					goto l29
+					goto l31
 				}
 				{
-					position31 := position
+					position33 := position
 					{
-						position32, tokenIndex32 := position, tokenIndex
+						position34, tokenIndex34 := position, tokenIndex
 						if buffer[position] != rune('3') {
-							goto l33
-						}
-						position++
-						goto l32
-					l33:
-						position, tokenIndex = position32, tokenIndex32
-						if buffer[position] != rune('4') {
-							goto l34
-						}
-						position++
-						goto l32
-					l34:
-						position, tokenIndex = position32, tokenIndex32
-						if buffer[position] != rune('9') {
 							goto l35
 						}
 						position++
-						goto l32
+						goto l34
 					l35:
-						position, tokenIndex = position32, tokenIndex32
+						position, tokenIndex = position34, tokenIndex34
+						if buffer[position] != rune('4') {
+							goto l36
+						}
+						position++
+						goto l34
+					l36:
+						position, tokenIndex = position34, tokenIndex34
+						if buffer[position] != rune('9') {
+							goto l37
+						}
+						position++
+						goto l34
+					l37:
+						position, tokenIndex = position34, tokenIndex34
 						if buffer[position] != rune('1') {
-							goto l29
+							goto l31
 						}
 						position++
 						if buffer[position] != rune('0') {
-							goto l29
+							goto l31
 						}
 						position++
 					}
-				l32:
+				l34:
 					if c := buffer[position]; c < rune('0') || c > rune('7') {
-						goto l29
+						goto l31
 					}
 					position++
-					add(rulePegText, position31)
+					add(rulePegText, position33)
 				}
 				if !_rules[ruleAction3]() {
-					goto l29
+					goto l31
 				}
-				add(rulestandard_color, position30)
+				add(rulestandard_color, position32)
 			}
 			return true
-		l29:
-			position, tokenIndex = position29, tokenIndex29
+		l31:
+			position, tokenIndex = position31, tokenIndex31
 			return false
 		},
 		/* 7 extended_color <- <(extended_color_256 / extended_color_rgb)> */
 		func() bool {
-			position36, tokenIndex36 := position, tokenIndex
+			position38, tokenIndex38 := position, tokenIndex
 			{
-				position37 := position
+				position39 := position
 				{
-					position38, tokenIndex38 := position, tokenIndex
+					position40, tokenIndex40 := position, tokenIndex
 					if !_rules[ruleextended_color_256]() {
-						goto l39
+						goto l41
 					}
-					goto l38
-				l39:
-					position, tokenIndex = position38, tokenIndex38
+					goto l40
+				l41:
+					position, tokenIndex = position40, tokenIndex40
 					if !_rules[ruleextended_color_rgb]() {
-						goto l36
+						goto l38
 					}
 				}
-			l38:
-				add(ruleextended_color, position37)
+			l40:
+				add(ruleextended_color, position39)
 			}
 			return true
-		l36:
-			position, tokenIndex = position36, tokenIndex36
+		l38:
+			position, tokenIndex = position38, tokenIndex38
 			return false
 		},
 		/* 8 extended_color_256 <- <(extended_color_prefix delimiter zero '5' delimiter <number> Action4)> */
 		func() bool {
-			position40, tokenIndex40 := position, tokenIndex
+			position42, tokenIndex42 := position, tokenIndex
 			{
-				position41 := position
+				position43 := position
 				if !_rules[ruleextended_color_prefix]() {
-					goto l40
+					goto l42
 				}
 				if !_rules[ruledelimiter]() {
-					goto l40
+					goto l42
 				}
 				if !_rules[rulezero]() {
-					goto l40
+					goto l42
 				}
 				if buffer[position] != rune('5') {
-					goto l40
+					goto l42
 				}
 				position++
 				if !_rules[ruledelimiter]() {
-					goto l40
+					goto l42
 				}
 				{
-					position42 := position
+					position44 := position
 					if !_rules[rulenumber]() {
-						goto l40
+						goto l42
 					}
-					add(rulePegText, position42)
+					add(rulePegText, position44)
 				}
 				if !_rules[ruleAction4]() {
-					goto l40
+					goto l42
 				}
-				add(ruleextended_color_256, position41)
+				add(ruleextended_color_256, position43)
 			}
 			return true
-		l40:
-			position, tokenIndex = position40, tokenIndex40
+		l42:
+			position, tokenIndex = position42, tokenIndex42
 			return false
 		},
 		/* 9 extended_color_rgb <- <(extended_color_prefix delimiter zero '2' Action5 delimiter <number> Action6 delimiter <number> Action7 delimiter <number> Action8)> */
 		func() bool {
-			position43, tokenIndex43 := position, tokenIndex
+			position45, tokenIndex45 := position, tokenIndex
 			{
-				position44 := position
+				position46 := position
 				if !_rules[ruleextended_color_prefix]() {
-					goto l43
+					goto l45
 				}
 				if !_rules[ruledelimiter]() {
-					goto l43
+					goto l45
 				}
 				if !_rules[rulezero]() {
-					goto l43
+					goto l45
 				}
 				if buffer[position] != rune('2') {
-					goto l43
+					goto l45
 				}
 				position++
 				if !_rules[ruleAction5]() {
-					goto l43
+					goto l45
 				}
 				if !_rules[ruledelimiter]() {
-					goto l43
-				}
-				{
-					position45 := position
-					if !_rules[rulenumber]() {
-						goto l43
-					}
-					add(rulePegText, position45)
-				}
-				if !_rules[ruleAction6]() {
-					goto l43
-				}
-				if !_rules[ruledelimiter]() {
-					goto l43
-				}
-				{
-					position46 := position
-					if !_rules[rulenumber]() {
-						goto l43
-					}
-					add(rulePegText, position46)
-				}
-				if !_rules[ruleAction7]() {
-					goto l43
-				}
-				if !_rules[ruledelimiter]() {
-					goto l43
+					goto l45
 				}
 				{
 					position47 := position
 					if !_rules[rulenumber]() {
-						goto l43
+						goto l45
 					}
 					add(rulePegText, position47)
 				}
-				if !_rules[ruleAction8]() {
-					goto l43
+				if !_rules[ruleAction6]() {
+					goto l45
 				}
-				add(ruleextended_color_rgb, position44)
+				if !_rules[ruledelimiter]() {
+					goto l45
+				}
+				{
+					position48 := position
+					if !_rules[rulenumber]() {
+						goto l45
+					}
+					add(rulePegText, position48)
+				}
+				if !_rules[ruleAction7]() {
+					goto l45
+				}
+				if !_rules[ruledelimiter]() {
+					goto l45
+				}
+				{
+					position49 := position
+					if !_rules[rulenumber]() {
+						goto l45
+					}
+					add(rulePegText, position49)
+				}
+				if !_rules[ruleAction8]() {
+					goto l45
+				}
+				add(ruleextended_color_rgb, position46)
 			}
 			return true
-		l43:
-			position, tokenIndex = position43, tokenIndex43
+		l45:
+			position, tokenIndex = position45, tokenIndex45
 			return false
 		},
 		/* 10 extended_color_prefix <- <(zero ('3' / '4') '8')> */
 		func() bool {
-			position48, tokenIndex48 := position, tokenIndex
+			position50, tokenIndex50 := position, tokenIndex
 			{
-				position49 := position
+				position51 := position
 				if !_rules[rulezero]() {
-					goto l48
+					goto l50
 				}
 				{
-					position50, tokenIndex50 := position, tokenIndex
+					position52, tokenIndex52 := position, tokenIndex
 					if buffer[position] != rune('3') {
-						goto l51
+						goto l53
 					}
 					position++
-					goto l50
-				l51:
-					position, tokenIndex = position50, tokenIndex50
+					goto l52
+				l53:
+					position, tokenIndex = position52, tokenIndex52
 					if buffer[position] != rune('4') {
-						goto l48
+						goto l50
 					}
 					position++
 				}
-			l50:
+			l52:
 				if buffer[position] != rune('8') {
-					goto l48
+					goto l50
 				}
 				position++
-				add(ruleextended_color_prefix, position49)
+				add(ruleextended_color_prefix, position51)
 			}
 			return true
-		l48:
-			position, tokenIndex = position48, tokenIndex48
+		l50:
+			position, tokenIndex = position50, tokenIndex50
 			return false
 		},
 		/* 11 zero <- <'0'*> */
 		func() bool {
 			{
-				position53 := position
-			l54:
+				position55 := position
+			l56:
 				{
-					position55, tokenIndex55 := position, tokenIndex
+					position57, tokenIndex57 := position, tokenIndex
 					if buffer[position] != rune('0') {
-						goto l55
+						goto l57
 					}
 					position++
-					goto l54
-				l55:
-					position, tokenIndex = position55, tokenIndex55
+					goto l56
+				l57:
+					position, tokenIndex = position57, tokenIndex57
 				}
-				add(rulezero, position53)
+				add(rulezero, position55)
 			}
 			return true
 		},
 		/* 12 number <- <[0-9]+> */
 		func() bool {
-			position56, tokenIndex56 := position, tokenIndex
+			position58, tokenIndex58 := position, tokenIndex
 			{
-				position57 := position
+				position59 := position
 				if c := buffer[position]; c < rune('0') || c > rune('9') {
-					goto l56
+					goto l58
 				}
 				position++
-			l58:
+			l60:
 				{
-					position59, tokenIndex59 := position, tokenIndex
+					position61, tokenIndex61 := position, tokenIndex
 					if c := buffer[position]; c < rune('0') || c > rune('9') {
-						goto l59
+						goto l61
 					}
 					position++
-					goto l58
-				l59:
-					position, tokenIndex = position59, tokenIndex59
+					goto l60
+				l61:
+					position, tokenIndex = position61, tokenIndex61
 				}
-				add(rulenumber, position57)
+				add(rulenumber, position59)
 			}
 			return true
-		l56:
-			position, tokenIndex = position56, tokenIndex56
+		l58:
+			position, tokenIndex = position58, tokenIndex58
 			return false
 		},
 		/* 13 prefix <- <(escape_sequence '[')> */
 		func() bool {
-			position60, tokenIndex60 := position, tokenIndex
-			{
-				position61 := position
-				if !_rules[ruleescape_sequence]() {
-					goto l60
-				}
-				if buffer[position] != rune('[') {
-					goto l60
-				}
-				position++
-				add(ruleprefix, position61)
-			}
-			return true
-		l60:
-			position, tokenIndex = position60, tokenIndex60
-			return false
-		},
-		/* 14 escape_sequence <- <'\x1b'> */
-		func() bool {
 			position62, tokenIndex62 := position, tokenIndex
 			{
 				position63 := position
-				if buffer[position] != rune('\x1b') {
+				if !_rules[ruleescape_sequence]() {
+					goto l62
+				}
+				if buffer[position] != rune('[') {
 					goto l62
 				}
 				position++
-				add(ruleescape_sequence, position63)
+				add(ruleprefix, position63)
 			}
 			return true
 		l62:
 			position, tokenIndex = position62, tokenIndex62
 			return false
 		},
-		/* 15 color_suffix <- <'m'> */
+		/* 14 escape_sequence <- <'\x1b'> */
 		func() bool {
 			position64, tokenIndex64 := position, tokenIndex
 			{
 				position65 := position
-				if buffer[position] != rune('m') {
+				if buffer[position] != rune('\x1b') {
 					goto l64
 				}
 				position++
-				add(rulecolor_suffix, position65)
+				add(ruleescape_sequence, position65)
 			}
 			return true
 		l64:
 			position, tokenIndex = position64, tokenIndex64
 			return false
 		},
-		/* 16 non_color_suffix <- <([A-H] / 'f' / 'S' / 'T' / 'J' / 'K')> */
+		/* 15 color_suffix <- <'m'> */
 		func() bool {
 			position66, tokenIndex66 := position, tokenIndex
 			{
 				position67 := position
-				{
-					position68, tokenIndex68 := position, tokenIndex
-					if c := buffer[position]; c < rune('A') || c > rune('H') {
-						goto l69
-					}
-					position++
-					goto l68
-				l69:
-					position, tokenIndex = position68, tokenIndex68
-					if buffer[position] != rune('f') {
-						goto l70
-					}
-					position++
-					goto l68
-				l70:
-					position, tokenIndex = position68, tokenIndex68
-					if buffer[position] != rune('S') {
-						goto l71
-					}
-					position++
-					goto l68
-				l71:
-					position, tokenIndex = position68, tokenIndex68
-					if buffer[position] != rune('T') {
-						goto l72
-					}
-					position++
-					goto l68
-				l72:
-					position, tokenIndex = position68, tokenIndex68
-					if buffer[position] != rune('J') {
-						goto l73
-					}
-					position++
-					goto l68
-				l73:
-					position, tokenIndex = position68, tokenIndex68
-					if buffer[position] != rune('K') {
-						goto l66
-					}
-					position++
+				if buffer[position] != rune('m') {
+					goto l66
 				}
-			l68:
-				add(rulenon_color_suffix, position67)
+				position++
+				add(rulecolor_suffix, position67)
 			}
 			return true
 		l66:
 			position, tokenIndex = position66, tokenIndex66
 			return false
 		},
-		/* 17 delimiter <- <';'> */
+		/* 16 non_color_suffix <- <([A-H] / 'f' / 'S' / 'T' / 'J' / 'K')> */
 		func() bool {
-			position74, tokenIndex74 := position, tokenIndex
+			position68, tokenIndex68 := position, tokenIndex
 			{
-				position75 := position
-				if buffer[position] != rune(';') {
-					goto l74
+				position69 := position
+				{
+					position70, tokenIndex70 := position, tokenIndex
+					if c := buffer[position]; c < rune('A') || c > rune('H') {
+						goto l71
+					}
+					position++
+					goto l70
+				l71:
+					position, tokenIndex = position70, tokenIndex70
+					if buffer[position] != rune('f') {
+						goto l72
+					}
+					position++
+					goto l70
+				l72:
+					position, tokenIndex = position70, tokenIndex70
+					if buffer[position] != rune('S') {
+						goto l73
+					}
+					position++
+					goto l70
+				l73:
+					position, tokenIndex = position70, tokenIndex70
+					if buffer[position] != rune('T') {
+						goto l74
+					}
+					position++
+					goto l70
+				l74:
+					position, tokenIndex = position70, tokenIndex70
+					if buffer[position] != rune('J') {
+						goto l75
+					}
+					position++
+					goto l70
+				l75:
+					position, tokenIndex = position70, tokenIndex70
+					if buffer[position] != rune('K') {
+						goto l68
+					}
+					position++
 				}
-				position++
-				add(ruledelimiter, position75)
+			l70:
+				add(rulenon_color_suffix, position69)
 			}
 			return true
-		l74:
-			position, tokenIndex = position74, tokenIndex74
+		l68:
+			position, tokenIndex = position68, tokenIndex68
+			return false
+		},
+		/* 17 delimiter <- <';'> */
+		func() bool {
+			position76, tokenIndex76 := position, tokenIndex
+			{
+				position77 := position
+				if buffer[position] != rune(';') {
+					goto l76
+				}
+				position++
+				add(ruledelimiter, position77)
+			}
+			return true
+		l76:
+			position, tokenIndex = position76, tokenIndex76
 			return false
 		},
 		/* 19 Action0 <- <{ p.pushResetColor() }> */
