@@ -32,12 +32,12 @@ extended_color_256 <-
   delimiter
   zero '5'
   delimiter
-  < number > { p.pushExtendedColor256(text) }
+  < number > { p.setExtendedColor256(text) }
 
 extended_color_rgb <-
   extended_color_prefix
   delimiter
-  zero '2' { p.pushExtendedColorRGB() }
+  zero '2'
   delimiter
   < number > { p.setExtendedColorR(text) }
   delimiter
@@ -45,7 +45,9 @@ extended_color_rgb <-
   delimiter
   < number > { p.setExtendedColorB(text) }
 
-extended_color_prefix <- zero [34] '8'
+extended_color_prefix <-
+  zero
+  < [34] '8' > { p.pushExtendedColor(text) }
 
 zero             <- '0' *
 number           <- [0-9]+

@@ -3,6 +3,7 @@ package parser
 import (
 	"strconv"
 
+	"github.com/jiro4989/textimg/v3/color"
 	"github.com/jiro4989/textimg/v3/token"
 )
 
@@ -34,12 +35,13 @@ func (p *ParserFunc) pushStandardColorWithCategory(text string) {
 	p.Tk = append(p.Tk, token.NewStandardColorWithCategory(text))
 }
 
-func (p *ParserFunc) pushExtendedColor256(text string) {
-	p.Tk = append(p.Tk, token.NewExtendedColor256(text))
+func (p *ParserFunc) pushExtendedColor(text string) {
+	p.Tk = append(p.Tk, token.NewExtendedColor(text))
 }
 
-func (p *ParserFunc) pushExtendedColorRGB() {
-	p.Tk = append(p.Tk, token.NewExtendedColorRGB())
+func (p *ParserFunc) setExtendedColor256(text string) {
+	n, _ := strconv.ParseUint(text, 10, 8)
+	p.Tk[len(p.Tk)-1].Color = color.Map256[int(n)]
 }
 
 func (p *ParserFunc) setExtendedColorR(text string) {

@@ -54,6 +54,22 @@ func NewText(text string) Token {
 
 func NewStandardColorWithCategory(text string) Token {
 	n, _ := strconv.Atoi(text)
+	return Token{
+		Kind:      KindColor,
+		ColorType: colorType(n),
+		Color:     color.ANSIMap[n],
+	}
+}
+
+func NewExtendedColor(text string) Token {
+	n, _ := strconv.Atoi(text)
+	return Token{
+		Kind:  KindColor,
+		ColorType: colorType(n),
+	}
+}
+
+func colorType(n int) ColorType {
 	var t ColorType
 	switch n / 10 {
 	case 3, 9:
@@ -61,23 +77,5 @@ func NewStandardColorWithCategory(text string) Token {
 	case 4, 10:
 		t = ColorTypeBackground
 	}
-	return Token{
-		Kind:      KindColor,
-		ColorType: t,
-		Color:     color.ANSIMap[n],
-	}
-}
-
-func NewExtendedColor256(text string) Token {
-	n, _ := strconv.Atoi(text)
-	return Token{
-		Kind:  KindColor,
-		Color: color.Map256[n],
-	}
-}
-
-func NewExtendedColorRGB() Token {
-	return Token{
-		Kind: KindColor,
-	}
+	return t
 }

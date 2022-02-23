@@ -90,6 +90,18 @@ func TestParse(t *testing.T) {
 			},
 			wantErr: false,
 		},
+		{
+			desc: "正常系: 拡張系 256色",
+			s:    "\x1b[38;5;1m",
+			want: token.Tokens{
+				{
+					Kind:      token.KindColor,
+					ColorType: token.ColorTypeForeground,
+					Color:     color.Map256[1],
+				},
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tds {
 		t.Run(tt.desc, func(t *testing.T) {
