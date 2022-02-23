@@ -109,7 +109,7 @@ func TestParse(t *testing.T) {
 				{
 					Kind:      token.KindColor,
 					ColorType: token.ColorTypeBackground,
-					Color:     color.RGBA{
+					Color: color.RGBA{
 						R: 1,
 						G: 2,
 						B: 3,
