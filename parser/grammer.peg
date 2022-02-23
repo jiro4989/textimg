@@ -4,7 +4,9 @@ type Parser Peg {
   ParserFunc
 }
 
-root   <- (colors / ignore / text)*
+root <-
+  (colors / ignore / text)*
+
 ignore <-
   prefix number non_color_suffix
   / escape_sequence
