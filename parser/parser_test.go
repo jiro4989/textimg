@@ -197,6 +197,17 @@ func TestParse(t *testing.T) {
 			},
 			wantErr: false,
 		},
+		{
+			desc: "正常系: 関係ないエスケープシーケンス系無視される",
+			s:    "\x1b[1A寿司",
+			want: token.Tokens{
+				{
+					Kind: token.KindText,
+					Text: "寿司",
+				},
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tds {
 		t.Run(tt.desc, func(t *testing.T) {
