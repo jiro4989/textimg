@@ -29,8 +29,30 @@ func TestParse(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			desc: "正常系: 黒赤緑",
+			s:    "\x1b[30m\x1b[31m\x1b[32m",
+			want: token.Tokens{
+				{
+					Kind:      token.KindColor,
+					ColorType: token.ColorTypeForeground,
+					Color:     color.RGBABlack,
+				},
+				{
+					Kind:      token.KindColor,
+					ColorType: token.ColorTypeForeground,
+					Color:     color.RGBARed,
+				},
+				{
+					Kind:      token.KindColor,
+					ColorType: token.ColorTypeForeground,
+					Color:     color.RGBAGreen,
+				},
+			},
+			wantErr: false,
+		},
+		{
 			desc: "正常系: 赤とテキストとリセット",
-			s:    "\x1b[31mhello world\x1b[0m",
+			s:    "\x1b[31m hello world \x1b[0m",
 			want: token.Tokens{
 				{
 					Kind:      token.KindColor,
@@ -39,7 +61,7 @@ func TestParse(t *testing.T) {
 				},
 				{
 					Kind: token.KindText,
-					Text: "hello world",
+					Text: " hello world ",
 				},
 				{
 					Kind:      token.KindColor,
