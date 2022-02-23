@@ -145,6 +145,32 @@ func TestParse(t *testing.T) {
 			},
 			wantErr: false,
 		},
+		{
+			desc: "正常系: 拡張系の混在 + 0埋め",
+			s:    "\x1b[038;005;002;048;002;001;002;003mx1bこんば\nんはx1b",
+			want: token.Tokens{
+				{
+					Kind:      token.KindColor,
+					ColorType: token.ColorTypeForeground,
+					Color:     color.Map256[2],
+				},
+				{
+					Kind:      token.KindColor,
+					ColorType: token.ColorTypeBackground,
+					Color: color.RGBA{
+						R: 1,
+						G: 2,
+						B: 3,
+						A: 255,
+					},
+				},
+				{
+					Kind: token.KindText,
+					Text: "x1bこんば\nんはx1b",
+				},
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tds {
 		t.Run(tt.desc, func(t *testing.T) {
