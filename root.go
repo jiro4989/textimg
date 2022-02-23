@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	c "image/color"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -10,9 +11,11 @@ import (
 	"time"
 
 	"github.com/jiro4989/textimg/v3/color"
+	"github.com/jiro4989/textimg/v3/image"
 	"github.com/jiro4989/textimg/v3/internal/global"
 	"github.com/jiro4989/textimg/v3/ioimage"
 	"github.com/jiro4989/textimg/v3/log"
+	"github.com/jiro4989/textimg/v3/parser"
 	"golang.org/x/image/font"
 	"golang.org/x/term"
 
@@ -339,22 +342,57 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 	}
 	emojiDir := os.Getenv(global.EnvNameEmojiDir)
 
-	writeConf := ioimage.WriteConfig{
-		Foreground:    confForeground,
-		Background:    confBackground,
-		FontFace:      face,
-		EmojiFontFace: emojiFace,
-		EmojiDir:      emojiDir,
-		UseEmojiFont:  appconf.UseEmojiFont,
-		FontSize:      appconf.FontSize,
-		UseAnimation:  appconf.UseAnimation,
-		Delay:         appconf.Delay,
-		LineCount:     appconf.LineCount,
-		ToSlackIcon:   appconf.ToSlackIcon,
-		ResizeWidth:   appconf.ResizeWidth,
-		ResizeHeight:  appconf.ResizeHeight,
+	// writeConf := ioimage.WriteConfig{
+	// 	Foreground:    confForeground,
+	// 	Background:    confBackground,
+	// 	FontFace:      face,
+	// 	EmojiFontFace: emojiFace,
+	// 	EmojiDir:      emojiDir,
+	// 	UseEmojiFont:  appconf.UseEmojiFont,
+	// 	FontSize:      appconf.FontSize,
+	// 	UseAnimation:  appconf.UseAnimation,
+	// 	Delay:         appconf.Delay,
+	// 	LineCount:     appconf.LineCount,
+	// 	ToSlackIcon:   appconf.ToSlackIcon,
+	// 	ResizeWidth:   appconf.ResizeWidth,
+	// 	ResizeHeight:  appconf.ResizeHeight,
+	// }
+	// if err := ioimage.Write(w, imgExt, texts, writeConf); err != nil {
+	// 	return err
+	// }
+
+	tokens, err := parser.Parse(strings.Join(texts, "\n"))
+	if err != nil {
+		return err
 	}
-	if err := ioimage.Write(w, imgExt, texts, writeConf); err != nil {
+	ls := tokens.StringLines()
+	var resizeWidth, resizeHeight int
+	if appconf.ToSlackIcon {
+		resizeWidth = 128
+		resizeHeight = 128
+	} else {
+		resizeWidth = appconf.ResizeWidth
+		resizeHeight = appconf.ResizeHeight
+	}
+	param := &image.ImageParam{
+		BaseWidth:          parser.StringWidth(ls),
+		BaseHeight:         len(ls),
+		ForegroundColor:    c.RGBA(confForeground),
+		BackgroundColor:    c.RGBA(confBackground),
+		FontFace:           face,
+		EmojiFontFace:      emojiFace,
+		EmojiDir:           emojiDir,
+		FontSize:           appconf.FontSize,
+		Delay:              appconf.Delay,
+		AnimationLineCount: appconf.LineCount,
+		ResizeWidth:        resizeWidth,
+		ResizeHeight:       resizeHeight,
+	}
+	img := image.NewImage(param)
+	if err := img.Draw(tokens); err != nil {
+		return err
+	}
+	if err := img.Encode(w, imgExt); err != nil {
 		return err
 	}
 

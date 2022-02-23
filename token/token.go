@@ -2,6 +2,7 @@ package token
 
 import (
 	"strconv"
+	"strings"
 
 	"github.com/jiro4989/textimg/v3/color"
 )
@@ -79,4 +80,17 @@ func colorType(n int) ColorType {
 		t = ColorTypeBackground
 	}
 	return t
+}
+
+func (t *Tokens) StringLines() []string {
+	var lines []string
+	for _, tt := range *t {
+		if tt.Kind != KindText {
+			continue
+		}
+		s := tt.Text
+		ls := strings.Split(s, "\n")
+		lines = append(lines, ls...)
+	}
+	return lines
 }
