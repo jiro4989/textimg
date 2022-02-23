@@ -225,6 +225,12 @@ func TestParse(t *testing.T) {
 			},
 			wantErr: false,
 		},
+		{
+			desc:    "正常系: 空文字列の場合は空",
+			s:       "",
+			want:    nil,
+			wantErr: false,
+		},
 	}
 	for _, tt := range tds {
 		t.Run(tt.desc, func(t *testing.T) {
