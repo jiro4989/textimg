@@ -64,7 +64,7 @@ func NewStandardColorWithCategory(text string) Token {
 func NewExtendedColor(text string) Token {
 	n, _ := strconv.Atoi(text)
 	return Token{
-		Kind:  KindColor,
+		Kind:      KindColor,
 		ColorType: colorType(n),
 	}
 }
