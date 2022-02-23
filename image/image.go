@@ -31,28 +31,55 @@ type (
 		charHeight             int
 		emojiDir               string
 		useEmoji               bool
-		useAnimation           bool
 		lineCount              int
 		animationLineCount     int
 	}
-	WriteParam struct {
-		Foreground    c.RGBA    // 文字色
-		Background    c.RGBA    // 背景色
-		FontFace      font.Face // フォントファイル
-		EmojiFontFace font.Face // 絵文字用のフォントファイル
-		EmojiDir      string    // 絵文字画像ファイルの存在するディレクトリ
-		UseEmojiFont  bool      // 絵文字TTFを使う
-		FontSize      int       // フォントサイズ
-		UseAnimation  bool      // アニメーションGIFを生成する
-		Delay         int       // アニメーションのディレイ時間
-		LineCount     int       // 入力データのうち何行を1フレーム画像に使うか
-		ToSlackIcon   bool      // Slackのアイコンサイズにする
-		ResizeWidth   int       // 画像の横幅
-		ResizeHeight  int       // 画像の縦幅
+	ImageParam struct {
+		BaseWidth          int
+		BaseHeight         int
+		ForegroundColor    c.RGBA // 文字色
+		BackgroundColor    c.RGBA // 背景色
+		FontSize           int    // フォントサイズ
+		FontFace           font.Face
+		EmojiFontFace      font.Face
+		EmojiDir           string
+		UseEmoji           bool
+		AnimationLineCount int
 	}
 )
 
-func (i *Image) Write(tokens token.Tokens, conf WriteParam) error {
+func NewImage(p *ImageParam) *Image {
+	var (
+		charWidth   = p.FontSize / 2
+		charHeight  = int(float64(p.FontSize) * 1.1)
+		imageWidth  = p.BaseWidth * charWidth
+		imageHeight = p.BaseHeight * charHeight
+		image       = newImage(imageWidth, imageHeight)
+	)
+
+	i := &Image{
+		image:                  image,
+		foregroundColor:        p.ForegroundColor,
+		backgroundColor:        p.BackgroundColor,
+		defaultForegroundColor: p.ForegroundColor,
+		defaultBackgroundColor: p.BackgroundColor,
+		fontSize:               p.FontSize,
+		fontFace:               p.FontFace,
+		emojiFontFace:          p.EmojiFontFace,
+		charWidth:              charWidth,
+		charHeight:             charHeight,
+		emojiDir:               p.EmojiDir,
+		useEmoji:               p.UseEmoji,
+		animationLineCount:     p.AnimationLineCount,
+	}
+	return i
+}
+
+func newImage(w, h int) *image.RGBA {
+	return image.NewRGBA(image.Rect(0, 0, w, h))
+}
+
+func (i *Image) Write(tokens token.Tokens) error {
 	i.drawBackgroundAll()
 
 	for _, t := range tokens {
@@ -116,12 +143,12 @@ func (i *Image) draw(r rune) error {
 		i.x = 0
 		i.y += i.charHeight
 		i.lineCount++
-		if i.lineCount%i.animationLineCount == 0 {
+		if 0 < i.animationLineCount && i.lineCount%i.animationLineCount == 0 {
 			i.x = 0
 			i.y = 0
 			i.animationImages = append(i.animationImages, i.image)
 			b := i.image.Bounds().Max
-			i.image = image.NewRGBA(image.Rect(0, 0, b.X, b.Y))
+			i.image = newImage(b.X, b.Y)
 			i.drawBackgroundAll()
 		}
 		return nil
