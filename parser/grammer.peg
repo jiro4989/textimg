@@ -4,8 +4,10 @@ type Parser Peg {
   ParserFunc
 }
 
-root   <- (ignore / colors / text)*
-ignore <- prefix number non_color_suffix
+root   <- (colors / ignore / text)*
+ignore <-
+  prefix number non_color_suffix
+  / escape_sequence
 
 colors <-
   prefix color_suffix { p.pushResetColor() }

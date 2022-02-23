@@ -231,6 +231,22 @@ func TestParse(t *testing.T) {
 			want:    nil,
 			wantErr: false,
 		},
+		{
+			desc: "正常系: 不完全なANSIエスケープシーケンスは無視",
+			s:    "\x1b[31helloworld\x1b[30m",
+			want: token.Tokens{
+				{
+					Kind: token.KindText,
+					Text: "[31helloworld",
+				},
+				{
+					Kind:      token.KindColor,
+					ColorType: token.ColorTypeForeground,
+					Color:     color.RGBABlack,
+				},
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tds {
 		t.Run(tt.desc, func(t *testing.T) {
