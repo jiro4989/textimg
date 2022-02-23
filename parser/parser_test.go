@@ -69,7 +69,7 @@ func TestParse(t *testing.T) {
 		},
 		{
 			desc: "正常系: 赤とテキストとリセット",
-			s:    "\x1b[31m hello world \x1b[0m",
+			s:    "\x1b[31m\n hello\tworld \n\x1b[0m",
 			want: token.Tokens{
 				{
 					Kind:      token.KindColor,
@@ -78,7 +78,7 @@ func TestParse(t *testing.T) {
 				},
 				{
 					Kind: token.KindText,
-					Text: " hello world ",
+					Text: "\n hello\tworld \n",
 				},
 				{
 					Kind:      token.KindColor,
