@@ -9,13 +9,12 @@ import (
 )
 
 func TestParse(t *testing.T) {
-	type TestData struct {
+	tests := []struct {
 		desc    string
 		s       string
 		want    token.Tokens
 		wantErr bool
-	}
-	tds := []TestData{
+	}{
 		{
 			desc: "正常系: 黒",
 			s:    "\x1b[30m",
@@ -271,7 +270,7 @@ func TestParse(t *testing.T) {
 			wantErr: false,
 		},
 	}
-	for _, tt := range tds {
+	for _, tt := range tests {
 		t.Run(tt.desc, func(t *testing.T) {
 			assert := assert.New(t)
 			got, err := Parse(tt.s)
