@@ -29,6 +29,23 @@ func TestParse(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			desc: "正常系: 90系と100系",
+			s:    "\x1b[90;100m",
+			want: token.Tokens{
+				{
+					Kind:      token.KindColor,
+					ColorType: token.ColorTypeForeground,
+					Color:     color.RGBADarkGray,
+				},
+				{
+					Kind:      token.KindColor,
+					ColorType: token.ColorTypeBackground,
+					Color:     color.RGBADarkGray,
+				},
+			},
+			wantErr: false,
+		},
+		{
 			desc: "正常系: 黒赤緑",
 			s:    "\x1b[30m\x1b[31m\x1b[32m",
 			want: token.Tokens{
