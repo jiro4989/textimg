@@ -247,6 +247,17 @@ func TestParse(t *testing.T) {
 			},
 			wantErr: false,
 		},
+		{
+			desc: "正常系: 範囲外のエスケープシーケンスの場合は無視",
+			s:    "\x1b[39mhelloworld",
+			want: token.Tokens{
+				{
+					Kind: token.KindText,
+					Text: "[39mhelloworld",
+				},
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tds {
 		t.Run(tt.desc, func(t *testing.T) {
