@@ -54,10 +54,15 @@ func NewImage(p *ImageParam) *Image {
 		charHeight  = int(float64(p.FontSize) * 1.1)
 		imageWidth  = p.BaseWidth * charWidth
 		imageHeight = p.BaseHeight * charHeight
-		image       = newImage(imageWidth, imageHeight)
 	)
 
-	i := &Image{
+	if 0 < p.AnimationLineCount {
+		imageHeight /= (p.BaseHeight / p.AnimationLineCount)
+	}
+
+	image := newImage(imageWidth, imageHeight)
+
+	return &Image{
 		image:                  image,
 		foregroundColor:        p.ForegroundColor,
 		backgroundColor:        p.BackgroundColor,
@@ -72,7 +77,6 @@ func NewImage(p *ImageParam) *Image {
 		useEmoji:               p.UseEmoji,
 		animationLineCount:     p.AnimationLineCount,
 	}
-	return i
 }
 
 func newImage(w, h int) *image.RGBA {
