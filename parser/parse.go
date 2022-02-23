@@ -65,7 +65,6 @@ var (
 	}
 )
 
-
 // ParseColor は色のエスケープシーケンスを解析してRGBAに変換する。
 func ParseColor(s string) (colors Colors) {
 	s = strings.Replace(s, "\x1b[", "", -1)

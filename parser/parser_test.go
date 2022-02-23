@@ -38,7 +38,7 @@ func TestParse(t *testing.T) {
 					Color:     color.RGBARed,
 				},
 				{
-					Kind:      token.KindText,
+					Kind: token.KindText,
 					Text: "hello world",
 				},
 				{
@@ -63,7 +63,7 @@ func TestParse(t *testing.T) {
 					Color:     color.RGBAYellow,
 				},
 				{
-					Kind:      token.KindText,
+					Kind: token.KindText,
 					Text: "hello world",
 				},
 			},
