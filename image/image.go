@@ -33,6 +33,9 @@ type (
 		useEmoji               bool
 		lineCount              int
 		animationLineCount     int
+		resizeWidth            int
+		resizeHeight           int
+		delay                  int
 	}
 	ImageParam struct {
 		BaseWidth          int
@@ -45,6 +48,9 @@ type (
 		EmojiDir           string
 		UseEmoji           bool
 		AnimationLineCount int
+		ResizeWidth        int
+		ResizeHeight       int
+		Delay              int
 	}
 )
 
@@ -76,6 +82,8 @@ func NewImage(p *ImageParam) *Image {
 		emojiDir:               p.EmojiDir,
 		useEmoji:               p.UseEmoji,
 		animationLineCount:     p.AnimationLineCount,
+		resizeWidth:            p.ResizeWidth,
+		resizeHeight:           p.ResizeHeight,
 	}
 }
 
@@ -98,6 +106,8 @@ func (i *Image) Write(tokens token.Tokens) error {
 			}
 		}
 	}
+
+	i.scale()
 
 	return nil
 }
@@ -150,7 +160,7 @@ func (i *Image) draw(r rune) error {
 		if 0 < i.animationLineCount && i.lineCount%i.animationLineCount == 0 {
 			i.x = 0
 			i.y = 0
-			i.animationImages = append(i.animationImages, i.image)
+			i.animationImages = append(i.animationImages, i.newScaledImage())
 			b := i.image.Bounds().Max
 			i.image = newImage(b.X, b.Y)
 			i.drawBackgroundAll()
@@ -221,4 +231,20 @@ func (i *Image) drawBackground(r rune) {
 
 func (i *Image) moveRight(r rune) {
 	i.x += runewidth.RuneWidth(r) * i.charWidth
+}
+
+func (i *Image) newScaledImage() *image.RGBA {
+	if i.resizeWidth == 0 && i.resizeHeight == 0 {
+		return i.image
+	}
+
+	// 呼び出し側で大きさを調整していること
+	rect := i.image.Bounds()
+	dst := newImage(i.resizeWidth, i.resizeHeight)
+	xdraw.CatmullRom.Scale(dst, dst.Bounds(), i.image, rect, draw.Over, nil)
+	return dst
+}
+
+func (i *Image) scale() {
+	i.image = i.newScaledImage()
 }
