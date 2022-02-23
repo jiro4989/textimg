@@ -1,0 +1,56 @@
+package parser
+
+type Parser Peg {
+  ParserFunc
+}
+
+root   <- (ignore / colors / text)*
+ignore <- prefix number non_color_suffix
+
+colors <-
+  prefix color_suffix { p.pushResetColor() }
+  / prefix color (delimiter color)* color_suffix
+
+text <-
+  < .+ > { p.pushText(text) }
+
+color <-
+  reset_color / standard_color / extended_color
+
+reset_color <-
+  '0'+ { p.pushResetColor() }
+
+standard_color <-
+  zero
+  < ([349] / '10') [0-7] > { p.pushStandardColorWithCategory(text) }
+
+extended_color <-
+  extended_color_256 / extended_color_rgb
+
+extended_color_256 <-
+  extended_color_prefix
+  delimiter
+  zero '5'
+  delimiter
+  < number > { p.pushExtendedColor256(text) }
+
+extended_color_rgb <-
+  extended_color_prefix
+  delimiter
+  zero '2' { p.pushExtendedColorRGB() }
+  delimiter
+  < number > { p.setExtendedColorR(text) }
+  delimiter
+  < number > { p.setExtendedColorG(text) }
+  delimiter
+  < number > { p.setExtendedColorB(text) }
+
+extended_color_prefix <- zero [34] '8'
+
+zero             <- '0' *
+number           <- [0-9]+
+prefix           <- escape_sequence '['
+escape_sequence  <- '\e'
+color_suffix     <- 'm'
+non_color_suffix <- [A-HfSTJK]
+delimiter        <- ';'
