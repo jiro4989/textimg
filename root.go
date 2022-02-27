@@ -256,14 +256,7 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 	// }}}
 
 	// 引数にテキストの指定がなければ標準入力を使用する
-	var texts []string
-	if len(args) < 1 {
-		texts = readStdin()
-	} else {
-		for _, v := range args {
-			texts = append(texts, strings.Split(v, "\n")...)
-		}
-	}
+	texts := readInputText(args)
 
 	// textsが空のときは警告メッセージを出力して異常終了
 	if err := validateInputText(texts); err != nil {
@@ -540,4 +533,16 @@ func validateInputText(texts []string) error {
 		return err
 	}
 	return nil
+}
+
+func readInputText(args []string) []string {
+	var texts []string
+	if len(args) < 1 {
+		texts = readStdin()
+	} else {
+		for _, v := range args {
+			texts = append(texts, strings.Split(v, "\n")...)
+		}
+	}
+	return texts
 }
