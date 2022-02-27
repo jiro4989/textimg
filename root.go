@@ -266,14 +266,7 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 	}
 
 	// textsが空のときは警告メッセージを出力して異常終了
-	var emptyCount int
-	for _, v := range texts {
-		if len(v) < 1 {
-			emptyCount++
-		}
-	}
-	if emptyCount == len(texts) {
-		err := fmt.Errorf("must need input texts.")
+	if err := validateInputText(texts); err != nil {
 		return err
 	}
 
@@ -533,4 +526,18 @@ chars:
 		ret = append(ret, v)
 	}
 	return string(ret)
+}
+
+func validateInputText(texts []string) error {
+	var emptyCount int
+	for _, v := range texts {
+		if len(v) < 1 {
+			emptyCount++
+		}
+	}
+	if emptyCount == len(texts) {
+		err := fmt.Errorf("must need input texts.")
+		return err
+	}
+	return nil
 }
