@@ -107,17 +107,17 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 	if err := appconf.Adjust(args, envvars); err != nil {
 		return err
 	}
-	defer appconf.writer.Close()
+	defer appconf.Writer.Close()
 
-	ls := appconf.tokens.StringLines()
+	ls := appconf.Tokens.StringLines()
 	param := &image.ImageParam{
 		BaseWidth:          parser.StringWidth(ls),
 		BaseHeight:         len(ls),
 		ForegroundColor:    c.RGBA(appconf.ForegroundColor),
 		BackgroundColor:    c.RGBA(appconf.BackgroundColor),
-		FontFace:           appconf.fontFace,
-		EmojiFontFace:      appconf.emojiFontFace,
-		EmojiDir:           appconf.emojiDir,
+		FontFace:           appconf.FontFace,
+		EmojiFontFace:      appconf.EmojiFontFace,
+		EmojiDir:           appconf.EmojiDir,
 		FontSize:           appconf.FontSize,
 		Delay:              appconf.Delay,
 		AnimationLineCount: appconf.LineCount,
@@ -125,10 +125,10 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 		ResizeHeight:       appconf.ResizeHeight,
 	}
 	img := image.NewImage(param)
-	if err := img.Draw(appconf.tokens); err != nil {
+	if err := img.Draw(appconf.Tokens); err != nil {
 		return err
 	}
-	if err := img.Encode(appconf.writer, appconf.fileExtension); err != nil {
+	if err := img.Encode(appconf.Writer, appconf.FileExtension); err != nil {
 		return err
 	}
 

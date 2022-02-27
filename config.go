@@ -43,19 +43,19 @@ type applicationConfig struct {
 
 	ForegroundColor color.RGBA // 文字色
 	BackgroundColor color.RGBA // 背景色
-	texts           []string
-	fileExtension   string
-	writer          *os.File
-	fontFace        font.Face
-	emojiFontFace   font.Face
-	emojiDir        string
-	tokens          token.Tokens
+	Texts           []string
+	FileExtension   string
+	Writer          *os.File
+	FontFace        font.Face
+	EmojiFontFace   font.Face
+	EmojiDir        string
+	Tokens          token.Tokens
 }
 
 // adjust はパラメータを調整する。
 // 副作用を持つ。
 func (a *applicationConfig) Adjust(args []string, ev EnvVars) error {
-	a.emojiDir = ev.EmojiDir
+	a.EmojiDir = ev.EmojiDir
 
 	// シェル芸イメージディレクトリの指定がある時はパスを変更する
 	if a.UseShellgeiImagedir {
@@ -91,44 +91,44 @@ func (a *applicationConfig) Adjust(args []string, ev EnvVars) error {
 	}
 
 	// 引数にテキストの指定がなければ標準入力を使用する
-	a.texts = readInputText(args)
+	a.Texts = readInputText(args)
 
 	// textsが空のときは警告メッセージを出力して異常終了
-	if err := validateInputText(a.texts); err != nil {
+	if err := validateInputText(a.Texts); err != nil {
 		return err
 	}
 
 	// スライドアニメーションを使うときはテキストを加工する
 	if a.UseSlideAnimation {
-		a.texts = toSlideStrings(a.texts, a.LineCount, a.SlideWidth, a.SlideForever)
+		a.Texts = toSlideStrings(a.Texts, a.LineCount, a.SlideWidth, a.SlideForever)
 	}
 
 	// 拡張子のみ取得
-	a.fileExtension = filepath.Ext(strings.ToLower(a.Outpath))
+	a.FileExtension = filepath.Ext(strings.ToLower(a.Outpath))
 
 	if err := a.setWriter(); err != nil {
 		return err
 	}
 
-	if err := validateFileExtension(a.fileExtension); err != nil {
+	if err := validateFileExtension(a.FileExtension); err != nil {
 		return err
 	}
 
-	a.texts = normalizeTexts(a.texts)
+	a.Texts = normalizeTexts(a.Texts)
 
-	a.fontFace, err = ioimage.ReadFace(a.FontFile, a.FontIndex, float64(a.FontSize))
+	a.FontFace, err = ioimage.ReadFace(a.FontFile, a.FontIndex, float64(a.FontSize))
 	if err != nil {
 		return err
 	}
 
 	if a.EmojiFontFile != "" {
-		a.emojiFontFace, err = ioimage.ReadFace(a.EmojiFontFile, a.EmojiFontIndex, float64(a.FontSize))
+		a.EmojiFontFace, err = ioimage.ReadFace(a.EmojiFontFile, a.EmojiFontIndex, float64(a.FontSize))
 		if err != nil {
 			return err
 		}
 	}
 
-	a.tokens, err = parser.Parse(strings.Join(a.texts, "\n"))
+	a.Tokens, err = parser.Parse(strings.Join(a.Texts, "\n"))
 	if err != nil {
 		return err
 	}
@@ -238,18 +238,18 @@ func (a *applicationConfig) setWriter() error {
 			log.Error("for help, type: textimg -h")
 			return fmt.Errorf("no output target error")
 		}
-		a.writer = os.Stdout
+		a.Writer = os.Stdout
 		if a.UseAnimation {
-			a.fileExtension = ".gif"
+			a.FileExtension = ".gif"
 		} else {
-			a.fileExtension = ".png"
+			a.FileExtension = ".png"
 		}
 
 		return nil
 	}
 
 	var err error
-	a.writer, err = os.Create(a.Outpath)
+	a.Writer, err = os.Create(a.Outpath)
 	if err != nil {
 		return err
 	}
