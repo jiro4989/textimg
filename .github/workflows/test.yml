@@ -23,7 +23,7 @@ jobs:
           - '1.x'
     name: build go ${{ matrix.go }}
     steps:
-      - uses: actions/checkout@v2.4.0
+      - uses: actions/checkout@v3
       - uses: actions/setup-go@v3
         with:
           go-version: ${{ matrix.go }}
@@ -33,7 +33,7 @@ jobs:
   format:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.4.0
+      - uses: actions/checkout@v3
       - uses: actions/setup-go@v3
         with:
           go-version: '1.16'
@@ -54,7 +54,7 @@ jobs:
           - '1.16'
           - '1.17'
     steps:
-      - uses: actions/checkout@v2.4.0
+      - uses: actions/checkout@v3
       - name: Tests
         run: |
           docker-compose build --build-arg GO_VERSION=${{ matrix.go }} base
@@ -63,7 +63,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.4.0
+      - uses: actions/checkout@v3
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:
@@ -72,7 +72,7 @@ jobs:
   coverage:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.4.0
+      - uses: actions/checkout@v3
       - name: Build base image
         run: docker-compose run coverage
       - uses: codecov/codecov-action@v2.1.0
