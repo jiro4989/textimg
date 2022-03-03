@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	appconf config.Config
+	conf    config.Config
 	envvars config.EnvVars
 )
 
@@ -24,10 +24,10 @@ func init() {
 	cobra.OnInitialize()
 
 	RootCommand.Flags().SortFlags = false
-	RootCommand.Flags().StringVarP(&appconf.Foreground, "foreground", "g", "white", `foreground text color.
+	RootCommand.Flags().StringVarP(&conf.Foreground, "foreground", "g", "white", `foreground text color.
 available color types are [black|red|green|yellow|blue|magenta|cyan|white]
 or (R,G,B,A(0~255))`)
-	RootCommand.Flags().StringVarP(&appconf.Background, "background", "b", "black", `background text color.
+	RootCommand.Flags().StringVarP(&conf.Background, "background", "b", "black", `background text color.
 color types are same as "foreground" option`)
 
 	var font string
@@ -35,36 +35,36 @@ color types are same as "foreground" option`)
 	if envFontFile != "" {
 		font = envFontFile
 	}
-	RootCommand.Flags().StringVarP(&appconf.FontFile, "fontfile", "f", font, `font file path.
+	RootCommand.Flags().StringVarP(&conf.FontFile, "fontfile", "f", font, `font file path.
 You can change this default value with environment variables TEXTIMG_FONT_FILE`)
-	RootCommand.Flags().IntVarP(&appconf.FontIndex, "fontindex", "x", 0, "")
-	appconf.SetFontFileAndFontIndex(runtime.GOOS)
+	RootCommand.Flags().IntVarP(&conf.FontIndex, "fontindex", "x", 0, "")
+	conf.SetFontFileAndFontIndex(runtime.GOOS)
 
 	envEmojiFontFile := envvars.EmojiFontFile
-	RootCommand.Flags().StringVarP(&appconf.EmojiFontFile, "emoji-fontfile", "e", envEmojiFontFile, "emoji font file")
-	RootCommand.Flags().IntVarP(&appconf.EmojiFontIndex, "emoji-fontindex", "X", 0, "")
+	RootCommand.Flags().StringVarP(&conf.EmojiFontFile, "emoji-fontfile", "e", envEmojiFontFile, "emoji font file")
+	RootCommand.Flags().IntVarP(&conf.EmojiFontIndex, "emoji-fontindex", "X", 0, "")
 
-	RootCommand.Flags().BoolVarP(&appconf.UseEmojiFont, "use-emoji-font", "i", false, "use emoji font")
-	RootCommand.Flags().BoolVarP(&appconf.UseShellgeiEmojiFontfile, "shellgei-emoji-fontfile", "z", false, `emoji font file for shellgei-bot (path: "`+config.ShellgeiEmojiFontPath+`")`)
+	RootCommand.Flags().BoolVarP(&conf.UseEmojiFont, "use-emoji-font", "i", false, "use emoji font")
+	RootCommand.Flags().BoolVarP(&conf.UseShellgeiEmojiFontfile, "shellgei-emoji-fontfile", "z", false, `emoji font file for shellgei-bot (path: "`+config.ShellgeiEmojiFontPath+`")`)
 
-	RootCommand.Flags().IntVarP(&appconf.FontSize, "fontsize", "F", 20, "font size")
-	RootCommand.Flags().StringVarP(&appconf.Outpath, "out", "o", "", `output image file path.
+	RootCommand.Flags().IntVarP(&conf.FontSize, "fontsize", "F", 20, "font size")
+	RootCommand.Flags().StringVarP(&conf.Outpath, "out", "o", "", `output image file path.
 available image formats are [png | jpg | gif]`)
-	RootCommand.Flags().BoolVarP(&appconf.AddTimeStamp, "timestamp", "t", false, `add time stamp to output image file path.`)
-	RootCommand.Flags().BoolVarP(&appconf.SaveNumberedFile, "numbered", "n", false, `add number-suffix to filename when the output file was existed.
+	RootCommand.Flags().BoolVarP(&conf.AddTimeStamp, "timestamp", "t", false, `add time stamp to output image file path.`)
+	RootCommand.Flags().BoolVarP(&conf.SaveNumberedFile, "numbered", "n", false, `add number-suffix to filename when the output file was existed.
 ex: t_2.png`)
-	RootCommand.Flags().BoolVarP(&appconf.UseShellgeiImagedir, "shellgei-imagedir", "s", false, `image directory path (path: "$HOME/Pictures/t.png" or "$TEXTIMG_OUTPUT_DIR/t.png")`)
+	RootCommand.Flags().BoolVarP(&conf.UseShellgeiImagedir, "shellgei-imagedir", "s", false, `image directory path (path: "$HOME/Pictures/t.png" or "$TEXTIMG_OUTPUT_DIR/t.png")`)
 
-	RootCommand.Flags().BoolVarP(&appconf.UseAnimation, "animation", "a", false, "generate animation gif")
-	RootCommand.Flags().IntVarP(&appconf.Delay, "delay", "d", 20, "animation delay time")
-	RootCommand.Flags().IntVarP(&appconf.LineCount, "line-count", "l", 1, "animation input line count")
-	RootCommand.Flags().BoolVarP(&appconf.UseSlideAnimation, "slide", "S", false, "use slide animation")
-	RootCommand.Flags().IntVarP(&appconf.SlideWidth, "slide-width", "W", 1, "sliding animation width")
-	RootCommand.Flags().BoolVarP(&appconf.SlideForever, "forever", "E", false, "sliding forever")
-	RootCommand.Flags().BoolVarP(&appconf.PrintEnvironments, "environments", "", false, "print environment variables")
-	RootCommand.Flags().BoolVarP(&appconf.ToSlackIcon, "slack", "", false, "resize to slack icon size (128x128 px)")
-	RootCommand.Flags().IntVarP(&appconf.ResizeWidth, "resize-width", "", 0, "resize width")
-	RootCommand.Flags().IntVarP(&appconf.ResizeHeight, "resize-height", "", 0, "resize height")
+	RootCommand.Flags().BoolVarP(&conf.UseAnimation, "animation", "a", false, "generate animation gif")
+	RootCommand.Flags().IntVarP(&conf.Delay, "delay", "d", 20, "animation delay time")
+	RootCommand.Flags().IntVarP(&conf.LineCount, "line-count", "l", 1, "animation input line count")
+	RootCommand.Flags().BoolVarP(&conf.UseSlideAnimation, "slide", "S", false, "use slide animation")
+	RootCommand.Flags().IntVarP(&conf.SlideWidth, "slide-width", "W", 1, "sliding animation width")
+	RootCommand.Flags().BoolVarP(&conf.SlideForever, "forever", "E", false, "sliding forever")
+	RootCommand.Flags().BoolVarP(&conf.PrintEnvironments, "environments", "", false, "print environment variables")
+	RootCommand.Flags().BoolVarP(&conf.ToSlackIcon, "slack", "", false, "resize to slack icon size (128x128 px)")
+	RootCommand.Flags().IntVarP(&conf.ResizeWidth, "resize-width", "", 0, "resize width")
+	RootCommand.Flags().IntVarP(&conf.ResizeHeight, "resize-height", "", 0, "resize height")
 }
 
 var RootCommand = &cobra.Command{
@@ -76,7 +76,7 @@ var RootCommand = &cobra.Command{
 }
 
 func runRootCommand(cmd *cobra.Command, args []string) error {
-	if appconf.PrintEnvironments {
+	if conf.PrintEnvironments {
 		for _, envName := range global.EnvNames {
 			text := fmt.Sprintf("%s=%s", envName, os.Getenv(envName))
 			fmt.Println(text)
@@ -84,31 +84,31 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 		return nil
 	}
 
-	if err := appconf.Adjust(args, envvars); err != nil {
+	if err := conf.Adjust(args, envvars); err != nil {
 		return err
 	}
-	defer appconf.Writer.Close()
+	defer conf.Writer.Close()
 
-	ls := appconf.Tokens.StringLines()
+	ls := conf.Tokens.StringLines()
 	param := &image.ImageParam{
 		BaseWidth:          parser.StringWidth(ls),
 		BaseHeight:         len(ls),
-		ForegroundColor:    c.RGBA(appconf.ForegroundColor),
-		BackgroundColor:    c.RGBA(appconf.BackgroundColor),
-		FontFace:           appconf.FontFace,
-		EmojiFontFace:      appconf.EmojiFontFace,
-		EmojiDir:           appconf.EmojiDir,
-		FontSize:           appconf.FontSize,
-		Delay:              appconf.Delay,
-		AnimationLineCount: appconf.LineCount,
-		ResizeWidth:        appconf.ResizeWidth,
-		ResizeHeight:       appconf.ResizeHeight,
+		ForegroundColor:    c.RGBA(conf.ForegroundColor),
+		BackgroundColor:    c.RGBA(conf.BackgroundColor),
+		FontFace:           conf.FontFace,
+		EmojiFontFace:      conf.EmojiFontFace,
+		EmojiDir:           conf.EmojiDir,
+		FontSize:           conf.FontSize,
+		Delay:              conf.Delay,
+		AnimationLineCount: conf.LineCount,
+		ResizeWidth:        conf.ResizeWidth,
+		ResizeHeight:       conf.ResizeHeight,
 	}
 	img := image.NewImage(param)
-	if err := img.Draw(appconf.Tokens); err != nil {
+	if err := img.Draw(conf.Tokens); err != nil {
 		return err
 	}
-	if err := img.Encode(appconf.Writer, appconf.FileExtension); err != nil {
+	if err := img.Encode(conf.Writer, conf.FileExtension); err != nil {
 		return err
 	}
 
