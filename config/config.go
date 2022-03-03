@@ -1,9 +1,11 @@
-package main
+package config
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -16,7 +18,7 @@ import (
 	"golang.org/x/term"
 )
 
-type applicationConfig struct {
+type Config struct {
 	Foreground               string // 文字色
 	Background               string // 背景色
 	Outpath                  string // 画像の出力ファイルパス
@@ -52,9 +54,26 @@ type applicationConfig struct {
 	Tokens          token.Tokens
 }
 
+type osDefaultFont struct {
+	fontFile  string
+	fontIndex int
+	isLinux   bool
+}
+
+const ShellgeiEmojiFontPath = "/usr/share/fonts/truetype/ancient-scripts/Symbola_hint.ttf"
+
+const (
+	defaultWindowsFont = `C:\Windows\Fonts\msgothic.ttc`
+	defaultDarwinFont  = "/System/Library/Fonts/AppleSDGothicNeo.ttc"
+	defaultIOSFont     = "/System/Library/Fonts/Core/AppleSDGothicNeo.ttc"
+	defaultAndroidFont = "/system/fonts/NotoSansCJK-Regular.ttc"
+	defaultLinuxFont1  = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
+	defaultLinuxFont2  = "/usr/share/fonts/noto-cjk/NotoSansCJK-Regular.ttc"
+)
+
 // adjust はパラメータを調整する。
 // 副作用を持つ。
-func (a *applicationConfig) Adjust(args []string, ev EnvVars) error {
+func (a *Config) Adjust(args []string, ev EnvVars) error {
 	a.EmojiDir = ev.EmojiDir
 
 	// シェル芸イメージディレクトリの指定がある時はパスを変更する
@@ -71,7 +90,7 @@ func (a *applicationConfig) Adjust(args []string, ev EnvVars) error {
 	a.addNumberSuffixToOutPath()
 
 	if a.UseShellgeiEmojiFontfile {
-		a.EmojiFontFile = shellgeiEmojiFontPath
+		a.EmojiFontFile = ShellgeiEmojiFontPath
 		a.UseEmojiFont = true
 	}
 
@@ -141,7 +160,7 @@ func (a *applicationConfig) Adjust(args []string, ev EnvVars) error {
 	return nil
 }
 
-func (a *applicationConfig) setFontFileAndFontIndex(runtimeOS string) {
+func (a *Config) SetFontFileAndFontIndex(runtimeOS string) {
 	if a.FontFile != "" {
 		return
 	}
@@ -192,7 +211,7 @@ func (a *applicationConfig) setFontFileAndFontIndex(runtimeOS string) {
 }
 
 // addTimeStampToOutPath はOutpathに指定日時のタイムスタンプを付与する。
-func (a *applicationConfig) addTimeStampToOutPath(t time.Time) {
+func (a *Config) addTimeStampToOutPath(t time.Time) {
 	if !a.AddTimeStamp {
 		return
 	}
@@ -204,7 +223,7 @@ func (a *applicationConfig) addTimeStampToOutPath(t time.Time) {
 }
 
 // addTimeStampToOutPath はOutpathに指定日時のタイムスタンプを付与する。
-func (a *applicationConfig) addNumberSuffixToOutPath() {
+func (a *Config) addNumberSuffixToOutPath() {
 	if !a.SaveNumberedFile {
 		return
 	}
@@ -228,7 +247,7 @@ func (a *applicationConfig) addNumberSuffixToOutPath() {
 	}
 }
 
-func (a *applicationConfig) setWriter() error {
+func (a *Config) setWriter() error {
 	if a.Outpath == "" {
 		// 出力先画像の指定がなく、且つ出力先がパイプならstdout + PNG/GIFと
 		// して出力。なければそもそも画像処理しても意味が無いので終了
@@ -311,4 +330,153 @@ func readInputText(args []string) []string {
 		}
 	}
 	return texts
+}
+
+// outputImageDir は `-s` オプションで保存するさきのディレクトリパスを返す。
+func outputImageDir(outDir string, useAnimation bool) (string, error) {
+	if outDir == "" {
+		homeDir, err := os.UserHomeDir()
+		if err != nil {
+			return "", err
+		}
+		outDir = filepath.Join(homeDir, "Pictures")
+	}
+
+	if useAnimation {
+		return filepath.Join(outDir, "t.gif"), nil
+	}
+
+	return filepath.Join(outDir, "t.png"), nil
+}
+
+// オプション引数のbackgroundは２つの書き方を許容する。
+// 1. black といった色の直接指定
+// 2. RGBAのカンマ区切り指定
+//    書式: R,G,B,A
+//    赤色の例: 255,0,0,255
+func optionColorStringToRGBA(colstr string) (color.RGBA, error) {
+	// "black"といった色名称でマッチするものがあれば返す
+	colstr = strings.ToLower(colstr)
+	col := color.StringMap[colstr]
+	zeroColor := color.RGBA{}
+	if col != zeroColor {
+		return col, nil
+	}
+
+	// カンマ区切りでの指定があれば返す
+	rgba := strings.Split(colstr, ",")
+	if len(rgba) != 4 {
+		return zeroColor, fmt.Errorf("illegal RGBA format: " + colstr)
+	}
+
+	var (
+		r   uint64
+		g   uint64
+		b   uint64
+		a   uint64
+		err error
+		rs  = rgba[0]
+		gs  = rgba[1]
+		bs  = rgba[2]
+		as  = rgba[3]
+	)
+	r, err = strconv.ParseUint(rs, 10, 8)
+	if err != nil {
+		return zeroColor, err
+	}
+	g, err = strconv.ParseUint(gs, 10, 8)
+	if err != nil {
+		return zeroColor, err
+	}
+	b, err = strconv.ParseUint(bs, 10, 8)
+	if err != nil {
+		return zeroColor, err
+	}
+	a, err = strconv.ParseUint(as, 10, 8)
+	if err != nil {
+		return zeroColor, err
+	}
+	c := color.RGBA{
+		R: uint8(r),
+		G: uint8(g),
+		B: uint8(b),
+		A: uint8(a),
+	}
+	return c, nil
+}
+
+// toSlideStrings は文字列をスライドアニメーション用の文字列に変換する。
+func toSlideStrings(src []string, lineCount, slideWidth int, slideForever bool) (ret []string) {
+	if 1 < slideWidth {
+		var loopCount int
+		for i := 0; i < len(src); i += slideWidth {
+			loopCount++
+		}
+		for i := 0; i < (loopCount*slideWidth+1)-len(src); i++ {
+			if !slideForever {
+				src = append(src, "")
+			}
+		}
+	}
+
+	for i := 0; i < len(src); i += slideWidth {
+		n := i + lineCount
+		if len(src) < n {
+			if slideForever {
+				for j := i; j < n; j++ {
+					m := j
+					if len(src) <= m {
+						m -= len(src)
+					}
+					line := src[m]
+					ret = append(ret, line)
+				}
+				continue
+			}
+			return
+		}
+		// lineCountの数ずつ行を取得して戻り値に追加
+		for j := i; j < n; j++ {
+			line := src[j]
+			ret = append(ret, line)
+		}
+	}
+	return
+}
+
+// removeZeroWidthSpace はゼロ幅文字が存在したときに削除する。
+//
+// 参考
+// * ゼロ幅スペース https://ja.wikipedia.org/wiki/%E3%82%BC%E3%83%AD%E5%B9%85%E3%82%B9%E3%83%9A%E3%83%BC%E3%82%B9
+func removeZeroWidthCharacters(s string) string {
+	zwc := []rune{
+		0x200b, // zero width space
+		0x200c, // zero width joiner
+		0x200d, // zero width joiner
+		0xfeff, // zero width no-break-space
+	}
+	var ret []rune
+chars:
+	for _, v := range s {
+		for _, c := range zwc {
+			if v == c {
+				continue chars
+			}
+		}
+		ret = append(ret, v)
+	}
+	return string(ret)
+}
+
+// readStdin は標準入力を文字列の配列として返す。
+func readStdin() (ret []string) {
+	sc := bufio.NewScanner(os.Stdin)
+	for sc.Scan() {
+		line := sc.Text()
+		ret = append(ret, line)
+	}
+	if err := sc.Err(); err != nil {
+		panic(err)
+	}
+	return
 }

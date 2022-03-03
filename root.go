@@ -4,12 +4,9 @@ import (
 	"fmt"
 	c "image/color"
 	"os"
-	"path/filepath"
 	"runtime"
-	"strconv"
-	"strings"
 
-	"github.com/jiro4989/textimg/v3/color"
+	"github.com/jiro4989/textimg/v3/config"
 	"github.com/jiro4989/textimg/v3/image"
 	"github.com/jiro4989/textimg/v3/internal/global"
 	"github.com/jiro4989/textimg/v3/parser"
@@ -17,15 +14,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const shellgeiEmojiFontPath = "/usr/share/fonts/truetype/ancient-scripts/Symbola_hint.ttf"
-
 var (
-	appconf applicationConfig
-	envvars EnvVars
+	appconf config.Config
+	envvars config.EnvVars
 )
 
 func init() {
-	envvars = NewEnvVars()
+	envvars = config.NewEnvVars()
 	cobra.OnInitialize()
 
 	RootCommand.Flags().SortFlags = false
@@ -43,14 +38,14 @@ color types are same as "foreground" option`)
 	RootCommand.Flags().StringVarP(&appconf.FontFile, "fontfile", "f", font, `font file path.
 You can change this default value with environment variables TEXTIMG_FONT_FILE`)
 	RootCommand.Flags().IntVarP(&appconf.FontIndex, "fontindex", "x", 0, "")
-	appconf.setFontFileAndFontIndex(runtime.GOOS)
+	appconf.SetFontFileAndFontIndex(runtime.GOOS)
 
 	envEmojiFontFile := envvars.EmojiFontFile
 	RootCommand.Flags().StringVarP(&appconf.EmojiFontFile, "emoji-fontfile", "e", envEmojiFontFile, "emoji font file")
 	RootCommand.Flags().IntVarP(&appconf.EmojiFontIndex, "emoji-fontindex", "X", 0, "")
 
 	RootCommand.Flags().BoolVarP(&appconf.UseEmojiFont, "use-emoji-font", "i", false, "use emoji font")
-	RootCommand.Flags().BoolVarP(&appconf.UseShellgeiEmojiFontfile, "shellgei-emoji-fontfile", "z", false, `emoji font file for shellgei-bot (path: "`+shellgeiEmojiFontPath+`")`)
+	RootCommand.Flags().BoolVarP(&appconf.UseShellgeiEmojiFontfile, "shellgei-emoji-fontfile", "z", false, `emoji font file for shellgei-bot (path: "`+config.ShellgeiEmojiFontPath+`")`)
 
 	RootCommand.Flags().IntVarP(&appconf.FontSize, "fontsize", "F", 20, "font size")
 	RootCommand.Flags().StringVarP(&appconf.Outpath, "out", "o", "", `output image file path.
@@ -71,21 +66,6 @@ ex: t_2.png`)
 	RootCommand.Flags().IntVarP(&appconf.ResizeWidth, "resize-width", "", 0, "resize width")
 	RootCommand.Flags().IntVarP(&appconf.ResizeHeight, "resize-height", "", 0, "resize height")
 }
-
-type osDefaultFont struct {
-	fontFile  string
-	fontIndex int
-	isLinux   bool
-}
-
-const (
-	defaultWindowsFont = `C:\Windows\Fonts\msgothic.ttc`
-	defaultDarwinFont  = "/System/Library/Fonts/AppleSDGothicNeo.ttc"
-	defaultIOSFont     = "/System/Library/Fonts/Core/AppleSDGothicNeo.ttc"
-	defaultAndroidFont = "/system/fonts/NotoSansCJK-Regular.ttc"
-	defaultLinuxFont1  = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
-	defaultLinuxFont2  = "/usr/share/fonts/noto-cjk/NotoSansCJK-Regular.ttc"
-)
 
 var RootCommand = &cobra.Command{
 	Use:     global.AppName,
@@ -133,140 +113,4 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
-}
-
-// outputImageDir は `-s` オプションで保存するさきのディレクトリパスを返す。
-func outputImageDir(outDir string, useAnimation bool) (string, error) {
-	if outDir == "" {
-		homeDir, err := os.UserHomeDir()
-		if err != nil {
-			return "", err
-		}
-		outDir = filepath.Join(homeDir, "Pictures")
-	}
-
-	if useAnimation {
-		return filepath.Join(outDir, "t.gif"), nil
-	}
-
-	return filepath.Join(outDir, "t.png"), nil
-}
-
-// オプション引数のbackgroundは２つの書き方を許容する。
-// 1. black といった色の直接指定
-// 2. RGBAのカンマ区切り指定
-//    書式: R,G,B,A
-//    赤色の例: 255,0,0,255
-func optionColorStringToRGBA(colstr string) (color.RGBA, error) {
-	// "black"といった色名称でマッチするものがあれば返す
-	colstr = strings.ToLower(colstr)
-	col := color.StringMap[colstr]
-	zeroColor := color.RGBA{}
-	if col != zeroColor {
-		return col, nil
-	}
-
-	// カンマ区切りでの指定があれば返す
-	rgba := strings.Split(colstr, ",")
-	if len(rgba) != 4 {
-		return zeroColor, fmt.Errorf("illegal RGBA format: " + colstr)
-	}
-
-	var (
-		r   uint64
-		g   uint64
-		b   uint64
-		a   uint64
-		err error
-		rs  = rgba[0]
-		gs  = rgba[1]
-		bs  = rgba[2]
-		as  = rgba[3]
-	)
-	r, err = strconv.ParseUint(rs, 10, 8)
-	if err != nil {
-		return zeroColor, err
-	}
-	g, err = strconv.ParseUint(gs, 10, 8)
-	if err != nil {
-		return zeroColor, err
-	}
-	b, err = strconv.ParseUint(bs, 10, 8)
-	if err != nil {
-		return zeroColor, err
-	}
-	a, err = strconv.ParseUint(as, 10, 8)
-	if err != nil {
-		return zeroColor, err
-	}
-	c := color.RGBA{
-		R: uint8(r),
-		G: uint8(g),
-		B: uint8(b),
-		A: uint8(a),
-	}
-	return c, nil
-}
-
-// toSlideStrings は文字列をスライドアニメーション用の文字列に変換する。
-func toSlideStrings(src []string, lineCount, slideWidth int, slideForever bool) (ret []string) {
-	if 1 < slideWidth {
-		var loopCount int
-		for i := 0; i < len(src); i += slideWidth {
-			loopCount++
-		}
-		for i := 0; i < (loopCount*slideWidth+1)-len(src); i++ {
-			if !slideForever {
-				src = append(src, "")
-			}
-		}
-	}
-
-	for i := 0; i < len(src); i += slideWidth {
-		n := i + lineCount
-		if len(src) < n {
-			if slideForever {
-				for j := i; j < n; j++ {
-					m := j
-					if len(src) <= m {
-						m -= len(src)
-					}
-					line := src[m]
-					ret = append(ret, line)
-				}
-				continue
-			}
-			return
-		}
-		// lineCountの数ずつ行を取得して戻り値に追加
-		for j := i; j < n; j++ {
-			line := src[j]
-			ret = append(ret, line)
-		}
-	}
-	return
-}
-
-// removeZeroWidthSpace はゼロ幅文字が存在したときに削除する。
-//
-// 参考
-// * ゼロ幅スペース https://ja.wikipedia.org/wiki/%E3%82%BC%E3%83%AD%E5%B9%85%E3%82%B9%E3%83%9A%E3%83%BC%E3%82%B9
-func removeZeroWidthCharacters(s string) string {
-	zwc := []rune{
-		0x200b, // zero width space
-		0x200c, // zero width joiner
-		0x200d, // zero width joiner
-		0xfeff, // zero width no-break-space
-	}
-	var ret []rune
-chars:
-	for _, v := range s {
-		for _, c := range zwc {
-			if v == c {
-				continue chars
-			}
-		}
-		ret = append(ret, v)
-	}
-	return string(ret)
 }
