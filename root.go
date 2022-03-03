@@ -76,6 +76,7 @@ var RootCommand = &cobra.Command{
 }
 
 func runRootCommand(cmd *cobra.Command, args []string) error {
+	// TODO: パッケージに隠蔽したい
 	if conf.PrintEnvironments {
 		for _, envName := range global.EnvNames {
 			text := fmt.Sprintf("%s=%s", envName, os.Getenv(envName))
