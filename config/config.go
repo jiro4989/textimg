@@ -3,6 +3,7 @@ package config
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -47,7 +48,7 @@ type Config struct {
 	BackgroundColor color.RGBA // 背景色
 	Texts           []string
 	FileExtension   string
-	Writer          *os.File
+	Writer          io.WriteCloser
 	FontFace        font.Face
 	EmojiFontFace   font.Face
 	EmojiDir        string
