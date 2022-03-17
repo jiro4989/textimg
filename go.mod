@@ -7,7 +7,6 @@ require (
 	github.com/kr/pretty v0.2.0 // indirect
 	github.com/mattn/go-runewidth v0.0.13
 	github.com/spf13/cobra v1.4.0
-	github.com/pointlander/peg v1.0.1 // indirect
 	github.com/stretchr/testify v1.7.1
 	golang.org/x/image v0.0.0-20210220032944-ac19c3e999fb
 	golang.org/x/sys v0.0.0-20211205182925-97ca703d548d // indirect
