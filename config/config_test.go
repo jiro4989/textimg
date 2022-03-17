@@ -67,7 +67,7 @@ func TestConfig_Adjust(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			desc: "正常系: UseShellgeiImagedirが有効でUseAnimationが設定されているときはt.gifになる",
+			desc: "正常系: UseShellgeiImagedirが有効なときはt.pngが設定される",
 			config: func() Config {
 				c := newDefaultConfig()
 				c.UseShellgeiImagedir = true
@@ -86,6 +86,32 @@ func TestConfig_Adjust(t *testing.T) {
 				c.BackgroundColor = color.RGBABlack
 				c.Texts = []string{"hello"}
 				c.FileExtension = ".png"
+				return c
+			}(),
+			wantErr: false,
+		},
+		{
+			desc: "正常系: UseShellgeiImagedirが有効でUseAnimationが設定されているときはt.gifになる",
+			config: func() Config {
+				c := newDefaultConfig()
+				c.UseShellgeiImagedir = true
+				c.UseAnimation = true
+				c.Writer = NewMockWriter(false, false)
+				return c
+			}(),
+			args: []string{"hello"},
+			ev: EnvVars{
+				OutputDir: "sushi",
+			},
+			want: func() Config {
+				c := newDefaultConfig()
+				c.Outpath = filepath.Join("sushi", "t.gif")
+				c.UseShellgeiImagedir = true
+				c.UseAnimation = true
+				c.ForegroundColor = color.RGBAWhite
+				c.BackgroundColor = color.RGBABlack
+				c.Texts = []string{"hello"}
+				c.FileExtension = ".gif"
 				return c
 			}(),
 			wantErr: false,
