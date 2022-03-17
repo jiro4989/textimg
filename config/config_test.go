@@ -166,6 +166,29 @@ func TestConfig_Adjust(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			desc: "正常系: UseSlideAnimationが有効なときはUseAnimationも有効になる",
+			config: func() Config {
+				c := newDefaultConfig()
+				c.Outpath = "t.png"
+				c.UseSlideAnimation = true
+				return c
+			}(),
+			args: []string{"hello"},
+			ev:   EnvVars{},
+			want: func() Config {
+				c := newDefaultConfig()
+				c.Outpath = "t.png"
+				c.ForegroundColor = color.RGBAWhite
+				c.BackgroundColor = color.RGBABlack
+				c.Texts = []string{"hello"}
+				c.FileExtension = ".png"
+				c.UseSlideAnimation = true
+				c.UseAnimation = true
+				return c
+			}(),
+			wantErr: false,
+		},
+		{
 			desc: "異常系: Outpathが空のときで出力先が存在しないときはエラーが返る",
 			config: func() Config {
 				c := newDefaultConfig()
