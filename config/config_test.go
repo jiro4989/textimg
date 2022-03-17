@@ -189,6 +189,35 @@ func TestConfig_Adjust(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			desc: "正常系: SlideWidthが2以上の時はテキストの処理が変化する",
+			config: func() Config {
+				c := newDefaultConfig()
+				c.Outpath = "t.png"
+				c.UseSlideAnimation = true
+				c.LineCount = 2
+				c.SlideWidth = 2
+				c.SlideForever = true
+				return c
+			}(),
+			args: []string{"hello", "hello", "hello", "hello"},
+			ev:   EnvVars{},
+			want: func() Config {
+				c := newDefaultConfig()
+				c.Outpath = "t.png"
+				c.ForegroundColor = color.RGBAWhite
+				c.BackgroundColor = color.RGBABlack
+				c.Texts = []string{"hello", "hello", "hello", "hello"}
+				c.FileExtension = ".png"
+				c.UseSlideAnimation = true
+				c.UseAnimation = true
+				c.LineCount = 2
+				c.SlideWidth = 2
+				c.SlideForever = true
+				return c
+			}(),
+			wantErr: false,
+		},
+		{
 			desc: "異常系: Outpathが空のときで出力先が存在しないときはエラーが返る",
 			config: func() Config {
 				c := newDefaultConfig()
