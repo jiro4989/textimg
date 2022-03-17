@@ -241,10 +241,6 @@ func (a *Config) addNumberSuffixToOutPath() {
 }
 
 func (a *Config) setWriter() error {
-	if a.Writer != nil {
-		return nil
-	}
-
 	if a.Outpath == "" {
 		// 出力先画像の指定がなく、且つ出力先がパイプならstdout + PNG/GIFと
 		// して出力。なければそもそも画像処理しても意味が無いので終了
@@ -261,6 +257,10 @@ func (a *Config) setWriter() error {
 			a.FileExtension = ".png"
 		}
 
+		return nil
+	}
+
+	if a.Writer != nil {
 		return nil
 	}
 
