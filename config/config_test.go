@@ -1,6 +1,7 @@
 package config
 
 import (
+	"path/filepath"
 	"testing"
 
 	"github.com/jiro4989/textimg/v3/color"
@@ -57,6 +58,30 @@ func TestConfig_Adjust(t *testing.T) {
 			want: func() Config {
 				c := newDefaultConfig()
 				c.Outpath = "t.png"
+				c.ForegroundColor = color.RGBAWhite
+				c.BackgroundColor = color.RGBABlack
+				c.Texts = []string{"hello"}
+				c.FileExtension = ".png"
+				return c
+			}(),
+			wantErr: false,
+		},
+		{
+			desc: "正常系: UseShellgeiImagedirが有効でUseAnimationが設定されているときはt.gifになる",
+			config: func() Config {
+				c := newDefaultConfig()
+				c.UseShellgeiImagedir = true
+				c.Writer = NewMockWriter(false, false)
+				return c
+			}(),
+			args: []string{"hello"},
+			ev: EnvVars{
+				OutputDir: "sushi",
+			},
+			want: func() Config {
+				c := newDefaultConfig()
+				c.Outpath = filepath.Join("sushi", "t.png")
+				c.UseShellgeiImagedir = true
 				c.ForegroundColor = color.RGBAWhite
 				c.BackgroundColor = color.RGBABlack
 				c.Texts = []string{"hello"}
