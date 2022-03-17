@@ -153,10 +153,22 @@ func TestConfig_Adjust(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			desc: "異常系: 不正な色指定をした時はエラーを返す",
+			desc: "異常系: Foregroundに不正な色指定をした時はエラーを返す",
 			config: func() Config {
 				c := newDefaultConfig()
 				c.Foreground = "sushi"
+				return c
+			}(),
+			args:    []string{"hello"},
+			ev:      EnvVars{},
+			want:    Config{},
+			wantErr: true,
+		},
+		{
+			desc: "異常系: Backgroundに不正な色指定をした時はエラーを返す",
+			config: func() Config {
+				c := newDefaultConfig()
+				c.Background = "sushi"
 				return c
 			}(),
 			args:    []string{"hello"},
