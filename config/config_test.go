@@ -90,6 +90,33 @@ func TestConfig_Adjust(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			desc: "正常系: UseShellgeiEmojiFontfileが有効な時は組み込みの絵文字パスが設定されて、UseEmojiFont=trueになる",
+			config: func() Config {
+				c := newDefaultConfig()
+				c.UseShellgeiImagedir = true
+				c.UseShellgeiEmojiFontfile = true
+				return c
+			}(),
+			args: []string{"hello"},
+			ev: EnvVars{
+				OutputDir: "sushi",
+			},
+			want: func() Config {
+				c := newDefaultConfig()
+				c.Outpath = filepath.Join("sushi", "t.png")
+				c.UseShellgeiImagedir = true
+				c.ForegroundColor = color.RGBAWhite
+				c.BackgroundColor = color.RGBABlack
+				c.Texts = []string{"hello"}
+				c.FileExtension = ".png"
+				c.UseShellgeiEmojiFontfile = true
+				c.UseEmojiFont = true
+				c.EmojiFontFile = ShellgeiEmojiFontPath
+				return c
+			}(),
+			wantErr: false,
+		},
+		{
 			desc: "正常系: UseShellgeiImagedirが有効でUseAnimationが設定されているときはt.gifになる",
 			config: func() Config {
 				c := newDefaultConfig()
