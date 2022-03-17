@@ -45,18 +45,20 @@ func TestConfig_Adjust(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			desc: "正常系: UseShellgeiImagedirが有効な場合はOutpathを上書きする",
+			desc: "正常系: Outpathが設定されている",
 			config: func() Config {
 				c := newDefaultConfig()
 				c.Outpath = "t.png"
+				c.Writer = NewMockWriter(false, false)
 				return c
 			}(),
 			args: []string{"hello"},
 			ev:   EnvVars{},
 			want: func() Config {
 				c := newDefaultConfig()
-				c.ForegroundColor = color.RGBABlack
-				c.BackgroundColor = color.RGBAWhite
+				c.Outpath = "t.png"
+				c.ForegroundColor = color.RGBAWhite
+				c.BackgroundColor = color.RGBABlack
 				c.Texts = []string{"hello"}
 				c.FileExtension = ".png"
 				return c
@@ -76,7 +78,36 @@ func TestConfig_Adjust(t *testing.T) {
 			}
 
 			assert.NoError(err)
-			assert.Equal(tt.want, tt.config)
+			assert.Equal(tt.want.Foreground, tt.config.Foreground)
+			assert.Equal(tt.want.Background, tt.config.Background)
+			assert.Equal(tt.want.Outpath, tt.config.Outpath)
+			assert.Equal(tt.want.AddTimeStamp, tt.config.AddTimeStamp)
+			assert.Equal(tt.want.SaveNumberedFile, tt.config.SaveNumberedFile)
+			assert.Equal(tt.want.FontFile, tt.config.FontFile)
+			assert.Equal(tt.want.FontIndex, tt.config.FontIndex)
+			assert.Equal(tt.want.EmojiFontFile, tt.config.EmojiFontFile)
+			assert.Equal(tt.want.EmojiFontIndex, tt.config.EmojiFontIndex)
+			assert.Equal(tt.want.UseEmojiFont, tt.config.UseEmojiFont)
+			assert.Equal(tt.want.FontSize, tt.config.FontSize)
+			assert.Equal(tt.want.UseAnimation, tt.config.UseAnimation)
+			assert.Equal(tt.want.Delay, tt.config.Delay)
+			assert.Equal(tt.want.LineCount, tt.config.LineCount)
+			assert.Equal(tt.want.UseSlideAnimation, tt.config.UseSlideAnimation)
+			assert.Equal(tt.want.SlideWidth, tt.config.SlideWidth)
+			assert.Equal(tt.want.SlideForever, tt.config.SlideForever)
+			assert.Equal(tt.want.ToSlackIcon, tt.config.ToSlackIcon)
+			assert.Equal(tt.want.PrintEnvironments, tt.config.PrintEnvironments)
+			assert.Equal(tt.want.UseShellgeiImagedir, tt.config.UseShellgeiImagedir)
+			assert.Equal(tt.want.UseShellgeiEmojiFontfile, tt.config.UseShellgeiEmojiFontfile)
+			assert.Equal(tt.want.ForegroundColor, tt.config.ForegroundColor)
+			assert.Equal(tt.want.BackgroundColor, tt.config.BackgroundColor)
+			assert.Equal(tt.want.Texts, tt.config.Texts)
+			assert.Equal(tt.want.FileExtension, tt.config.FileExtension)
+			// NOTE: ここはテストするのが難しいので無視
+			// assert.Equal(tt.want.Writer, tt.config.Writer)
+			// assert.Equal(tt.want.FontFace, tt.config.FontFace)
+			// assert.Equal(tt.want.EmojiFontFace, tt.config.EmojiFontFace)
+			assert.Equal(tt.want.EmojiDir, tt.config.EmojiDir)
 		})
 	}
 }

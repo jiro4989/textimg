@@ -5,6 +5,7 @@ import (
 	c "image/color"
 	"os"
 	"runtime"
+	"strings"
 
 	"github.com/jiro4989/textimg/v3/config"
 	"github.com/jiro4989/textimg/v3/image"
@@ -90,7 +91,12 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 	}
 	defer conf.Writer.Close()
 
-	ls := conf.Tokens.StringLines()
+	tokens, err := parser.Parse(strings.Join(conf.Texts, "\n"))
+	if err != nil {
+		return err
+	}
+
+	ls := tokens.StringLines()
 	param := &image.ImageParam{
 		BaseWidth:          parser.StringWidth(ls),
 		BaseHeight:         len(ls),
@@ -106,7 +112,7 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 		ResizeHeight:       conf.ResizeHeight,
 	}
 	img := image.NewImage(param)
-	if err := img.Draw(conf.Tokens); err != nil {
+	if err := img.Draw(tokens); err != nil {
 		return err
 	}
 	if err := img.Encode(conf.Writer, conf.FileExtension); err != nil {

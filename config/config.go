@@ -13,8 +13,6 @@ import (
 	"github.com/jiro4989/textimg/v3/color"
 	"github.com/jiro4989/textimg/v3/ioimage"
 	"github.com/jiro4989/textimg/v3/log"
-	"github.com/jiro4989/textimg/v3/parser"
-	"github.com/jiro4989/textimg/v3/token"
 	"golang.org/x/image/font"
 	"golang.org/x/term"
 )
@@ -52,7 +50,6 @@ type Config struct {
 	FontFace        font.Face
 	EmojiFontFace   font.Face
 	EmojiDir        string
-	Tokens          token.Tokens
 }
 
 type osDefaultFont struct {
@@ -146,11 +143,6 @@ func (a *Config) Adjust(args []string, ev EnvVars) error {
 		if err != nil {
 			return err
 		}
-	}
-
-	a.Tokens, err = parser.Parse(strings.Join(a.Texts, "\n"))
-	if err != nil {
-		return err
 	}
 
 	if a.ToSlackIcon {
@@ -249,6 +241,10 @@ func (a *Config) addNumberSuffixToOutPath() {
 }
 
 func (a *Config) setWriter() error {
+	if a.Writer != nil {
+		return nil
+	}
+
 	if a.Outpath == "" {
 		// 出力先画像の指定がなく、且つ出力先がパイプならstdout + PNG/GIFと
 		// して出力。なければそもそも画像処理しても意味が無いので終了
