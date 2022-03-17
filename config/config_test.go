@@ -33,6 +33,7 @@ func newDefaultConfig() Config {
 		UseShellgeiEmojiFontfile: false,
 		ResizeWidth:              0,
 		ResizeHeight:             0,
+		Writer:                   NewMockWriter(false, false),
 	}
 }
 
@@ -50,7 +51,6 @@ func TestConfig_Adjust(t *testing.T) {
 			config: func() Config {
 				c := newDefaultConfig()
 				c.Outpath = "t.png"
-				c.Writer = NewMockWriter(false, false)
 				return c
 			}(),
 			args: []string{"hello"},
@@ -71,7 +71,6 @@ func TestConfig_Adjust(t *testing.T) {
 			config: func() Config {
 				c := newDefaultConfig()
 				c.UseShellgeiImagedir = true
-				c.Writer = NewMockWriter(false, false)
 				return c
 			}(),
 			args: []string{"hello"},
@@ -96,7 +95,6 @@ func TestConfig_Adjust(t *testing.T) {
 				c := newDefaultConfig()
 				c.UseShellgeiImagedir = true
 				c.UseAnimation = true
-				c.Writer = NewMockWriter(false, false)
 				return c
 			}(),
 			args: []string{"hello"},
