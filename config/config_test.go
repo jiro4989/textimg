@@ -176,6 +176,18 @@ func TestConfig_Adjust(t *testing.T) {
 			want:    Config{},
 			wantErr: true,
 		},
+		{
+			desc: "異常系: textsが空の時はエラーを返す",
+			config: func() Config {
+				c := newDefaultConfig()
+				c.Outpath = "t.png"
+				return c
+			}(),
+			args:    []string{},
+			ev:      EnvVars{},
+			want:    Config{},
+			wantErr: true,
+		},
 	}
 
 	for _, tt := range tests {
