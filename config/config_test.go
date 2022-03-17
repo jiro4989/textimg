@@ -379,3 +379,302 @@ func TestOptionColorStringToRGBA(t *testing.T) {
 		})
 	}
 }
+
+func TestToSlideStrings(t *testing.T) {
+	type TestData struct {
+		desc                  string
+		src, expect           []string
+		lineCount, slideWidth int
+		slideForever          bool
+	}
+	tds := []TestData{
+		{
+			desc: "2行描画、スライド幅1、無限なし",
+			src:  []string{"1", "2", "3", "4", "5"},
+			expect: []string{
+				"1", "2",
+				"2", "3",
+				"3", "4",
+				"4", "5",
+			},
+			lineCount:    2,
+			slideWidth:   1,
+			slideForever: false,
+		},
+		{
+			desc: "2行描画、スライド幅2、無限なし",
+			src:  []string{"1", "2", "3", "4", "5"},
+			expect: []string{
+				"1", "2",
+				"3", "4",
+				"5", "",
+			},
+			lineCount:    2,
+			slideWidth:   2,
+			slideForever: false,
+		},
+		{
+			desc: "3行描画、スライド幅1、無限なし",
+			src:  []string{"1", "2", "3", "4", "5"},
+			expect: []string{
+				"1", "2", "3",
+				"2", "3", "4",
+				"3", "4", "5",
+			},
+			lineCount:    3,
+			slideWidth:   1,
+			slideForever: false,
+		},
+		{
+			desc: "3行描画、スライド幅2、無限なし、不足あり",
+			src:  []string{"1", "2", "3", "4", "5", "6"},
+			expect: []string{
+				"1", "2", "3",
+				"3", "4", "5",
+				"5", "6", "",
+			},
+			lineCount:    3,
+			slideWidth:   2,
+			slideForever: false,
+		},
+		{
+			desc: "3行描画、スライド幅2、無限なし、不足なし",
+			src:  []string{"1", "2", "3", "4", "5", "6", "7"},
+			expect: []string{
+				"1", "2", "3",
+				"3", "4", "5",
+				"5", "6", "7",
+			},
+			lineCount:    3,
+			slideWidth:   2,
+			slideForever: false,
+		},
+		{
+			desc: "3行描画、スライド幅3、無限なし、不足なし",
+			src:  []string{"1", "2", "3", "4", "5", "6"},
+			expect: []string{
+				"1", "2", "3",
+				"4", "5", "6",
+			},
+			lineCount:    3,
+			slideWidth:   3,
+			slideForever: false,
+		},
+		{
+			desc: "3行描画、スライド幅3、無限なし、不足あり",
+			src:  []string{"1", "2", "3", "4", "5", "6", "7"},
+			expect: []string{
+				"1", "2", "3",
+				"4", "5", "6",
+				"7", "", "",
+			},
+			lineCount:    3,
+			slideWidth:   3,
+			slideForever: false,
+		},
+		{
+			desc: "3行描画、スライド幅3、無限なし、不足あり",
+			src:  []string{"1", "2", "3", "4", "5", "6", "7", "8"},
+			expect: []string{
+				"1", "2", "3",
+				"4", "5", "6",
+				"7", "8", "",
+			},
+			lineCount:    3,
+			slideWidth:   3,
+			slideForever: false,
+		},
+		{
+			desc: "2行描画、スライド幅2、無限あり",
+			src:  []string{"1", "2", "3", "4", "5"},
+			expect: []string{
+				"1", "2",
+				"3", "4",
+				"5", "1",
+			},
+			lineCount:    2,
+			slideWidth:   2,
+			slideForever: true,
+		},
+		{
+			desc: "2行描画、スライド幅2、無限あり",
+			src:  []string{"1", "2", "3", "4", "5", "6"},
+			expect: []string{
+				"1", "2",
+				"3", "4",
+				"5", "6",
+			},
+			lineCount:    2,
+			slideWidth:   2,
+			slideForever: true,
+		},
+		{
+			desc: "3行描画、スライド幅1、無限あり",
+			src:  []string{"1", "2", "3", "4", "5"},
+			expect: []string{
+				"1", "2", "3",
+				"2", "3", "4",
+				"3", "4", "5",
+				"4", "5", "1",
+				"5", "1", "2",
+			},
+			lineCount:    3,
+			slideWidth:   1,
+			slideForever: true,
+		},
+		{
+			desc: "3行描画、スライド幅1、無限あり",
+			src:  []string{"1", "2", "3", "4", "5", "6"},
+			expect: []string{
+				"1", "2", "3",
+				"2", "3", "4",
+				"3", "4", "5",
+				"4", "5", "6",
+				"5", "6", "1",
+				"6", "1", "2",
+			},
+			lineCount:    3,
+			slideWidth:   1,
+			slideForever: true,
+		},
+		{
+			desc: "3行描画、スライド幅2、無限あり",
+			src:  []string{"1", "2", "3", "4", "5"},
+			expect: []string{
+				"1", "2", "3",
+				"3", "4", "5",
+				"5", "1", "2",
+			},
+			lineCount:    3,
+			slideWidth:   2,
+			slideForever: true,
+		},
+		{
+			desc: "3行描画、スライド幅2、無限あり",
+			src:  []string{"1", "2", "3", "4", "5", "6"},
+			expect: []string{
+				"1", "2", "3",
+				"3", "4", "5",
+				"5", "6", "1",
+			},
+			lineCount:    3,
+			slideWidth:   2,
+			slideForever: true,
+		},
+		{
+			desc: "3行描画、スライド幅3、無限あり",
+			src:  []string{"1", "2", "3", "4", "5", "6"},
+			expect: []string{
+				"1", "2", "3",
+				"4", "5", "6",
+			},
+			lineCount:    3,
+			slideWidth:   3,
+			slideForever: true,
+		},
+		{
+			desc: "3行描画、スライド幅3、無限あり",
+			src:  []string{"1", "2", "3", "4", "5", "6", "7"},
+			expect: []string{
+				"1", "2", "3",
+				"4", "5", "6",
+				"7", "1", "2",
+			},
+			lineCount:    3,
+			slideWidth:   3,
+			slideForever: true,
+		},
+	}
+	for _, v := range tds {
+		t.Run(v.desc, func(t *testing.T) {
+			got := toSlideStrings(v.src, v.lineCount, v.slideWidth, v.slideForever)
+			assert.Equal(t, v.expect, got, v.desc)
+		})
+	}
+}
+
+func TestRemoveZeroWidthCharacters(t *testing.T) {
+	type TestData struct {
+		desc   string
+		s      string
+		expect string
+	}
+	tds := []TestData{
+		{desc: "Zero width space (U+200B)が削除される", s: "A\u200bB", expect: "AB"},
+		{desc: "Zero width joiner (U+200C)が削除される", s: "A\u200cB", expect: "AB"},
+		{desc: "Zero width joiner (U+200D)が削除される", s: "A\u200dB", expect: "AB"},
+		{desc: "U+200B ~ U+200Dが削除される", s: "あ\u200bい\u200cう\u200dえ", expect: "あいうえ"},
+	}
+	for _, v := range tds {
+		t.Run(v.desc, func(t *testing.T) {
+			got := removeZeroWidthCharacters(v.s)
+			assert.Equal(t, v.expect, got, v.desc)
+		})
+	}
+}
+
+func TestApplicationConfigSetFontFileAndFontIndex(t *testing.T) {
+	type TestData struct {
+		desc          string
+		inFontFile    string
+		inFontIndex   int
+		inRuntimeOS   string
+		wantFontFile  string
+		wantFontIndex int
+	}
+	tests := []TestData{
+		{
+			desc:          "正常系: FontFileが設定済みの場合は変更なし",
+			inFontFile:    "/usr/share/fonts/寿司",
+			inFontIndex:   0,
+			inRuntimeOS:   "linux",
+			wantFontFile:  "/usr/share/fonts/寿司",
+			wantFontIndex: 0,
+		},
+		{
+			desc:          "正常系: フォント未設定でwindowsの場合はwindows用のフォントが設定される",
+			inRuntimeOS:   "windows",
+			wantFontFile:  defaultWindowsFont,
+			wantFontIndex: 0,
+		},
+		{
+			desc:          "正常系: フォント未設定でdarwinの場合はdarwin用のフォントが設定される",
+			inRuntimeOS:   "darwin",
+			wantFontFile:  defaultDarwinFont,
+			wantFontIndex: 0,
+		},
+		{
+			desc:          "正常系: フォント未設定でiosの場合はios用のフォントが設定される",
+			inRuntimeOS:   "ios",
+			wantFontFile:  defaultIOSFont,
+			wantFontIndex: 0,
+		},
+		{
+			desc:          "正常系: フォント未設定でandroidの場合はandroid用のフォントが設定される",
+			inRuntimeOS:   "android",
+			wantFontFile:  defaultAndroidFont,
+			wantFontIndex: 5,
+		},
+		// FIXME: ローカル環境で実行するとエラーになるので一旦無効化
+		// {
+		// 	desc:          "正常系: フォント未設定でlinuxの場合はlinux用のフォントが設定される。Linux用のフォントは2つ存在するが、1つ目のフォントはalpineコンテナ内にデフォルトでは存在しないため2つ目が設定される",
+		// 	inRuntimeOS:   "linux",
+		// 	wantFontFile:  defaultLinuxFont2,
+		// 	wantFontIndex: 5,
+		// },
+	}
+	for _, tt := range tests {
+		t.Run(tt.desc, func(t *testing.T) {
+			assert := assert.New(t)
+
+			a := Config{
+				FontFile:  tt.inFontFile,
+				FontIndex: tt.inFontIndex,
+			}
+			a.SetFontFileAndFontIndex(tt.inRuntimeOS)
+
+			assert.Equal(tt.wantFontFile, a.FontFile)
+			assert.Equal(tt.wantFontIndex, a.FontIndex)
+		})
+	}
+}
