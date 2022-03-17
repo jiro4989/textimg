@@ -4,70 +4,9 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
 )
-
-func TestApplicationConfig_AddTimeStampToOutPath(t *testing.T) {
-	type TestData struct {
-		desc           string
-		inOutpath      string
-		inAddTimeStamp bool
-		inTime         time.Time
-		want           string
-	}
-	tests := []TestData{
-		{
-			desc:           "正常系: フラグfalseの場合は変更なし",
-			inOutpath:      "t.png",
-			inAddTimeStamp: false,
-			inTime:         time.Date(2000, 1, 1, 12, 10, 5, 2, time.Local),
-			want:           "t.png",
-		},
-		{
-			desc:           "正常系: フラグtrueの場合はタイムスタンプがつく",
-			inOutpath:      "t.png",
-			inAddTimeStamp: true,
-			inTime:         time.Date(2000, 1, 1, 12, 10, 5, 0, time.Local),
-			want:           "t_2000-01-01-121005.png",
-		},
-		{
-			desc:           "正常系: フルパスでも同様に動作する",
-			inOutpath:      "/images/t.png",
-			inAddTimeStamp: true,
-			inTime:         time.Date(2000, 1, 1, 12, 10, 5, 0, time.Local),
-			want:           "/images/t_2000-01-01-121005.png",
-		},
-		{
-			desc:           "正常系: ファイル拡張子が多重についていても動作する",
-			inOutpath:      "/images/t.png.1",
-			inAddTimeStamp: true,
-			inTime:         time.Date(2000, 1, 1, 12, 10, 5, 0, time.Local),
-			want:           "/images/t.png_2000-01-01-121005.1",
-		},
-		{
-			desc:           "正常系: Windowsのパス表現でも動作する",
-			inOutpath:      `C:\Users\foobar\Pictures\t.png`,
-			inAddTimeStamp: true,
-			inTime:         time.Date(2000, 1, 1, 12, 10, 5, 0, time.Local),
-			want:           `C:\Users\foobar\Pictures\t_2000-01-01-121005.png`,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.desc, func(t *testing.T) {
-			assert := assert.New(t)
-
-			a := applicationConfig{
-				Outpath:      tt.inOutpath,
-				AddTimeStamp: tt.inAddTimeStamp,
-			}
-			a.addTimeStampToOutPath(tt.inTime)
-
-			assert.Equal(tt.want, a.Outpath)
-		})
-	}
-}
 
 func TestOutputImageDir(t *testing.T) {
 	home, err := os.UserHomeDir()
