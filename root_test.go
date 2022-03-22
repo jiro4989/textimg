@@ -76,6 +76,19 @@ func TestRunRootCommand(t *testing.T) {
 			envs:    config.EnvVars{},
 			wantErr: true,
 		},
+		// 旧 main_test.go を移行してきたもの
+		{
+			desc: "正常系: 画像ファイルに出力する",
+			c: func() config.Config {
+				c := newDefaultConfig()
+				c.Outpath = outDir + "/main_normal_red.png"
+				c.Writer = nil
+				return c
+			}(),
+			args:    []string{"\x1b[31mRed\x1b[m"},
+			envs:    config.EnvVars{},
+			wantErr: false,
+		},
 	}
 
 	for _, tt := range tests {
