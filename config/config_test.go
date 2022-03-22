@@ -242,17 +242,6 @@ func TestConfig_Adjust(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			desc: "異常系: Outpathが空のときで出力先が存在しないときはエラーが返る",
-			config: func() Config {
-				c := newDefaultConfig()
-				return c
-			}(),
-			args:    []string{"hello"},
-			ev:      EnvVars{},
-			want:    Config{},
-			wantErr: true,
-		},
-		{
 			desc: "異常系: Foregroundに不正な色指定をした時はエラーを返す",
 			config: func() Config {
 				c := newDefaultConfig()
