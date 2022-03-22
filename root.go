@@ -1,9 +1,7 @@
 package main
 
 import (
-	"fmt"
-	c "image/color"
-	"os"
+	"image/color"
 	"runtime"
 	"strings"
 
@@ -73,25 +71,23 @@ var RootCommand = &cobra.Command{
 	Short:   global.AppName + " is command to convert from colored text (ANSI or 256) to image.",
 	Example: global.AppName + ` $'\x1b[31mRED\x1b[0m' -o out.png`,
 	Version: global.Version,
-	RunE:    runRootCommand,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return RunRootCommand(conf, args, envvars)
+	},
 }
 
-func runRootCommand(cmd *cobra.Command, args []string) error {
-	// TODO: パッケージに隠蔽したい
-	if conf.PrintEnvironments {
-		for _, envName := range global.EnvNames {
-			text := fmt.Sprintf("%s=%s", envName, os.Getenv(envName))
-			fmt.Println(text)
-		}
+func RunRootCommand(c config.Config, args []string, envs config.EnvVars) error {
+	if c.PrintEnvironments {
+		config.PrintEnvs()
 		return nil
 	}
 
-	if err := conf.Adjust(args, envvars); err != nil {
+	if err := c.Adjust(args, envs); err != nil {
 		return err
 	}
-	defer conf.Writer.Close()
+	defer c.Writer.Close()
 
-	tokens, err := parser.Parse(strings.Join(conf.Texts, "\n"))
+	tokens, err := parser.Parse(strings.Join(c.Texts, "\n"))
 	if err != nil {
 		return err
 	}
@@ -100,22 +96,22 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 	param := &image.ImageParam{
 		BaseWidth:          parser.StringWidth(ls),
 		BaseHeight:         len(ls),
-		ForegroundColor:    c.RGBA(conf.ForegroundColor),
-		BackgroundColor:    c.RGBA(conf.BackgroundColor),
-		FontFace:           conf.FontFace,
-		EmojiFontFace:      conf.EmojiFontFace,
-		EmojiDir:           conf.EmojiDir,
-		FontSize:           conf.FontSize,
-		Delay:              conf.Delay,
-		AnimationLineCount: conf.LineCount,
-		ResizeWidth:        conf.ResizeWidth,
-		ResizeHeight:       conf.ResizeHeight,
+		ForegroundColor:    color.RGBA(c.ForegroundColor),
+		BackgroundColor:    color.RGBA(c.BackgroundColor),
+		FontFace:           c.FontFace,
+		EmojiFontFace:      c.EmojiFontFace,
+		EmojiDir:           c.EmojiDir,
+		FontSize:           c.FontSize,
+		Delay:              c.Delay,
+		AnimationLineCount: c.LineCount,
+		ResizeWidth:        c.ResizeWidth,
+		ResizeHeight:       c.ResizeHeight,
 	}
 	img := image.NewImage(param)
 	if err := img.Draw(tokens); err != nil {
 		return err
 	}
-	if err := img.Encode(conf.Writer, conf.FileExtension); err != nil {
+	if err := img.Encode(c.Writer, c.FileExtension); err != nil {
 		return err
 	}
 

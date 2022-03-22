@@ -1,9 +1,8 @@
 package config
 
 import (
+	"fmt"
 	"os"
-
-	"github.com/jiro4989/textimg/v3/internal/global"
 )
 
 type EnvVars struct {
@@ -13,11 +12,34 @@ type EnvVars struct {
 	EmojiFontFile string
 }
 
+const (
+	envNameOutputDir     = "TEXTIMG_OUTPUT_DIR"
+	envNameFontFile      = "TEXTIMG_FONT_FILE"
+	envNameEmojiDir      = "TEXTIMG_EMOJI_DIR"
+	envNameEmojiFontFile = "TEXTIMG_EMOJI_FONT_FILE"
+)
+
+var (
+	envs = map[string]string{
+		envNameOutputDir:     os.Getenv(envNameOutputDir),
+		envNameFontFile:      os.Getenv(envNameFontFile),
+		envNameEmojiDir:      os.Getenv(envNameEmojiDir),
+		envNameEmojiFontFile: os.Getenv(envNameEmojiFontFile),
+	}
+)
+
 func NewEnvVars() EnvVars {
 	return EnvVars{
-		EmojiDir:      os.Getenv(global.EnvNameEmojiDir),
-		OutputDir:     os.Getenv(global.EnvNameOutputDir),
-		FontFile:      os.Getenv(global.EnvNameFontFile),
-		EmojiFontFile: os.Getenv(global.EnvNameEmojiFontFile),
+		EmojiDir:      envs[envNameOutputDir],
+		OutputDir:     envs[envNameFontFile],
+		FontFile:      envs[envNameEmojiDir],
+		EmojiFontFile: envs[envNameEmojiFontFile],
+	}
+}
+
+func PrintEnvs() {
+	for k, v := range envs {
+		text := fmt.Sprintf("%s=%s", k, v)
+		fmt.Println(text)
 	}
 }
