@@ -141,8 +141,13 @@ func (i *Image) updateColor(t token.ColorType, col color.RGBA) {
 }
 
 func (i *Image) newDrawer(f font.Face) *font.Drawer {
+	// 特殊な位置調整。なんでこんな計算式にしたのか覚えていない
+	var (
+		x = i.x
+		y = i.y + i.charHeight - (i.charHeight / 5)
+	)
 	// FIXME: なんか警告出てる
-	point := fixed.Point26_6{fixed.Int26_6(i.x * 64), fixed.Int26_6(i.y * 64)}
+	point := fixed.Point26_6{fixed.Int26_6(x * 64), fixed.Int26_6(y * 64)}
 	d := &font.Drawer{
 		Dst:  i.image,
 		Src:  image.NewUniform(c.RGBA(i.foregroundColor)),
@@ -224,7 +229,7 @@ func (i *Image) drawBackground(r rune) {
 	)
 	for x := posX; x < posX+width; x++ {
 		for y := posY; y < posY+height; y++ {
-			i.image.Set(x, y, c.RGBA(i.foregroundColor))
+			i.image.Set(x, y, c.RGBA(i.backgroundColor))
 		}
 	}
 }
