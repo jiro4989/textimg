@@ -92,10 +92,9 @@ func RunRootCommand(c config.Config, args []string, envs config.EnvVars) error {
 		return err
 	}
 
-	ls := tokens.StringLines()
 	param := &image.ImageParam{
-		BaseWidth:          parser.StringWidth(ls),
-		BaseHeight:         len(ls),
+		BaseWidth:          tokens.MaxStringWidth(),
+		BaseHeight:         len(tokens.StringLines()),
 		ForegroundColor:    color.RGBA(c.ForegroundColor),
 		BackgroundColor:    color.RGBA(c.BackgroundColor),
 		FontFace:           c.FontFace,

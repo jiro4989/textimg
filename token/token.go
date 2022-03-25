@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/jiro4989/textimg/v3/color"
+	"github.com/mattn/go-runewidth"
 )
 
 type (
@@ -82,15 +83,37 @@ func colorType(n int) ColorType {
 	return t
 }
 
-func (t *Tokens) StringLines() []string {
-	var lines []string
+func (t *Tokens) MaxStringWidth() int {
+	var strs []string
 	for _, tt := range *t {
 		if tt.Kind != KindText {
 			continue
 		}
 		s := tt.Text
-		ls := strings.Split(s, "\n")
-		lines = append(lines, ls...)
+		strs = append(strs, s)
 	}
+	s := strings.Join(strs, "")
+	lines := strings.Split(s, "\n")
+	var max int
+	for _, line := range lines {
+		w := runewidth.StringWidth(line)
+		if max < w {
+			max = w
+		}
+	}
+	return max
+}
+
+func (t *Tokens) StringLines() []string {
+	var strs []string
+	for _, tt := range *t {
+		if tt.Kind != KindText {
+			continue
+		}
+		s := tt.Text
+		strs = append(strs, s)
+	}
+	s := strings.Join(strs, "")
+	lines := strings.Split(s, "\n")
 	return lines
 }
