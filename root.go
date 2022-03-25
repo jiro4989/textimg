@@ -103,6 +103,7 @@ func RunRootCommand(c config.Config, args []string, envs config.EnvVars) error {
 		EmojiDir:           c.EmojiDir,
 		FontSize:           c.FontSize,
 		Delay:              c.Delay,
+		UseAnimation:       c.UseAnimation,
 		AnimationLineCount: c.LineCount,
 		ResizeWidth:        c.ResizeWidth,
 		ResizeHeight:       c.ResizeHeight,

@@ -32,6 +32,7 @@ type (
 		emojiDir               string
 		useEmoji               bool
 		lineCount              int
+		useAnimation           bool
 		animationLineCount     int
 		resizeWidth            int
 		resizeHeight           int
@@ -47,6 +48,7 @@ type (
 		EmojiFontFace      font.Face
 		EmojiDir           string
 		UseEmoji           bool
+		UseAnimation       bool
 		AnimationLineCount int
 		ResizeWidth        int
 		ResizeHeight       int
@@ -62,7 +64,7 @@ func NewImage(p *ImageParam) *Image {
 		imageHeight = p.BaseHeight * charHeight
 	)
 
-	if 0 < p.AnimationLineCount {
+	if p.UseAnimation {
 		imageHeight /= (p.BaseHeight / p.AnimationLineCount)
 	}
 
@@ -81,6 +83,7 @@ func NewImage(p *ImageParam) *Image {
 		charHeight:             charHeight,
 		emojiDir:               p.EmojiDir,
 		useEmoji:               p.UseEmoji,
+		useAnimation:           p.UseAnimation,
 		animationLineCount:     p.AnimationLineCount,
 		resizeWidth:            p.ResizeWidth,
 		resizeHeight:           p.ResizeHeight,
@@ -162,7 +165,7 @@ func (i *Image) draw(r rune) error {
 		i.x = 0
 		i.y += i.charHeight
 		i.lineCount++
-		if 0 < i.animationLineCount && i.lineCount%i.animationLineCount == 0 {
+		if i.useAnimation && i.lineCount%i.animationLineCount == 0 {
 			i.x = 0
 			i.y = 0
 			i.animationImages = append(i.animationImages, i.newScaledImage())
