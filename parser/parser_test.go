@@ -266,7 +266,7 @@ func TestParse(t *testing.T) {
 					ColorType: token.ColorTypeReset,
 				},
 				{
-					Kind: token.KindColor,
+					Kind:      token.KindColor,
 					ColorType: token.ColorTypeForeground,
 					Color:     color.RGBARed,
 				},
