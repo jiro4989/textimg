@@ -19,10 +19,9 @@ text <-
   < [^\e] + > { p.pushText(text) }
 
 color <-
-  standard_color / extended_color / reset_color
-
-reset_color <-
-  '0'+ { p.pushResetColor() }
+  standard_color
+  / extended_color
+  / text_attributes
 
 standard_color <-
   zero
@@ -52,6 +51,12 @@ extended_color_rgb <-
 extended_color_prefix <-
   zero
   < [34] '8' > { p.pushExtendedColor(text) }
+
+text_attributes <-
+  (
+  '0' { p.pushResetColor() }
+  / [14578]
+  )+
 
 zero             <- '0' *
 number           <- [0-9]+

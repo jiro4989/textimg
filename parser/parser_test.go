@@ -258,6 +258,26 @@ func TestParse(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			desc: "正常系: text_attributes",
+			s:    "\x1b[01;31mRED",
+			want: token.Tokens{
+				{
+					Kind:      token.KindColor,
+					ColorType: token.ColorTypeReset,
+				},
+				{
+					Kind: token.KindColor,
+					ColorType: token.ColorTypeForeground,
+					Color:     color.RGBARed,
+				},
+				{
+					Kind: token.KindText,
+					Text: "RED",
+				},
+			},
+			wantErr: false,
+		},
+		{
 			desc: "異常系: 拡張系 256色で数値がuint8を超えた場合はMap256の最後の値が設定される",
 			s:    "\x1b[38;5;256m",
 			want: token.Tokens{
