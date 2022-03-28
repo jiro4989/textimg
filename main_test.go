@@ -38,41 +38,6 @@ func TestMainNormal(t *testing.T) {
 		// 	want: 0,
 		// },
 		// {
-		// 	desc: "正常系: 赤色のエスケープシーケンスでファイル出力する",
-		// 	in:   []string{"", "\x1b[31mRed\x1b[m", "-o", outDir + "/main_normal_red.png"},
-		// 	want: 0,
-		// },
-		// {
-		// 	desc: "正常系: 文字色、背景色を変更する",
-		// 	in:   []string{"", "Sample", "-o", outDir + "/main_normal_red.png", "-g", "green", "-b", "blue"},
-		// 	want: 0,
-		// },
-		// {
-		// 	desc: "正常系: カンマ区切り指定",
-		// 	in:   []string{"", "Sample", "-o", outDir + "/main_normal_red.png", "-g", "0,255,0,255", "-b", "0,0,255,255"},
-		// 	want: 0,
-		// },
-		// {
-		// 	desc: "正常系: Slackアイコンサイズで生成できる",
-		// 	in:   []string{"", "Sample", "-o", outDir + "/main_slack.png", "--slack"},
-		// 	want: 0,
-		// },
-		// {
-		// 	desc: "正常系: width, height指定でresizeできる",
-		// 	in:   []string{"", "Sample", "-o", outDir + "/main_resize_width_height.png", "--resize-width", "1000", "--resize-height", "200"},
-		// 	want: 0,
-		// },
-		// {
-		// 	desc: "正常系: widthのみ指定した場合、heightが調整される",
-		// 	in:   []string{"", "Sample", "-o", outDir + "/main_resize_width.png", "--resize-width", "600"},
-		// 	want: 0,
-		// },
-		// {
-		// 	desc: "正常系: heightのみ指定した場合、heightが調整される",
-		// 	in:   []string{"", "Sample", "-o", outDir + "/main_resize_height.png", "--resize-height", "600"},
-		// 	want: 0,
-		// },
-		// {
 		// 	desc: "正常系: FontIndex, EmojiFontIndexを指定できる",
 		// 	in:   []string{"", "Sample", "-o", outDir + "/main_font_index.png", "-x", "0", "-X", "0"},
 		// 	want: 0,
@@ -128,9 +93,9 @@ func TestMainNormal(t *testing.T) {
 		})
 	}
 
-	_, err := os.Stat(outDir + "/main_numbering_2.gif")
-	assert.NoError(t, err)
-
-	_, err = os.Stat(outDir + "/main_numbering_3.gif")
-	assert.NoError(t, err)
+	// _, err := os.Stat(outDir + "/main_numbering_2.gif")
+	// assert.NoError(t, err)
+	//
+	// _, err = os.Stat(outDir + "/main_numbering_3.gif")
+	// assert.NoError(t, err)
 }

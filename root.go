@@ -92,9 +92,24 @@ func RunRootCommand(c config.Config, args []string, envs config.EnvVars) error {
 		return err
 	}
 
+	bw := tokens.MaxStringWidth()
+	bh := len(tokens.StringLines())
+
+	if !c.ToSlackIcon {
+		// TODO: コピペコードになってるので共通化する
+		var (
+			f          = c.FontSize
+			charWidth  = f / 2
+			charHeight = int(float64(f) * 1.1)
+			w          = bw * charWidth
+			h          = bh * charHeight
+		)
+		c.ResizeWidth, c.ResizeHeight = complementWidthHeight(w, h, c.ResizeWidth, c.ResizeHeight)
+	}
+
 	param := &image.ImageParam{
-		BaseWidth:          tokens.MaxStringWidth(),
-		BaseHeight:         len(tokens.StringLines()),
+		BaseWidth:          bw,
+		BaseHeight:         bh,
 		ForegroundColor:    color.RGBA(c.ForegroundColor),
 		BackgroundColor:    color.RGBA(c.BackgroundColor),
 		FontFace:           c.FontFace,
@@ -116,4 +131,21 @@ func RunRootCommand(c config.Config, args []string, envs config.EnvVars) error {
 	}
 
 	return nil
+}
+
+// complementWidthHeight は width, height の片方が 0 の時、サイズを調整する。
+func complementWidthHeight(x, y, w, h int) (int, int) {
+	if w == 0 {
+		hh := y
+		d := float64(h) / float64(hh)
+		w = int(float64(x) * d)
+		return w, h
+	}
+	if h == 0 {
+		ww := x
+		d := float64(w) / float64(ww)
+		h = int(float64(y) * d)
+		return w, h
+	}
+	return w, h
 }
