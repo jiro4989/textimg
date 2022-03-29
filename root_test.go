@@ -69,7 +69,7 @@ func TestRunRootCommand(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			desc: "正常系: 正常系がパスする",
+			desc: "正常系: 正常系がパスする。出力先はモックWriterなのでファイルは生成されない",
 			c: func() config.Config {
 				c := newDefaultConfig()
 				c.Outpath = "t.png"
@@ -100,9 +100,10 @@ func TestRunRootCommand(t *testing.T) {
 				c.Writer = nil
 				return c
 			}(),
-			args:    []string{"\x1b[31mred\x1b[m"},
-			envs:    config.EnvVars{},
-			wantErr: false,
+			args:       []string{"\x1b[31mred\x1b[m"},
+			envs:       config.EnvVars{},
+			wantErr:    false,
+			existsFile: outDir + "/root_test_font_is_red_and_background_is_black.png",
 		},
 		{
 			desc: "正常系: 文字色と背景色を変更する",
@@ -114,9 +115,10 @@ func TestRunRootCommand(t *testing.T) {
 				c.Background = "blue"
 				return c
 			}(),
-			args:    []string{"green"},
-			envs:    config.EnvVars{},
-			wantErr: false,
+			args:       []string{"green"},
+			envs:       config.EnvVars{},
+			wantErr:    false,
+			existsFile: outDir + "/root_test_font_is_green_and_background_is_blue.png",
 		},
 		{
 			desc: "正常系: カンマ区切りで指定",
@@ -128,9 +130,10 @@ func TestRunRootCommand(t *testing.T) {
 				c.Background = "255,0,0,255"
 				return c
 			}(),
-			args:    []string{"blue"},
-			envs:    config.EnvVars{},
-			wantErr: false,
+			args:       []string{"blue"},
+			envs:       config.EnvVars{},
+			wantErr:    false,
+			existsFile: outDir + "/root_test_font_is_blue_and_background_is_red.png",
 		},
 		{
 			desc: "正常系: Slackアイコンサイズで生成する",
@@ -143,9 +146,10 @@ func TestRunRootCommand(t *testing.T) {
 				c.ToSlackIcon = true
 				return c
 			}(),
-			args:    []string{"slack"},
-			envs:    config.EnvVars{},
-			wantErr: false,
+			args:       []string{"slack"},
+			envs:       config.EnvVars{},
+			wantErr:    false,
+			existsFile: outDir + "/root_test_font_is_blue_and_background_is_red_slack_icon_size.png",
 		},
 		{
 			desc: "正常系: 明示的に幅を指定できる",
@@ -159,9 +163,10 @@ func TestRunRootCommand(t *testing.T) {
 				c.ResizeHeight = 200
 				return c
 			}(),
-			args:    []string{"100x200"},
-			envs:    config.EnvVars{},
-			wantErr: false,
+			args:       []string{"100x200"},
+			envs:       config.EnvVars{},
+			wantErr:    false,
+			existsFile: outDir + "/root_test_font_is_blue_and_background_is_red_100x200.png",
 		},
 		{
 			desc: "正常系: Widthのみを指定した場合はHeightが調整される",
@@ -174,9 +179,10 @@ func TestRunRootCommand(t *testing.T) {
 				c.ResizeWidth = 100
 				return c
 			}(),
-			args:    []string{"100w"},
-			envs:    config.EnvVars{},
-			wantErr: false,
+			args:       []string{"100w"},
+			envs:       config.EnvVars{},
+			wantErr:    false,
+			existsFile: outDir + "/root_test_font_is_blue_and_background_is_red_100w.png",
 		},
 		{
 			desc: "正常系: Heightのみを指定した場合はWidthが調整される",
@@ -189,9 +195,10 @@ func TestRunRootCommand(t *testing.T) {
 				c.ResizeHeight = 100
 				return c
 			}(),
-			args:    []string{"100h"},
-			envs:    config.EnvVars{},
-			wantErr: false,
+			args:       []string{"100h"},
+			envs:       config.EnvVars{},
+			wantErr:    false,
+			existsFile: outDir + "/root_test_font_is_blue_and_background_is_red_100h.png",
 		},
 		{
 			desc: "正常系: SlackアイコンサイズでアニメーションGIFを生成できる",
@@ -203,9 +210,10 @@ func TestRunRootCommand(t *testing.T) {
 				c.UseAnimation = true
 				return c
 			}(),
-			args:    []string{"1\n2\n3\n4"},
-			envs:    config.EnvVars{},
-			wantErr: false,
+			args:       []string{"1\n2\n3\n4"},
+			envs:       config.EnvVars{},
+			wantErr:    false,
+			existsFile: outDir + "/root_test_slack_icon_size_animation.gif",
 		},
 		{
 			desc: "正常系: すでに同名のファイルが存在する時、別名で保存される",
@@ -216,9 +224,10 @@ func TestRunRootCommand(t *testing.T) {
 				c.SaveNumberedFile = true
 				return c
 			}(),
-			args:    []string{"number"},
-			envs:    config.EnvVars{},
-			wantErr: false,
+			args:       []string{"number"},
+			envs:       config.EnvVars{},
+			wantErr:    false,
+			existsFile: outDir + "/root_test_numbering.png",
 		},
 		{
 			desc: "正常系: すでに同名のファイルが存在する時、別名で保存される_2",
@@ -247,6 +256,58 @@ func TestRunRootCommand(t *testing.T) {
 			envs:       config.EnvVars{},
 			wantErr:    false,
 			existsFile: outDir + "/root_test_numbering_3.png",
+		},
+		{
+			desc: "異常系: 色文字列が不正",
+			c: func() config.Config {
+				c := newDefaultConfig()
+				c.Outpath = outDir + "/root_test_numbering.png"
+				c.Writer = nil
+				c.Foreground = "ggg"
+				return c
+			}(),
+			args:    []string{"ggg"},
+			envs:    config.EnvVars{},
+			wantErr: true,
+		},
+		{
+			desc: "異常系: 背景色が不正",
+			c: func() config.Config {
+				c := newDefaultConfig()
+				c.Outpath = outDir + "/root_test_numbering.png"
+				c.Writer = nil
+				c.Background = "ggg"
+				return c
+			}(),
+			args:    []string{"ggg"},
+			envs:    config.EnvVars{},
+			wantErr: true,
+		},
+		{
+			desc: "異常系: 不正なフォント指定",
+			c: func() config.Config {
+				c := newDefaultConfig()
+				c.Outpath = outDir + "/root_test_numbering.png"
+				c.Writer = nil
+				c.FontFile = inDir + "/illegal_font.ttc"
+				return c
+			}(),
+			args:    []string{"ggg"},
+			envs:    config.EnvVars{},
+			wantErr: true,
+		},
+		{
+			desc: "異常系: 不正な絵文字フォント指定",
+			c: func() config.Config {
+				c := newDefaultConfig()
+				c.Outpath = outDir + "/root_test_numbering.png"
+				c.Writer = nil
+				c.EmojiFontFile = inDir + "/illegal_font.ttc"
+				return c
+			}(),
+			args:    []string{"ggg"},
+			envs:    config.EnvVars{},
+			wantErr: true,
 		},
 	}
 

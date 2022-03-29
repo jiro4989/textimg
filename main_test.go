@@ -8,6 +8,7 @@ import (
 )
 
 const (
+	inDir  = "testdata/in"
 	outDir = "testdata/out"
 )
 
@@ -21,26 +22,6 @@ func TestMainNormal(t *testing.T) {
 		// 	desc: "正常系: FontIndex, EmojiFontIndexを指定できる",
 		// 	in:   []string{"", "Sample", "-o", outDir + "/main_font_index.png", "-x", "0", "-X", "0"},
 		// 	want: 0,
-		// },
-		// {
-		// 	desc: "異常系: 不正な文字色",
-		// 	in:   []string{"", "Sample", "-o", outDir + "/main_normal_red.png", "-g", "gggg", "-b", "blue"},
-		// 	want: -1,
-		// },
-		// {
-		// 	desc: "異常系: 不正な背景色",
-		// 	in:   []string{"", "Sample", "-o", outDir + "/main_normal_red.png", "-g", "green", "-b", "bbbb"},
-		// 	want: -1,
-		// },
-		// {
-		// 	desc: "異常系: 不正なフォントを指定",
-		// 	in:   []string{"", "Sample", "-o", outDir + "/illegal_case1.png", "-f", filepath.Join(testdataInputDir, "illegal_font.ttc")},
-		// 	want: -1,
-		// },
-		// {
-		// 	desc: "異常系: 不正な絵文字フォントを指定",
-		// 	in:   []string{"", "Sample", "-o", outDir + "/illegal_case2.png", "-e", filepath.Join(testdataInputDir, "illegal_font.ttc")},
-		// 	want: -1,
 		// },
 	}
 	for _, tt := range tests {
