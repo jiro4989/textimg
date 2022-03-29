@@ -110,6 +110,7 @@ func (i *Image) Draw(tokens token.Tokens) error {
 		}
 	}
 
+	i.nextAnimationFlame()
 	i.scale()
 
 	return nil
@@ -165,14 +166,7 @@ func (i *Image) draw(r rune) error {
 		i.x = 0
 		i.y += i.charHeight
 		i.lineCount++
-		if i.useAnimation && i.lineCount%i.animationLineCount == 0 {
-			i.x = 0
-			i.y = 0
-			i.animationImages = append(i.animationImages, i.newScaledImage())
-			b := i.image.Bounds().Max
-			i.image = newImage(b.X, b.Y)
-			i.drawBackgroundAll()
-		}
+		i.nextAnimationFlame()
 		return nil
 	}
 
@@ -186,6 +180,17 @@ func (i *Image) draw(r rune) error {
 	}
 	i.drawRune(r, i.fontFace)
 	return nil
+}
+
+func (i *Image) nextAnimationFlame() {
+	if i.useAnimation && i.lineCount%i.animationLineCount == 0 {
+		i.x = 0
+		i.y = 0
+		i.animationImages = append(i.animationImages, i.newScaledImage())
+		b := i.image.Bounds().Max
+		i.image = newImage(b.X, b.Y)
+		i.drawBackgroundAll()
+	}
 }
 
 // rune文字を画像に書き込む。

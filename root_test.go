@@ -192,6 +192,20 @@ func TestRunRootCommand(t *testing.T) {
 			envs:    config.EnvVars{},
 			wantErr: false,
 		},
+		{
+			desc: "正常系: SlackアイコンサイズでアニメーションGIFを生成できる",
+			c: func() config.Config {
+				c := newDefaultConfig()
+				c.Outpath = outDir + "/root_test_slack_icon_size_animation.gif"
+				c.Writer = nil
+				c.ToSlackIcon = true
+				c.UseAnimation = true
+				return c
+			}(),
+			args:    []string{"1\n2\n3\n4"},
+			envs:    config.EnvVars{},
+			wantErr: false,
+		},
 	}
 
 	for _, tt := range tests {

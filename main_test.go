@@ -18,26 +18,6 @@ func TestMainNormal(t *testing.T) {
 		want int
 	}{
 		// {
-		// 	desc: "正常系: ヘルプメッセージを出力する",
-		// 	in:   []string{"", "-h"},
-		// 	want: 0,
-		// },
-		// {
-		// 	desc: "正常系: ヘルプメッセージを出力する",
-		// 	in:   []string{"", "--help"},
-		// 	want: 0,
-		// },
-		// {
-		// 	desc: "正常系: バージョンを出力する",
-		// 	in:   []string{"", "-v"},
-		// 	want: 0,
-		// },
-		// {
-		// 	desc: "正常系: バージョンを出力する",
-		// 	in:   []string{"", "--version"},
-		// 	want: 0,
-		// },
-		// {
 		// 	desc: "正常系: FontIndex, EmojiFontIndexを指定できる",
 		// 	in:   []string{"", "Sample", "-o", outDir + "/main_font_index.png", "-x", "0", "-X", "0"},
 		// 	want: 0,
