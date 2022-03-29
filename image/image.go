@@ -87,6 +87,7 @@ func NewImage(p *ImageParam) *Image {
 		animationLineCount:     p.AnimationLineCount,
 		resizeWidth:            p.ResizeWidth,
 		resizeHeight:           p.ResizeHeight,
+		delay:                  p.Delay,
 	}
 }
 
