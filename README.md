@@ -419,14 +419,15 @@ ln -sfn completions/fish/textimg.fish $HOME/.config/fish/completions/textimg.fis
 
 ## Development
 
-go version go1.15 linux/amd64
+go version go1.17 linux/amd64
 
 ### How to build
 
 You run below.
 
 ```bash
-go build
+make setup-tools
+make
 ```
 
 **I didn't test on Windows.**
@@ -434,6 +435,9 @@ go build
 ### How to test
 
 ```bash
+make test
+
+# docker
 make docker-build
 make docker-test
 ```

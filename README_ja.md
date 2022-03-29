@@ -414,17 +414,28 @@ ln -sfn completions/fish/textimg.fish $HOME/.config/fish/completions/textimg.fis
 
 ## 開発
 
-go version go1.15 linux/amd64
+go version go1.17 linux/amd64
 
-### ビルド方法
+### ビルド
 
 以下のコマンドを実行する。
 
 ```bash
-go build
+make setup-tools
+make
 ```
 
 **Windows環境では動作確認していません。**
+
+### テスト
+
+```bash
+make test
+
+# docker
+make docker-build
+make docker-test
+```
 
 ## 参考
 
