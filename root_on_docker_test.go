@@ -39,14 +39,15 @@ func TestRunRootCommandOnDocker(t *testing.T) {
 				c := newDefaultConfig()
 				c.Outpath = outDockerDir + "/root_on_docker_test_japanese.png"
 				c.Writer = nil
-				c.UseEmojiFont = true
 				c.FontFile = fontFile
-				c.EmojiDir = emojiDir
+				// c.EmojiDir = emojiDir
 				c.EmojiFontFile = emojiFontFile
 				return c
 			}(),
-			args:       []string{"\x1b[31mあいうえお\n\x1b[32;43mあ😃a👍！👀ん👄"},
-			envs:       config.EnvVars{},
+			args: []string{"\x1b[31mあいうえお\n\x1b[32;43mあ😃a👍！👀ん👄"},
+			envs: config.EnvVars{
+				EmojiDir: emojiDir,
+			},
 			wantErr:    false,
 			existsFile: outDockerDir + "/root_on_docker_test_japanese.png",
 		},
@@ -56,14 +57,16 @@ func TestRunRootCommandOnDocker(t *testing.T) {
 				c := newDefaultConfig()
 				c.Outpath = outDockerDir + "/root_on_docker_test_shellgei_emoji.png"
 				c.Writer = nil
+				c.UseEmojiFont = true
 				c.FontFile = fontFile
-				c.EmojiDir = emojiDir
+				// c.EmojiDir = emojiDir
 				c.EmojiFontFile = emojiFontFile
-				c.UseShellgeiEmojiFontfile = true
 				return c
 			}(),
 			args:       []string{"\x1b[31mあいうえお\n\x1b[32;43mあ😃a👍！👀ん👄"},
-			envs:       config.EnvVars{},
+			envs: config.EnvVars{
+				EmojiDir: emojiDir,
+			},
 			wantErr:    false,
 			existsFile: outDockerDir + "/root_on_docker_test_shellgei_emoji.png",
 		},
