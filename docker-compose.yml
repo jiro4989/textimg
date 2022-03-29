@@ -1,3 +1,5 @@
+---
+
 version: '3.7'
 
 services:
@@ -26,19 +28,6 @@ services:
     image: jiro4989/textimg
     volumes:
       - "$PWD/images:/images"
-
-  coverage:
-    <<: *common
-    build:
-      context: ./
-      dockerfile: ./Dockerfile
-      target: coverage
-    container_name: textimg_coverage
-    image: jiro4989/textimg-coverage
-    depends_on:
-      - base
-    entrypoint:
-      - scripts/merge_coverage_profile.sh
 
 volumes:
   gopkg:
