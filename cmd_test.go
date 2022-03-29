@@ -23,16 +23,6 @@ package main
 // 		outFn  string
 // 	}{
 // 		{
-// 			desc:   "JPGファイルが生成できる",
-// 			inText: t1,
-// 			outFn:  "simple_jpg.jpg",
-// 		},
-// 		{
-// 			desc:   "GIFファイルが生成できる",
-// 			inText: t1,
-// 			outFn:  "simple_gif.gif",
-// 		},
-// 		{
 // 			desc:   "前景色と背景色が反転する",
 // 			inText: "\x1b[31;42mRedGreen\x1b[7mRedGreen",
 // 			outFn:  "simple_reverse.png",
