@@ -7,7 +7,7 @@ on:
 
 env:
   app: textimg
-  goversion: '1.16'
+  goversion: '1.17'
   build_opts: '-ldflags="-s -w -extldflags \"-static\""'
 
 jobs:
