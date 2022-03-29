@@ -15,6 +15,16 @@ import (
 )
 
 func TestRunRootCommandOnDocker(t *testing.T) {
+	var (
+		outDockerDir  = "testdata/out_docker"
+		fontFile      = "/tmp/MyricaM.TTC"
+		emojiDir      = "/usr/local/src/noto-emoji"
+		emojiFontFile = "/tmp/Symbola_hint.ttf"
+	)
+
+	// nolint
+	os.Mkdir(outDockerDir, os.ModePerm)
+
 	tests := []struct {
 		desc       string
 		c          config.Config
@@ -29,6 +39,9 @@ func TestRunRootCommandOnDocker(t *testing.T) {
 				c := newDefaultConfig()
 				c.Outpath = outDockerDir + "/root_on_docker_test_japanese.png"
 				c.Writer = nil
+				c.FontFile = fontFile
+				c.EmojiDir = emojiDir
+				c.EmojiFontFile = emojiFontFile
 				return c
 			}(),
 			args:       []string{"\x1b[31mあいうえお\n\x1b[32;43mあ😃a👍！👀ん👄"},
@@ -42,6 +55,9 @@ func TestRunRootCommandOnDocker(t *testing.T) {
 				c := newDefaultConfig()
 				c.Outpath = outDockerDir + "/root_on_docker_test_shellgei_emoji.png"
 				c.Writer = nil
+				c.FontFile = fontFile
+				c.EmojiDir = emojiDir
+				c.EmojiFontFile = emojiFontFile
 				c.UseShellgeiEmojiFontfile = true
 				return c
 			}(),

@@ -121,6 +121,7 @@ func RunRootCommand(c config.Config, args []string, envs config.EnvVars) error {
 		AnimationLineCount: c.LineCount,
 		ResizeWidth:        c.ResizeWidth,
 		ResizeHeight:       c.ResizeHeight,
+		UseEmoji:           c.UseEmojiFont,
 	}
 	img := image.NewImage(param)
 	if err := img.Draw(tokens); err != nil {

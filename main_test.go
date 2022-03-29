@@ -1,3 +1,5 @@
+//go:build !docker
+
 package main
 
 import (
@@ -6,9 +8,8 @@ import (
 )
 
 const (
-	inDir        = "testdata/in"
-	outDir       = "testdata/out"
-	outDockerDir = "testdata/out_docker"
+	inDir  = "testdata/in"
+	outDir = "testdata/out"
 )
 
 func TestMain(m *testing.M) {
@@ -23,6 +24,4 @@ func testBefore() {
 	}
 	// nolint
 	os.Mkdir(outDir, os.ModePerm)
-	// nolint
-	os.Mkdir(outDockerDir, os.ModePerm)
 }
