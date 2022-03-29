@@ -11,6 +11,11 @@ import (
 )
 
 func TestRunRootCommand(t *testing.T) {
+	b, _ := os.ReadFile(inDir + "/red_grad.txt")
+	grad := string(b)
+	b, _ = os.ReadFile(inDir + "/255.txt")
+	c255 := string(b)
+
 	tests := []struct {
 		desc       string
 		c          config.Config
@@ -64,6 +69,32 @@ func TestRunRootCommand(t *testing.T) {
 			envs:       config.EnvVars{},
 			wantErr:    false,
 			existsFile: outDir + "/root_test_font_is_red_and_background_is_black.png",
+		},
+		{
+			desc: "正常系: 256色を使う",
+			c: func() config.Config {
+				c := newDefaultConfig()
+				c.Outpath = outDir + "/root_test_color_256.png"
+				c.Writer = nil
+				return c
+			}(),
+			args:       []string{c255},
+			envs:       config.EnvVars{},
+			wantErr:    false,
+			existsFile: outDir + "/root_test_color_256.png",
+		},
+		{
+			desc: "正常系: RGB色を使う",
+			c: func() config.Config {
+				c := newDefaultConfig()
+				c.Outpath = outDir + "/root_test_color_rgb.png"
+				c.Writer = nil
+				return c
+			}(),
+			args:       []string{grad},
+			envs:       config.EnvVars{},
+			wantErr:    false,
+			existsFile: outDir + "/root_test_color_rgb.png",
 		},
 		{
 			desc: "正常系: JPEGで出力する",
