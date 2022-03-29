@@ -30,9 +30,9 @@ var (
 
 func NewEnvVars() EnvVars {
 	return EnvVars{
-		EmojiDir:      envs[envNameOutputDir],
-		OutputDir:     envs[envNameFontFile],
-		FontFile:      envs[envNameEmojiDir],
+		OutputDir:     envs[envNameOutputDir],
+		FontFile:      envs[envNameFontFile],
+		EmojiDir:      envs[envNameEmojiDir],
 		EmojiFontFile: envs[envNameEmojiFontFile],
 	}
 }
