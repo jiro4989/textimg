@@ -63,7 +63,7 @@ func TestRunRootCommandOnDocker(t *testing.T) {
 				c.EmojiFontFile = emojiFontFile
 				return c
 			}(),
-			args:       []string{"\x1b[31mあいうえお\n\x1b[32;43mあ😃a👍！👀ん👄"},
+			args: []string{"\x1b[31mあいうえお\n\x1b[32;43mあ😃a👍！👀ん👄"},
 			envs: config.EnvVars{
 				EmojiDir: emojiDir,
 			},
