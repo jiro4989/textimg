@@ -166,8 +166,8 @@ func (i *Image) draw(r rune) error {
 	if r == '\n' {
 		i.x = 0
 		i.y += i.charHeight
-		i.lineCount++
 		i.nextAnimationFlame()
+		i.lineCount++
 		return nil
 	}
 
@@ -184,7 +184,7 @@ func (i *Image) draw(r rune) error {
 }
 
 func (i *Image) nextAnimationFlame() {
-	if i.useAnimation && i.lineCount%i.animationLineCount == 0 {
+	if i.useAnimation && (i.lineCount+1)%i.animationLineCount == 0 {
 		i.x = 0
 		i.y = 0
 		i.animationImages = append(i.animationImages, i.newScaledImage())

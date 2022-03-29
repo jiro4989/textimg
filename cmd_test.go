@@ -3,54 +3,6 @@
 
 package main
 
-// func TestOutFileOption(t *testing.T) {
-// 	for i, opt := range []string{"-o", "--out"} {
-// 		msg := opt + "オプションで画像ファイルが生成できる"
-// 		t.Run(msg, func(t *testing.T) {
-// 			fn := fmt.Sprintf("output_option_%d.png", i)
-// 			cmd := fmt.Sprintf(`echo -e '%sText%s' | %s %s %s/%s`, ansiColorFGBlue, ansiColorReset, bin, opt, outDir, fn)
-// 			err := exec.Command("bash", "-c", cmd).Run()
-// 			assert.Nil(t, err, msg)
-// 		})
-// 	}
-// }
-//
-// func TestSimple(t *testing.T) {
-// 	const t1 = ansiColorFGBlue + "Text" + ansiColorReset
-// 	tests := []struct {
-// 		desc   string
-// 		inText string
-// 		outFn  string
-// 	}{
-// 		{
-// 			desc:   "前景色と背景色が反転する",
-// 			inText: "\x1b[31;42mRedGreen\x1b[7mRedGreen",
-// 			outFn:  "simple_reverse.png",
-// 		},
-// 		{
-// 			desc:   "1行の絵文字",
-// 			inText: "あ😃a👍！👀ん👄",
-// 			outFn:  "emoji1.png",
-// 		},
-// 		{
-// 			desc:   "3行の絵文字",
-// 			inText: "ab😃cd👍ef👀gh👄\n😃12👍34👀5a👄あ\n😃a👍b👀c👄dabcd",
-// 			outFn:  "emoji2.png",
-// 		},
-// 		{desc: "ゼロ幅文字 (U+200B)", inText: "A \u200B B", outFn: "zws_u002b.png"},
-// 		{desc: "ゼロ幅文字 (U+200C)", inText: "A \u200C B", outFn: "zws_u002c.png"},
-// 		{desc: "ゼロ幅文字 (U+200D)", inText: "A \u200D B", outFn: "zws_u002d.png"},
-// 		{desc: "ゼロ幅文字 (U+FEFF)", inText: "A \uFEFF B", outFn: "zws_ufeff.png"},
-// 	}
-// 	for _, tt := range tests {
-// 		t.Run(tt.desc, func(t *testing.T) {
-// 			cmd := fmt.Sprintf("echo -e '%s' | %s -o %s/%s", tt.inText, bin, outDir, tt.outFn)
-// 			err := exec.Command("bash", "-c", cmd).Run()
-// 			assert.Nil(t, err, tt.desc)
-// 		})
-// 	}
-// }
-//
 // func TestAnimationGIF(t *testing.T) {
 // 	tests := []struct {
 // 		desc       string

@@ -213,6 +213,66 @@ func TestRunRootCommand(t *testing.T) {
 			existsFile: outDir + "/root_test_font_is_blue_and_background_is_red_100h.png",
 		},
 		{
+			desc: "正常系: 1行のアニメを生成できる",
+			c: func() config.Config {
+				c := newDefaultConfig()
+				c.Outpath = outDir + "/root_test_animation_1_line.gif"
+				c.Writer = nil
+				c.UseAnimation = true
+				c.LineCount = 1
+				return c
+			}(),
+			args:       []string{"\x1b[31m1\n\x1b[32m2\n\x1b[33m3\n\x1b[34m4"},
+			envs:       config.EnvVars{},
+			wantErr:    false,
+			existsFile: outDir + "/root_test_animation_1_line.gif",
+		},
+		{
+			desc: "正常系: 2行のアニメを生成できる",
+			c: func() config.Config {
+				c := newDefaultConfig()
+				c.Outpath = outDir + "/root_test_animation_2_line.gif"
+				c.Writer = nil
+				c.UseAnimation = true
+				c.LineCount = 2
+				return c
+			}(),
+			args:       []string{"\x1b[31m1\n\x1b[32m2\n\x1b[33m3\n\x1b[34m4"},
+			envs:       config.EnvVars{},
+			wantErr:    false,
+			existsFile: outDir + "/root_test_animation_2_line.gif",
+		},
+		{
+			desc: "正常系: 4行のアニメを生成できる",
+			c: func() config.Config {
+				c := newDefaultConfig()
+				c.Outpath = outDir + "/root_test_animation_4_line.gif"
+				c.Writer = nil
+				c.UseAnimation = true
+				c.LineCount = 4
+				return c
+			}(),
+			args:       []string{"\x1b[31m1\n\x1b[32m2\n\x1b[33m3\n\x1b[34m4\n\x1b[31m5\n\x1b[32m6\n\x1b[33m7\n\x1b[34m8"},
+			envs:       config.EnvVars{},
+			wantErr:    false,
+			existsFile: outDir + "/root_test_animation_4_line.gif",
+		},
+		{
+			desc: "正常系: 8行のアニメを生成できる",
+			c: func() config.Config {
+				c := newDefaultConfig()
+				c.Outpath = outDir + "/root_test_animation_8_line.gif"
+				c.Writer = nil
+				c.UseAnimation = true
+				c.LineCount = 8
+				return c
+			}(),
+			args:       []string{"\x1b[31m1\n\x1b[32m2\n\x1b[33m3\n\x1b[34m4\n\x1b[31m5\n\x1b[32m6\n\x1b[33m7\n\x1b[34m8"},
+			envs:       config.EnvVars{},
+			wantErr:    false,
+			existsFile: outDir + "/root_test_animation_8_line.gif",
+		},
+		{
 			desc: "正常系: SlackアイコンサイズでアニメーションGIFを生成できる",
 			c: func() config.Config {
 				c := newDefaultConfig()
