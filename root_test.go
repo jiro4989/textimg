@@ -66,6 +66,19 @@ func TestRunRootCommand(t *testing.T) {
 			existsFile: outDir + "/root_test_font_is_red_and_background_is_black.png",
 		},
 		{
+			desc: "正常系: 日本語と絵文字を描画する（ただし豆腐になる）。このテストはDockerの方で実施する",
+			c: func() config.Config {
+				c := newDefaultConfig()
+				c.Outpath = outDir + "/root_test_tofu.png"
+				c.Writer = nil
+				return c
+			}(),
+			args:       []string{"あいうえお👍"},
+			envs:       config.EnvVars{},
+			wantErr:    false,
+			existsFile: outDir + "/root_test_tofu.png",
+		},
+		{
 			desc: "正常系: 前景色と背景色を反転する",
 			c: func() config.Config {
 				c := newDefaultConfig()
