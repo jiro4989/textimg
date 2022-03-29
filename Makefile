@@ -1,4 +1,5 @@
 textimg: parser/grammer.peg.go *.go */*.go
+	go fmt ./...
 	go build
 
 parser/grammer.peg.go: parser/grammer.peg
