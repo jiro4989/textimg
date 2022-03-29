@@ -14,7 +14,9 @@ type ParserFunc struct {
 
 func Parse(s string) (token.Tokens, error) {
 	p := &Parser{Buffer: s}
-	p.Init()
+	if err := p.Init(); err != nil {
+		return nil, err
+	}
 	if err := p.Parse(); err != nil {
 		return nil, err
 	}
