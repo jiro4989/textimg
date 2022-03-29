@@ -19,7 +19,7 @@ func (i *Image) Encode(w io.Writer, ext string) error {
 	case ".jpg", ".jpeg":
 		return jpeg.Encode(w, img, nil)
 	case ".gif":
-		if 0 < i.animationLineCount {
+		if i.useAnimation {
 			var delays []int
 			for x := 0; x < len(i.animationImages); x++ {
 				delays = append(delays, i.delay)
