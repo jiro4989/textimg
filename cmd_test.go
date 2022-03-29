@@ -3,34 +3,6 @@
 
 package main
 
-// func TestAnimationGIF(t *testing.T) {
-// 	tests := []struct {
-// 		desc       string
-// 		inText     string
-// 		inLine     int
-// 		inDuration int
-// 	}{
-// 		{desc: "1行のアニメ (デフォルト)", inText: fgBgLine, inLine: 1, inDuration: -1},
-// 		{desc: "1行のアニメ", inText: fgBgLine, inLine: 1, inDuration: 5},
-// 		{desc: "2行のアニメ", inText: fgBgLine, inLine: 2, inDuration: 10},
-// 		{desc: "4行のアニメ", inText: fgBgLine, inLine: 4, inDuration: 20},
-// 		{desc: "8行のアニメ", inText: fgBgLine, inLine: 8, inDuration: 30},
-// 	}
-// 	for _, tt := range tests {
-// 		t.Run(tt.desc, func(t *testing.T) {
-// 			fn := fmt.Sprintf("animation_gif_%d_line.gif", tt.inLine)
-// 			var cmd string
-// 			if tt.inDuration == -1 {
-// 				cmd = fmt.Sprintf("echo -e '%s' | %s -a -l %d -o %s/%s", tt.inText, bin, tt.inLine, outDir, fn)
-// 			} else {
-// 				cmd = fmt.Sprintf("echo -e '%s' | %s -a -l %d -d %d -o %s/%s", tt.inText, bin, tt.inLine, tt.inDuration, outDir, fn)
-// 			}
-// 			err := exec.Command("bash", "-c", cmd).Run()
-// 			assert.Nil(t, err, tt.desc)
-// 		})
-// 	}
-// }
-//
 // func TestANSIColorExt(t *testing.T) {
 // 	tests := []struct {
 // 		desc   string
