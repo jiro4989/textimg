@@ -259,6 +259,21 @@ func TestRunRootCommand(t *testing.T) {
 			existsFile: outDir + "/root_test_numbering_3.png",
 		},
 		{
+			desc: "正常系: フォントインデックスを指定できる",
+			c: func() config.Config {
+				c := newDefaultConfig()
+				c.Outpath = outDir + "/root_test_index.png"
+				c.Writer = nil
+				c.FontIndex = 0
+				c.EmojiFontIndex = 0
+				return c
+			}(),
+			args:       []string{"index"},
+			envs:       config.EnvVars{},
+			wantErr:    false,
+			existsFile: outDir + "/root_test_index.png",
+		},
+		{
 			desc: "異常系: 色文字列が不正",
 			c: func() config.Config {
 				c := newDefaultConfig()
