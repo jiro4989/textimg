@@ -23,11 +23,6 @@ func TestMainNormal(t *testing.T) {
 		// 	want: 0,
 		// },
 		// {
-		// 	desc: "正常系: 同じファイルがすでに存在するため別名で保存される (_3)",
-		// 	in:   []string{"", "Sample", "-o", outDir + "/main_numbering.gif", "-n"},
-		// 	want: 0,
-		// },
-		// {
 		// 	desc: "異常系: 不正な文字色",
 		// 	in:   []string{"", "Sample", "-o", outDir + "/main_normal_red.png", "-g", "gggg", "-b", "blue"},
 		// 	want: -1,
