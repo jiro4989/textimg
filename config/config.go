@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/jiro4989/textimg/v3/color"
-	"github.com/jiro4989/textimg/v3/ioimage"
 	"github.com/jiro4989/textimg/v3/log"
 	"golang.org/x/image/font"
 	"golang.org/x/term"
@@ -133,13 +132,13 @@ func (a *Config) Adjust(args []string, ev EnvVars) error {
 
 	a.Texts = normalizeTexts(a.Texts)
 
-	a.FontFace, err = ioimage.ReadFace(a.FontFile, a.FontIndex, float64(a.FontSize))
+	a.FontFace, err = readFace(a.FontFile, a.FontIndex, float64(a.FontSize))
 	if err != nil {
 		return err
 	}
 
 	if a.EmojiFontFile != "" {
-		a.EmojiFontFace, err = ioimage.ReadFace(a.EmojiFontFile, a.EmojiFontIndex, float64(a.FontSize))
+		a.EmojiFontFace, err = readFace(a.EmojiFontFile, a.EmojiFontIndex, float64(a.FontSize))
 		if err != nil {
 			return err
 		}

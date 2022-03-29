@@ -1,4 +1,4 @@
-package ioimage
+package config
 
 import (
 	"path/filepath"
@@ -58,7 +58,7 @@ func TestReadFace(t *testing.T) {
 		t.Run(tt.desc, func(t *testing.T) {
 			assert := assert.New(t)
 
-			got, err := ReadFace(tt.inFontPath, tt.inFontIndex, 20)
+			got, err := readFace(tt.inFontPath, tt.inFontIndex, 20)
 			if tt.wantErr {
 				assert.Nil(got)
 				assert.Error(err)
