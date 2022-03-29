@@ -414,6 +414,30 @@ func TestRunRootCommand(t *testing.T) {
 			existsFile: outDir + "/root_test_index.png",
 		},
 		{
+			desc: "異常系: 空文字列は不正",
+			c: func() config.Config {
+				c := newDefaultConfig()
+				c.Outpath = outDir + "/root_test_empty_string.png"
+				c.Writer = nil
+				return c
+			}(),
+			args:    []string{""},
+			envs:    config.EnvVars{},
+			wantErr: true,
+		},
+		{
+			desc: "異常系: 改行文字のみは不正",
+			c: func() config.Config {
+				c := newDefaultConfig()
+				c.Outpath = outDir + "/root_test_only_line.png"
+				c.Writer = nil
+				return c
+			}(),
+			args:    []string{"\n\n\n"},
+			envs:    config.EnvVars{},
+			wantErr: true,
+		},
+		{
 			desc: "異常系: 色文字列が不正",
 			c: func() config.Config {
 				c := newDefaultConfig()
