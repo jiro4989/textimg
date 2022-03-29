@@ -47,6 +47,13 @@ func NewResetColor() Token {
 	}
 }
 
+func NewReverseColor() Token {
+	return Token{
+		Kind:      KindColor,
+		ColorType: ColorTypeReverse,
+	}
+}
+
 func NewText(text string) Token {
 	return Token{
 		Kind: KindText,

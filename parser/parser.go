@@ -29,6 +29,10 @@ func (p *ParserFunc) pushResetColor() {
 	p.Tk = append(p.Tk, token.NewResetColor())
 }
 
+func (p *ParserFunc) pushReverseColor() {
+	p.Tk = append(p.Tk, token.NewReverseColor())
+}
+
 func (p *ParserFunc) pushText(text string) {
 	p.Tk = append(p.Tk, token.NewText(text))
 }

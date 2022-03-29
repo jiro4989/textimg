@@ -101,10 +101,23 @@ func TestRunRootCommand(t *testing.T) {
 				c.Writer = nil
 				return c
 			}(),
-			args:       []string{"\x1b[31mred\x1b[m"},
+			args:       []string{"1234\x1b[31mred\x1b[m5678\nabcd\x1b[32mgreen\x1b[0mefgh\nあい\x1b[33mう\x1b[mえお"},
 			envs:       config.EnvVars{},
 			wantErr:    false,
 			existsFile: outDir + "/root_test_font_is_red_and_background_is_black.png",
+		},
+		{
+			desc: "正常系: 前景色と背景色を反転する",
+			c: func() config.Config {
+				c := newDefaultConfig()
+				c.Outpath = outDir + "/root_test_reverse.png"
+				c.Writer = nil
+				return c
+			}(),
+			args:       []string{"\x1b[31;42mRED\x1b[7mGREEN\x1b[0m"},
+			envs:       config.EnvVars{},
+			wantErr:    false,
+			existsFile: outDir + "/root_test_reverse.png",
 		},
 		{
 			desc: "正常系: 文字色と背景色を変更する",

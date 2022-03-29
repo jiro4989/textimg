@@ -55,7 +55,8 @@ extended_color_prefix <-
 text_attributes <-
   (
   '0' { p.pushResetColor() }
-  / [14578]
+  / '7' { p.pushReverseColor() }
+  / [1458]
   )+
 
 zero             <- '0' *

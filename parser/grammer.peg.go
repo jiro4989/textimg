@@ -46,6 +46,7 @@ const (
 	ruleAction6
 	ruleAction7
 	ruleAction8
+	ruleAction9
 )
 
 var rul3s = [...]string{
@@ -78,6 +79,7 @@ var rul3s = [...]string{
 	"Action6",
 	"Action7",
 	"Action8",
+	"Action9",
 }
 
 type token32 struct {
@@ -194,7 +196,7 @@ type Parser struct {
 
 	Buffer string
 	buffer []rune
-	rules  [29]func() bool
+	rules  [30]func() bool
 	parse  func(rule ...int) error
 	reset  func()
 	Pretty bool
@@ -314,6 +316,8 @@ func (p *Parser) Execute() {
 			p.pushExtendedColor(text)
 		case ruleAction8:
 			p.pushResetColor()
+		case ruleAction9:
+			p.pushReverseColor()
 
 		}
 	}
@@ -832,7 +836,7 @@ func (p *Parser) Init(options ...func(*Parser) error) error {
 			position, tokenIndex = position48, tokenIndex48
 			return false
 		},
-		/* 10 text_attributes <- <(('0' Action8) / ('1' / '4' / '5' / '7' / '8'))+> */
+		/* 10 text_attributes <- <(('0' Action8) / ('7' Action9) / ('1' / '4' / '5' / '8'))+> */
 		func() bool {
 			position53, tokenIndex53 := position, tokenIndex
 			{
@@ -849,42 +853,45 @@ func (p *Parser) Init(options ...func(*Parser) error) error {
 					goto l57
 				l58:
 					position, tokenIndex = position57, tokenIndex57
-					{
-						position59, tokenIndex59 := position, tokenIndex
-						if buffer[position] != rune('1') {
-							goto l60
-						}
-						position++
+					if buffer[position] != rune('7') {
 						goto l59
-					l60:
-						position, tokenIndex = position59, tokenIndex59
-						if buffer[position] != rune('4') {
+					}
+					position++
+					if !_rules[ruleAction9]() {
+						goto l59
+					}
+					goto l57
+				l59:
+					position, tokenIndex = position57, tokenIndex57
+					{
+						position60, tokenIndex60 := position, tokenIndex
+						if buffer[position] != rune('1') {
 							goto l61
 						}
 						position++
-						goto l59
+						goto l60
 					l61:
-						position, tokenIndex = position59, tokenIndex59
-						if buffer[position] != rune('5') {
+						position, tokenIndex = position60, tokenIndex60
+						if buffer[position] != rune('4') {
 							goto l62
 						}
 						position++
-						goto l59
+						goto l60
 					l62:
-						position, tokenIndex = position59, tokenIndex59
-						if buffer[position] != rune('7') {
+						position, tokenIndex = position60, tokenIndex60
+						if buffer[position] != rune('5') {
 							goto l63
 						}
 						position++
-						goto l59
+						goto l60
 					l63:
-						position, tokenIndex = position59, tokenIndex59
+						position, tokenIndex = position60, tokenIndex60
 						if buffer[position] != rune('8') {
 							goto l53
 						}
 						position++
 					}
-				l59:
+				l60:
 				}
 			l57:
 			l55:
@@ -902,42 +909,45 @@ func (p *Parser) Init(options ...func(*Parser) error) error {
 						goto l64
 					l65:
 						position, tokenIndex = position64, tokenIndex64
-						{
-							position66, tokenIndex66 := position, tokenIndex
-							if buffer[position] != rune('1') {
-								goto l67
-							}
-							position++
+						if buffer[position] != rune('7') {
 							goto l66
-						l67:
-							position, tokenIndex = position66, tokenIndex66
-							if buffer[position] != rune('4') {
+						}
+						position++
+						if !_rules[ruleAction9]() {
+							goto l66
+						}
+						goto l64
+					l66:
+						position, tokenIndex = position64, tokenIndex64
+						{
+							position67, tokenIndex67 := position, tokenIndex
+							if buffer[position] != rune('1') {
 								goto l68
 							}
 							position++
-							goto l66
+							goto l67
 						l68:
-							position, tokenIndex = position66, tokenIndex66
-							if buffer[position] != rune('5') {
+							position, tokenIndex = position67, tokenIndex67
+							if buffer[position] != rune('4') {
 								goto l69
 							}
 							position++
-							goto l66
+							goto l67
 						l69:
-							position, tokenIndex = position66, tokenIndex66
-							if buffer[position] != rune('7') {
+							position, tokenIndex = position67, tokenIndex67
+							if buffer[position] != rune('5') {
 								goto l70
 							}
 							position++
-							goto l66
+							goto l67
 						l70:
-							position, tokenIndex = position66, tokenIndex66
+							position, tokenIndex = position67, tokenIndex67
 							if buffer[position] != rune('8') {
 								goto l56
 							}
 							position++
 						}
-					l66:
+					l67:
 					}
 				l64:
 					goto l55
@@ -1180,6 +1190,13 @@ func (p *Parser) Init(options ...func(*Parser) error) error {
 		func() bool {
 			{
 				add(ruleAction8, position)
+			}
+			return true
+		},
+		/* 29 Action9 <- <{ p.pushReverseColor() }> */
+		func() bool {
+			{
+				add(ruleAction9, position)
 			}
 			return true
 		},
