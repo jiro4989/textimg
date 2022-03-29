@@ -13,7 +13,7 @@ on:
       - LICENSE
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -27,7 +27,8 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           go-version: ${{ matrix.go }}
-      - run: go build
+      - run: make build
+      - run: make test
       - run: go install
 
   format:
@@ -46,18 +47,13 @@ jobs:
             exit 1
           fi
 
-  test:
+  docker-test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        go:
-          - '1.16'
-          - '1.17'
     steps:
       - uses: actions/checkout@v3
       - name: Tests
         run: |
-          docker-compose build --build-arg GO_VERSION=${{ matrix.go }} base
+          make docker-build
           make docker-test
 
   lint:
