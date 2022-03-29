@@ -26,9 +26,9 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           go-version: ${{ matrix.go }}
-      - run: make
-      - run: make test
+      - run: go build
       - run: go install
+      - run: go test -cover ./...
 
   format:
     runs-on: ubuntu-latest
