@@ -18,6 +18,7 @@ func testBefore() {
 	if err := os.RemoveAll(outDir); err != nil {
 		panic(err)
 	}
+	// nolint
 	os.Mkdir(outDir, os.ModePerm)
 }
 
