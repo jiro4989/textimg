@@ -22,7 +22,6 @@ jobs:
         go:
           - '1.17'
           - '1.x'
-    name: build go ${{ matrix.go }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v3
@@ -73,6 +72,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Build base image
-        run: docker-compose run coverage
+      - run: go test -coverprofile=coverage.out ./...
       - uses: codecov/codecov-action@v2.1.0
