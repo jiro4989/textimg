@@ -1,7 +1,6 @@
-package ioimage
+package config
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -12,14 +11,14 @@ import (
 	"golang.org/x/image/font/opentype"
 )
 
-// ReadFace はfontPathのフォントファイルからfaceを返す。
-func ReadFace(fontPath string, fontIndex int, fontSize float64) (font.Face, error) {
+// readFace はfontPathのフォントファイルからfaceを返す。
+func readFace(fontPath string, fontIndex int, fontSize float64) (font.Face, error) {
 	var ft *opentype.Font
 
 	// ファイルが存在しなければビルトインのフォントをデフォルトとして使う
 	_, err := os.Stat(fontPath)
 	if err == nil {
-		fontData, err := ioutil.ReadFile(fontPath)
+		fontData, err := os.ReadFile(fontPath)
 		if err != nil {
 			return nil, err
 		}

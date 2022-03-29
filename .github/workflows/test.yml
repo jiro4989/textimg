@@ -1,6 +1,8 @@
+---
+
 name: test
 
-on:
+"on":
   push:
     branches:
       - master
@@ -13,12 +15,11 @@ on:
       - LICENSE
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         go:
-          - '1.16'
           - '1.17'
           - '1.x'
     name: build go ${{ matrix.go }}
@@ -29,6 +30,7 @@ jobs:
           go-version: ${{ matrix.go }}
       - run: go build
       - run: go install
+      - run: go test -cover ./...
 
   format:
     runs-on: ubuntu-latest
@@ -36,7 +38,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v3
         with:
-          go-version: '1.16'
+          go-version: '1.17'
       - name: Check code format
         run: |
           go mod download
@@ -46,28 +48,26 @@ jobs:
             exit 1
           fi
 
-  test:
+  docker-test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        go:
-          - '1.16'
-          - '1.17'
     steps:
       - uses: actions/checkout@v3
       - name: Tests
         run: |
-          docker-compose build --build-arg GO_VERSION=${{ matrix.go }} base
+          make docker-build
           make docker-test
 
   lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: '1.17'
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:
-          version: v1.29
+          version: v1.45
 
   coverage:
     runs-on: ubuntu-latest

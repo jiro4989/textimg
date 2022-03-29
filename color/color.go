@@ -1,4 +1,4 @@
-package escseq
+package color
 
 import (
 	c "image/color"
