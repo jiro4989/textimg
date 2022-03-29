@@ -23,21 +23,6 @@ func TestMainNormal(t *testing.T) {
 		// 	want: 0,
 		// },
 		// {
-		// 	desc: "正常系: SlackアイコンサイズでアニメーションGIFを生成できる",
-		// 	in:   []string{"", "Sample", "-o", outDir + "/main_slack_anim.gif", "--slack", "-a"},
-		// 	want: 0,
-		// },
-		// {
-		// 	desc: "正常系: 連番付与オプションのテスト",
-		// 	in:   []string{"", "Sample", "-o", outDir + "/main_numbering.gif", "-n"},
-		// 	want: 0,
-		// },
-		// {
-		// 	desc: "正常系: 同じファイルがすでに存在するため別名で保存される (_2)",
-		// 	in:   []string{"", "Sample", "-o", outDir + "/main_numbering.gif", "-n"},
-		// 	want: 0,
-		// },
-		// {
 		// 	desc: "正常系: 同じファイルがすでに存在するため別名で保存される (_3)",
 		// 	in:   []string{"", "Sample", "-o", outDir + "/main_numbering.gif", "-n"},
 		// 	want: 0,

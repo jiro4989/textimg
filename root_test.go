@@ -52,11 +52,12 @@ func newDefaultConfig() config.Config {
 
 func TestRunRootCommand(t *testing.T) {
 	tests := []struct {
-		desc    string
-		c       config.Config
-		args    []string
-		envs    config.EnvVars
-		wantErr bool
+		desc       string
+		c          config.Config
+		args       []string
+		envs       config.EnvVars
+		wantErr    bool
+		existsFile string
 	}{
 		{
 			desc: "正常系: PrintEnvironmentsが設定されていると環境変数を出力して終了",
@@ -206,6 +207,47 @@ func TestRunRootCommand(t *testing.T) {
 			envs:    config.EnvVars{},
 			wantErr: false,
 		},
+		{
+			desc: "正常系: すでに同名のファイルが存在する時、別名で保存される",
+			c: func() config.Config {
+				c := newDefaultConfig()
+				c.Outpath = outDir + "/root_test_numbering.png"
+				c.Writer = nil
+				c.SaveNumberedFile = true
+				return c
+			}(),
+			args:    []string{"number"},
+			envs:    config.EnvVars{},
+			wantErr: false,
+		},
+		{
+			desc: "正常系: すでに同名のファイルが存在する時、別名で保存される_2",
+			c: func() config.Config {
+				c := newDefaultConfig()
+				c.Outpath = outDir + "/root_test_numbering.png"
+				c.Writer = nil
+				c.SaveNumberedFile = true
+				return c
+			}(),
+			args:       []string{"number"},
+			envs:       config.EnvVars{},
+			wantErr:    false,
+			existsFile: outDir + "/root_test_numbering_2.png",
+		},
+		{
+			desc: "正常系: すでに同名のファイルが存在する時、別名で保存される_3",
+			c: func() config.Config {
+				c := newDefaultConfig()
+				c.Outpath = outDir + "/root_test_numbering.png"
+				c.Writer = nil
+				c.SaveNumberedFile = true
+				return c
+			}(),
+			args:       []string{"number"},
+			envs:       config.EnvVars{},
+			wantErr:    false,
+			existsFile: outDir + "/root_test_numbering_3.png",
+		},
 	}
 
 	for _, tt := range tests {
@@ -218,6 +260,11 @@ func TestRunRootCommand(t *testing.T) {
 				return
 			}
 			assert.NoError(err)
+			if tt.existsFile != "" {
+				_, err := os.Stat(tt.existsFile)
+				got := os.IsNotExist(err)
+				assert.False(got)
+			}
 		})
 	}
 }
