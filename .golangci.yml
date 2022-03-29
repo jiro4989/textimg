@@ -1,5 +1,10 @@
+---
+
 linters-settings:
   govet:
     disable:
       - composites
 
+run:
+  skip-files:
+    - '*_test.go'
