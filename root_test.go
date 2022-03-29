@@ -273,6 +273,23 @@ func TestRunRootCommand(t *testing.T) {
 			existsFile: outDir + "/root_test_animation_8_line.gif",
 		},
 		{
+			desc: "正常系: 4行のアニメを2行ずつスライドする",
+			c: func() config.Config {
+				c := newDefaultConfig()
+				c.Outpath = outDir + "/root_test_animation_4_line_slide_2_forever.gif"
+				c.Writer = nil
+				c.UseAnimation = true
+				c.LineCount = 4
+				c.SlideWidth = 2
+				c.SlideForever = true
+				return c
+			}(),
+			args:       []string{"\x1b[31m1\n\x1b[32m2\n\x1b[33m3\n\x1b[34m4\n\x1b[31m5\n\x1b[32m6\n\x1b[33m7\n\x1b[34m8"},
+			envs:       config.EnvVars{},
+			wantErr:    false,
+			existsFile: outDir + "/root_test_animation_4_line_slide_2_forever.gif",
+		},
+		{
 			desc: "正常系: SlackアイコンサイズでアニメーションGIFを生成できる",
 			c: func() config.Config {
 				c := newDefaultConfig()
