@@ -1,7 +1,6 @@
 package config
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -19,7 +18,7 @@ func readFace(fontPath string, fontIndex int, fontSize float64) (font.Face, erro
 	// ファイルが存在しなければビルトインのフォントをデフォルトとして使う
 	_, err := os.Stat(fontPath)
 	if err == nil {
-		fontData, err := ioutil.ReadFile(fontPath)
+		fontData, err := os.ReadFile(fontPath)
 		if err != nil {
 			return nil, err
 		}
