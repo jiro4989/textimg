@@ -8,20 +8,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestMain(m *testing.M) {
-	testBefore()
-	exitCode := m.Run()
-	os.Exit(exitCode)
-}
-
-func testBefore() {
-	if err := os.RemoveAll(outDir); err != nil {
-		panic(err)
-	}
-	// nolint
-	os.Mkdir(outDir, os.ModePerm)
-}
-
 func newDefaultConfig() config.Config {
 	return config.Config{
 		Foreground:               "white",
@@ -114,7 +100,7 @@ func TestRunRootCommand(t *testing.T) {
 				c.Writer = nil
 				return c
 			}(),
-			args:       []string{"\x1b[31;42mRED\x1b[7mGREEN\x1b[0m"},
+			args:       []string{"\x1b[31;42mRED\x1b[7m\nGREEN\x1b[0m"},
 			envs:       config.EnvVars{},
 			wantErr:    false,
 			existsFile: outDir + "/root_test_reverse.png",
