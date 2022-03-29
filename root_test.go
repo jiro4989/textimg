@@ -280,8 +280,10 @@ func TestRunRootCommand(t *testing.T) {
 				c.Writer = nil
 				c.UseAnimation = true
 				c.LineCount = 4
+				c.UseSlideAnimation = true
 				c.SlideWidth = 2
 				c.SlideForever = true
+				c.Delay = 100
 				return c
 			}(),
 			args:       []string{"\x1b[31m1\n\x1b[32m2\n\x1b[33m3\n\x1b[34m4\n\x1b[31m5\n\x1b[32m6\n\x1b[33m7\n\x1b[34m8"},
