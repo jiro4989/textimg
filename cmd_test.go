@@ -3,35 +3,6 @@
 
 package main
 
-// func TestANSIColorExt(t *testing.T) {
-// 	tests := []struct {
-// 		desc   string
-// 		inCode int
-// 		inFmt  string
-// 		outFn  string
-// 	}{
-// 		{desc: "前景色256色", inCode: 38, inFmt: "\x1b[%d;5;%dm%03d%s", outFn: "anci_color_ext_256_foreground.png"},
-// 		{desc: "背景色256色", inCode: 48, inFmt: "\x1b[%d;5;%dm%03d%s", outFn: "anci_color_ext_256_background.png"},
-// 		{desc: "前景色RGBグラデーション色", inCode: 38, inFmt: "\x1b[%d;2;%d;0;0m%03d%s", outFn: "anci_color_ext_rgb_foreground.png"},
-// 		{desc: "背景色RGBグラデーション色", inCode: 48, inFmt: "\x1b[%d;2;%d;0;0m%03d%s", outFn: "anci_color_ext_rgb_background.png"},
-// 	}
-// 	for _, tt := range tests {
-// 		t.Run(tt.desc, func(t *testing.T) {
-// 			var text string
-// 			for i := 0; i < 256; i++ {
-// 				es := fmt.Sprintf(tt.inFmt, tt.inCode, i, i, ansiColorReset)
-// 				text += es
-// 				if (i+1)%16 == 0 {
-// 					text += "\n"
-// 				}
-// 			}
-// 			cmd := fmt.Sprintf("echo -e '%s' | %s -o %s/%s", text, bin, outDir, tt.outFn)
-// 			err := exec.Command("bash", "-c", cmd).Run()
-// 			assert.Nil(t, err, tt.desc)
-// 		})
-// 	}
-// }
-//
 // func TestSlideAnimation(t *testing.T) {
 // 	format := "seq 5 | %s -S -l 3 %s -o %s/%s"
 //
