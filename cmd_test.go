@@ -3,20 +3,6 @@
 
 package main
 
-// func TestSlideAnimation(t *testing.T) {
-// 	format := "seq 5 | %s -S -l 3 %s -o %s/%s"
-//
-// 	var cmd string
-// 	var err error
-// 	cmd = fmt.Sprintf(format, bin, "", outDir, "slide_animation_line_3_width_default.gif")
-// 	err = exec.Command("bash", "-c", cmd).Run()
-// 	assert.Nil(t, err, "行3でスライド幅デフォルトのGIFアニメ")
-//
-// 	cmd = fmt.Sprintf(format, bin, "-W 2", outDir, "slide_animation_line_3_width_2.gif")
-// 	err = exec.Command("bash", "-c", cmd).Run()
-// 	assert.Nil(t, err, "行3でスライド幅2のGIFアニメ")
-// }
-//
 // func TestSlideAnimationRainbow(t *testing.T) {
 // 	format := "echo -e '%s' | %s -S -l 5 %s -o %s/%s"
 //
