@@ -120,7 +120,7 @@ done <<< "$(seq 8 | xargs -I@ echo TEST)" | textimg -b 50,100,12,255 -o testdata
 
 Output is here.
 
-![Rainbow example](img/rainbow.png)
+![Rainbow example](docs/rainbow.png)
 
 #### From 256 color
 
@@ -139,7 +139,7 @@ done | textimg -o 256_fg.png
 
 Output is here.
 
-![256 foreground example](img/256_fg.png)
+![256 foreground example](docs/256_fg.png)
 
 Background example is below.
 
@@ -154,7 +154,7 @@ done | textimg -o 256_bg.png
 
 Output is here.
 
-![256 background example](img/256_bg.png)
+![256 background example](docs/256_bg.png)
 
 #### From 256 RGB color
 
@@ -171,7 +171,7 @@ done | textimg -o extrgb_f_gradation.png
 
 Output is here.
 
-![RGB gradation example](img/extrgb_f_gradation.png)
+![RGB gradation example](docs/extrgb_f_gradation.png)
 
 #### Animation GIF
 
@@ -196,7 +196,7 @@ echo -e '\x1b[31mText\x1b[0m
 
 Output is here.
 
-![Animation GIF example](img/ansi_fb_anime_1line.gif)
+![Animation GIF example](docs/ansi_fb_anime_1line.gif)
 
 #### Slide animation GIF
 
@@ -219,7 +219,7 @@ echo -e '\x1b[31mText\x1b[0m
 
 Output is here.
 
-![Slide Animation GIF example](img/slide_5_1_rainbow_forever.gif)
+![Slide Animation GIF example](docs/slide_5_1_rainbow_forever.gif)
 
 ### Using on Docker
 
@@ -372,7 +372,7 @@ export LANG=ja_JP.UTF-8
 echo Test👍 | textimg -o emoji.png
 ```
 
-![Emoji example](img/emoji.png)
+![Emoji example](docs/emoji.png)
 
 ### Emoji font (TTF)
 
@@ -384,7 +384,7 @@ export TEXTIMG_EMOJI_FONT_FILE=/usr/share/fonts/TTF/Symbola.ttf
 echo あ😃a👍！👀ん👄 | textimg -i -o emoji_symbola.png
 ```
 
-![Symbola emoji example](img/emoji_symbola.png)
+![Symbola emoji example](docs/emoji_symbola.png)
 
 ## Tab Completions
 

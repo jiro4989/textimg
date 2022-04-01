@@ -119,7 +119,7 @@ done <<< "$(seq 8 | xargs -I@ echo TEST)" | textimg -b 50,100,12,255 -o testdata
 
 出力結果。
 
-![Rainbow example](img/rainbow.png)
+![Rainbow example](docs/rainbow.png)
 
 #### 256色指定
 
@@ -138,7 +138,7 @@ done | textimg -o 256_fg.png
 
 出力。
 
-![256 foreground example](img/256_fg.png)
+![256 foreground example](docs/256_fg.png)
 
 背景色の例。
 
@@ -153,7 +153,7 @@ done | textimg -o 256_bg.png
 
 出力。
 
-![256 background example](img/256_bg.png)
+![256 background example](docs/256_bg.png)
 
 #### RGB指定の例
 
@@ -170,7 +170,7 @@ done | textimg -o extrgb_f_gradation.png
 
 出力。
 
-![RGB gradation example](img/extrgb_f_gradation.png)
+![RGB gradation example](docs/extrgb_f_gradation.png)
 
 #### アニメーションGIF
 
@@ -195,7 +195,7 @@ echo -e '\x1b[31mText\x1b[0m
 
 出力。
 
-![Animation GIF example](img/ansi_fb_anime_1line.gif)
+![Animation GIF example](docs/ansi_fb_anime_1line.gif)
 
 #### スライドアニメーション
 
@@ -218,7 +218,7 @@ echo -e '\x1b[31mText\x1b[0m
 
 出力。
 
-![Slide Animation GIF example](img/slide_5_1_rainbow_forever.gif)
+![Slide Animation GIF example](docs/slide_5_1_rainbow_forever.gif)
 
 ### Dockerでの使用例
 
@@ -365,7 +365,7 @@ export LANG=ja_JP.UTF-8
 echo Test👍 | textimg -o emoji.png
 ```
 
-![Emoji example](img/emoji.png)
+![Emoji example](docs/emoji.png)
 
 ### 絵文字フォント (TTF)
 
@@ -378,7 +378,7 @@ export TEXTIMG_EMOJI_FONT_FILE=/usr/share/fonts/TTF/Symbola.ttf
 echo あ😃a👍！👀ん👄 | textimg -i -o emoji_symbola.png
 ```
 
-![Symbola emoji example](img/emoji_symbola.png)
+![Symbola emoji example](docs/emoji_symbola.png)
 
 ## Tab Completions
 
