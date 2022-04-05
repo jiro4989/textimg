@@ -1,4 +1,4 @@
-FROM golang:1.17-alpine3.13 AS base
+FROM golang:1.17-alpine3.15 AS base
 
 RUN go version \
     && echo $GOPATH \
@@ -20,7 +20,7 @@ RUN go install
 
 ################################################################################
 
-FROM alpine:3.13 AS runtime
+FROM alpine:3.15 AS runtime
 COPY --from=builder /go/bin/textimg /usr/local/bin/
 COPY --from=builder /tmp/MyricaM.TTC /usr/share/fonts/truetype/myrica/MyricaM.TTC
 COPY --from=builder /usr/local/src/noto-emoji/png/128 /usr/share/emoji-image
