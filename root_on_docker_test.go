@@ -52,6 +52,24 @@ func TestRunRootCommandOnDocker(t *testing.T) {
 			existsFile: outDockerDir + "/root_on_docker_test_japanese.png",
 		},
 		{
+			desc: "正常系: 絵文字を連続して描画しても背景色が絵文字を上書きしない",
+			c: func() config.Config {
+				c := newDefaultConfig()
+				c.Outpath = outDockerDir + "/root_on_docker_test_emoji.png"
+				c.Writer = nil
+				c.FontFile = fontFile
+				// c.EmojiDir = emojiDir
+				c.EmojiFontFile = emojiFontFile
+				return c
+			}(),
+			args: []string{"😃👍👀👄"},
+			envs: config.EnvVars{
+				EmojiDir: emojiDir,
+			},
+			wantErr:    false,
+			existsFile: outDockerDir + "/root_on_docker_test_emoji.png",
+		},
+		{
 			desc: "正常系: 特殊な絵文字を使う",
 			c: func() config.Config {
 				c := newDefaultConfig()
