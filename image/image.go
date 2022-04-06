@@ -108,6 +108,7 @@ func (i *Image) Draw(tokens token.Tokens) error {
 		case token.KindColor:
 			i.updateColor(t.ColorType, t.Color)
 		case token.KindText:
+			i.drawBackground(t.Text)
 			for _, r := range t.Text {
 				if err := i.draw(r); err != nil {
 					return err
@@ -176,7 +177,6 @@ func (i *Image) draw(r rune) error {
 		return nil
 	}
 
-	i.drawBackground(r)
 	if ok, emojiPath := isEmoji(r, i.emojiDir); ok {
 		if i.useEmoji {
 			i.drawRune(r, i.emojiFontFace)
@@ -233,9 +233,9 @@ func (i *Image) drawEmoji(r rune, path string) error {
 	return nil
 }
 
-func (i *Image) drawBackground(r rune) {
+func (i *Image) drawBackground(s string) {
 	var (
-		tw     = runewidth.RuneWidth(r)
+		tw     = runewidth.StringWidth(s)
 		width  = tw * i.charWidth
 		height = i.charHeight
 		posX   = i.x
