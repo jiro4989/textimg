@@ -56,6 +56,11 @@ type (
 	}
 )
 
+func init() {
+	// Unicode Neutral で定義されている絵文字(例: 👁)を幅2として扱う
+	runewidth.DefaultCondition.StrictEmojiNeutral = false
+}
+
 func NewImage(p *ImageParam) *Image {
 	var (
 		charWidth   = p.FontSize / 2

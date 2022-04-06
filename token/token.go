@@ -40,6 +40,11 @@ const (
 	ColorTypeBackground
 )
 
+func init() {
+	// Unicode Neutral で定義されている絵文字(例: 👁)を幅2として扱う
+	runewidth.DefaultCondition.StrictEmojiNeutral = false
+}
+
 func NewResetColor() Token {
 	return Token{
 		Kind:      KindColor,
