@@ -153,11 +153,11 @@ jobs:
           - os: darwin
             asset_content_type: application/gzip
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: artifact-${{ matrix.os }}-${{ matrix.arch }}
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: create-release
 
@@ -188,11 +188,11 @@ jobs:
           - pkg: rpm
             asset_content_type: application/x-rpm
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: artifact-${{ matrix.pkg }}
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: create-release
 
