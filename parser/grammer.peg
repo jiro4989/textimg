@@ -24,8 +24,9 @@ color <-
   / text_attributes
 
 standard_color <-
-  zero
-  < ([349] / '10') [0-7] > { p.pushStandardColorWithCategory(text) }
+  zero < ([349] / '10') [0-7] > { p.pushStandardColorWithCategory(text) }
+  / zero < [39] '9' >           { p.pushResetForegroundColor() }
+  / zero < ('4' / '10') '9' >   { p.pushResetBackgroundColor() }
 
 extended_color <-
   extended_color_256 / extended_color_rgb

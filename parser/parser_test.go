@@ -248,11 +248,11 @@ func TestParse(t *testing.T) {
 		},
 		{
 			desc: "正常系: 範囲外のエスケープシーケンスの場合は無視",
-			s:    "\x1b[39mhelloworld",
+			s:    "\x1b[310mhelloworld",
 			want: token.Tokens{
 				{
 					Kind: token.KindText,
-					Text: "[39mhelloworld",
+					Text: "[310mhelloworld",
 				},
 			},
 			wantErr: false,

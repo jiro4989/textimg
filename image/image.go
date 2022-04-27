@@ -142,6 +142,10 @@ func (i *Image) updateColor(t token.ColorType, col color.RGBA) {
 	case token.ColorTypeReset:
 		i.foregroundColor = i.defaultForegroundColor
 		i.backgroundColor = i.defaultBackgroundColor
+	case token.ColorTypeResetForeground:
+		i.foregroundColor = i.defaultForegroundColor
+	case token.ColorTypeResetBackground:
+		i.backgroundColor = i.defaultBackgroundColor
 	case token.ColorTypeReverse:
 		i.foregroundColor, i.backgroundColor = i.backgroundColor, i.foregroundColor
 	case token.ColorTypeForeground:

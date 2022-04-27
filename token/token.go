@@ -38,6 +38,8 @@ const (
 	ColorTypeDelete                       // \x1b[9m 取り消し
 	ColorTypeForeground
 	ColorTypeBackground
+	ColorTypeResetForeground
+	ColorTypeResetBackground
 )
 
 func init() {
@@ -49,6 +51,20 @@ func NewResetColor() Token {
 	return Token{
 		Kind:      KindColor,
 		ColorType: ColorTypeReset,
+	}
+}
+
+func NewResetForegroundColor() Token {
+	return Token{
+		Kind:      KindColor,
+		ColorType: ColorTypeResetForeground,
+	}
+}
+
+func NewResetBackgroundColor() Token {
+	return Token{
+		Kind:      KindColor,
+		ColorType: ColorTypeResetBackground,
 	}
 }
 
