@@ -29,6 +29,14 @@ func (p *ParserFunc) pushResetColor() {
 	p.Tk = append(p.Tk, token.NewResetColor())
 }
 
+func (p *ParserFunc) pushResetForegroundColor() {
+	p.Tk = append(p.Tk, token.NewResetForegroundColor())
+}
+
+func (p *ParserFunc) pushResetBackgroundColor() {
+	p.Tk = append(p.Tk, token.NewResetBackgroundColor())
+}
+
 func (p *ParserFunc) pushReverseColor() {
 	p.Tk = append(p.Tk, token.NewReverseColor())
 }

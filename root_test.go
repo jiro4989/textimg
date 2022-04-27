@@ -71,6 +71,19 @@ func TestRunRootCommand(t *testing.T) {
 			existsFile: outDir + "/root_test_font_is_red_and_background_is_black.png",
 		},
 		{
+			desc: "正常系: Foregroundのみもとにもどす、Backgroundのみもとに戻す",
+			c: func() config.Config {
+				c := newDefaultConfig()
+				c.Outpath = outDir + "/root_test_foreground_default_background_default.png"
+				c.Writer = nil
+				return c
+			}(),
+			args:       []string{"\x1b[31;42mRedGreen\x1b[39mRedGreen\x1b[49mRedGreen"},
+			envs:       config.EnvVars{},
+			wantErr:    false,
+			existsFile: outDir + "/root_test_foreground_default_background_default.png",
+		},
+		{
 			desc: "正常系: 256色を使う",
 			c: func() config.Config {
 				c := newDefaultConfig()
