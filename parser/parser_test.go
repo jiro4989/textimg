@@ -87,6 +87,29 @@ func TestParse(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			desc: "正常系: 39はResetForeground, 49はResetBackground",
+			s:    "\x1b[39mReset\x1b[49mReset",
+			want: token.Tokens{
+				{
+					Kind:      token.KindColor,
+					ColorType: token.ColorTypeResetForeground,
+				},
+				{
+					Kind: token.KindText,
+					Text: "Reset",
+				},
+				{
+					Kind:      token.KindColor,
+					ColorType: token.ColorTypeResetBackground,
+				},
+				{
+					Kind: token.KindText,
+					Text: "Reset",
+				},
+			},
+			wantErr: false,
+		},
+		{
 			desc: "正常系: 前景色と背景色の同時指定 + リセット省略系",
 			s:    "\x1b[32;43mhello world\x1b[m",
 			want: token.Tokens{
