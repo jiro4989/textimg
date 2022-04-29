@@ -238,7 +238,7 @@ func TestParse(t *testing.T) {
 		},
 		{
 			desc: "正常系: 関係ないエスケープシーケンス系無視される",
-			s:    "\x1b[1A寿司",
+			s:    "\x1b[1A\x1b[A\x1b[K寿司",
 			want: token.Tokens{
 				{
 					Kind: token.KindText,
