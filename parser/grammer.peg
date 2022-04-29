@@ -8,7 +8,7 @@ root <-
   (colors / ignore / text)*
 
 ignore <-
-  prefix number non_color_suffix
+  prefix number? non_color_suffix
   / escape_sequence
 
 colors <-
