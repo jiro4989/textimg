@@ -7,7 +7,7 @@ require (
 	github.com/kr/pretty v0.2.0 // indirect
 	github.com/mattn/go-runewidth v0.0.14
 	github.com/spf13/cobra v1.6.1
-	github.com/stretchr/testify v1.8.1
+	github.com/stretchr/testify v1.8.2
 	golang.org/x/image v0.5.0
 	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/term v0.5.0
