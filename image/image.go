@@ -118,6 +118,7 @@ func (i *Image) Draw(tokens token.Tokens) error {
 				if err := i.draw(r); err != nil {
 					return err
 				}
+				i.moveRight(r)
 			}
 		}
 	}
@@ -205,7 +206,6 @@ func (i *Image) nextAnimationFlame() {
 func (i *Image) drawRune(r rune, f font.Face) {
 	d := i.newDrawer(f)
 	d.DrawString(string(r))
-	i.moveRight(r)
 }
 
 func (i *Image) drawEmoji(r rune, path string) error {
@@ -230,7 +230,6 @@ func (i *Image) drawEmoji(r rune, path string) error {
 
 	p := image.Pt(d.Dot.X.Floor(), d.Dot.Y.Floor()-d.Face.Metrics().Ascent.Floor())
 	draw.Draw(i.image, rect.Add(p), dst, image.Point{}, draw.Over)
-	i.moveRight(r)
 	return nil
 }
 
