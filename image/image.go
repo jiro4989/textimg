@@ -103,12 +103,32 @@ func newImage(w, h int) *image.RGBA {
 func (i *Image) Draw(tokens token.Tokens) error {
 	i.drawBackgroundAll()
 
+	// 背景のみ描画
 	for _, t := range tokens {
 		switch t.Kind {
 		case token.KindColor:
 			i.updateColor(t.ColorType, t.Color)
 		case token.KindText:
 			i.drawBackground(t.Text)
+			for _, r := range t.Text {
+				if isLinefeed(r) {
+					i.moveDown()
+					continue
+				}
+
+				i.moveRight(r)
+			}
+		}
+	}
+	i.resetColor()
+	i.resetPosition()
+
+	// 文字のみ描画
+	for _, t := range tokens {
+		switch t.Kind {
+		case token.KindColor:
+			i.updateColor(t.ColorType, t.Color)
+		case token.KindText:
 			for _, r := range t.Text {
 				if isLinefeed(r) {
 					i.moveDown()
@@ -146,8 +166,7 @@ func (i *Image) drawBackgroundAll() {
 func (i *Image) updateColor(t token.ColorType, col color.RGBA) {
 	switch t {
 	case token.ColorTypeReset:
-		i.foregroundColor = i.defaultForegroundColor
-		i.backgroundColor = i.defaultBackgroundColor
+		i.resetColor()
 	case token.ColorTypeResetForeground:
 		i.foregroundColor = i.defaultForegroundColor
 	case token.ColorTypeResetBackground:
@@ -159,6 +178,17 @@ func (i *Image) updateColor(t token.ColorType, col color.RGBA) {
 	case token.ColorTypeBackground:
 		i.backgroundColor = c.RGBA(col)
 	}
+}
+
+func (i *Image) resetColor() {
+	i.foregroundColor = i.defaultForegroundColor
+	i.backgroundColor = i.defaultBackgroundColor
+}
+
+func (i *Image) resetPosition() {
+	i.x = 0
+	i.y = 0
+	i.lineCount = 0
 }
 
 func (i *Image) newDrawer(f font.Face) *font.Drawer {
