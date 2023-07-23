@@ -110,6 +110,11 @@ func (i *Image) Draw(tokens token.Tokens) error {
 		case token.KindText:
 			i.drawBackground(t.Text)
 			for _, r := range t.Text {
+				if isLinefeed(r) {
+					i.moveDown()
+					continue
+				}
+
 				if err := i.draw(r); err != nil {
 					return err
 				}
@@ -173,14 +178,6 @@ func (i *Image) newDrawer(f font.Face) *font.Drawer {
 }
 
 func (i *Image) draw(r rune) error {
-	if r == '\n' {
-		i.x = 0
-		i.y += i.charHeight
-		i.nextAnimationFlame()
-		i.lineCount++
-		return nil
-	}
-
 	if ok, emojiPath := isEmoji(r, i.emojiDir); ok {
 		if i.useEmoji {
 			i.drawRune(r, i.emojiFontFace)
@@ -254,6 +251,13 @@ func (i *Image) drawBackground(s string) {
 
 func (i *Image) moveRight(r rune) {
 	i.x += runewidth.RuneWidth(r) * i.charWidth
+}
+
+func (i *Image) moveDown() {
+	i.x = 0
+	i.y += i.charHeight
+	i.nextAnimationFlame()
+	i.lineCount++
 }
 
 func (i *Image) newScaledImage() *image.RGBA {

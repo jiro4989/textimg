@@ -52,3 +52,7 @@ func isExceptionallyCodePoint(r rune) bool {
 
 	return false
 }
+
+func isLinefeed(r rune) bool {
+	return r == '\n'
+}
