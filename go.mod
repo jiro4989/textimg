@@ -8,10 +8,10 @@ require (
 	github.com/mattn/go-runewidth v0.0.15
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.4
-	golang.org/x/image v0.10.0
+	golang.org/x/image v0.11.0
 	golang.org/x/sys v0.10.0 // indirect
 	golang.org/x/term v0.10.0
-	golang.org/x/text v0.11.0 // indirect
+	golang.org/x/text v0.12.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
