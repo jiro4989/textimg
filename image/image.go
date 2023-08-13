@@ -143,7 +143,6 @@ func (i *Image) Draw(tokens token.Tokens) error {
 		}
 	}
 
-	i.nextAnimationFlame()
 	i.scale()
 
 	return nil
@@ -285,7 +284,6 @@ func (i *Image) moveRight(r rune) {
 func (i *Image) moveDown() {
 	i.x = 0
 	i.y += i.charHeight
-	i.nextAnimationFlame()
 	i.lineCount++
 }
 
