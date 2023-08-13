@@ -271,14 +271,14 @@ t.png  t_2.png
 ### Linux users (Debian base distros)
 
 ```bash
-wget https://github.com/jiro4989/textimg/releases/download/v3.0.6/textimg_3.0.6_amd64.deb
+wget https://github.com/jiro4989/textimg/releases/download/v3.1.9/textimg_3.1.9_amd64.deb
 sudo dpkg -i ./*.deb
 ```
 
 ### Linux users (RHEL compatible distros)
 
 ```bash
-sudo yum install https://github.com/jiro4989/textimg/releases/download/v3.0.6/textimg-3.0.6-1.el7.x86_64.rpm
+sudo yum install https://github.com/jiro4989/textimg/releases/download/v3.1.9/textimg-3.1.9-1.el7.x86_64.rpm
 ```
 
 ### With Go
