@@ -14,14 +14,6 @@ import (
 	"golang.org/x/image/math/fixed"
 )
 
-type drawingState = int
-
-const (
-	_ drawingState = iota
-	drawingStateBackground
-	drawingStateForeground
-)
-
 type (
 	Image struct {
 		image                  *image.RGBA
@@ -45,7 +37,6 @@ type (
 		resizeWidth            int
 		resizeHeight           int
 		delay                  int
-		drawingState           drawingState
 	}
 	ImageParam struct {
 		BaseWidth          int
@@ -110,7 +101,6 @@ func newImage(w, h int) *image.RGBA {
 }
 
 func (i *Image) Draw(tokens token.Tokens) error {
-	i.drawingState = drawingStateBackground
 	i.drawBackgroundAll()
 
 	// 背景のみ描画
@@ -134,7 +124,6 @@ func (i *Image) Draw(tokens token.Tokens) error {
 	i.resetPosition()
 
 	// 文字のみ描画
-	i.drawingState = drawingStateForeground
 	for _, t := range tokens {
 		switch t.Kind {
 		case token.KindColor:
@@ -232,7 +221,7 @@ func (i *Image) draw(r rune) error {
 }
 
 func (i *Image) nextAnimationFlame() {
-	if i.useAnimation && i.drawingState == drawingStateForeground && (i.lineCount+1)%i.animationLineCount == 0 {
+	if i.useAnimation && (i.lineCount+1)%i.animationLineCount == 0 {
 		i.x = 0
 		i.y = 0
 		i.animationImages = append(i.animationImages, i.newScaledImage())
