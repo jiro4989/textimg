@@ -34,7 +34,7 @@ func (i *Image) Encode(w io.Writer, ext string) error {
 	return fmt.Errorf("%s is not supported extension.", ext)
 }
 
-func toPalettes(imgs []*image.RGBA) (ret []*image.Paletted) {
+func toPalettes(imgs []image.Image) (ret []*image.Paletted) {
 	for _, v := range imgs {
 		bounds := v.Bounds()
 		p := image.NewPaletted(bounds, palette.Plan9)

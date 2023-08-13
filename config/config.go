@@ -346,10 +346,10 @@ func outputImageDir(outDir string, useAnimation bool) (string, error) {
 }
 
 // オプション引数のbackgroundは２つの書き方を許容する。
-// 1. black といった色の直接指定
-// 2. RGBAのカンマ区切り指定
-//    書式: R,G,B,A
-//    赤色の例: 255,0,0,255
+//  1. black といった色の直接指定
+//  2. RGBAのカンマ区切り指定
+//     書式: R,G,B,A
+//     赤色の例: 255,0,0,255
 func optionColorStringToRGBA(colstr string) (color.RGBA, error) {
 	// "black"といった色名称でマッチするものがあれば返す
 	colstr = strings.ToLower(colstr)
