@@ -9,6 +9,7 @@ import (
 	"github.com/jiro4989/textimg/v3/color"
 	"github.com/jiro4989/textimg/v3/token"
 	"github.com/mattn/go-runewidth"
+	"github.com/oliamb/cutter"
 	xdraw "golang.org/x/image/draw"
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
@@ -16,27 +17,28 @@ import (
 
 type (
 	Image struct {
-		image                  *image.RGBA
-		animationImages        []*image.RGBA
-		x                      int
-		y                      int
-		foregroundColor        c.RGBA // 文字色
-		backgroundColor        c.RGBA // 背景色
-		defaultForegroundColor c.RGBA // 文字色
-		defaultBackgroundColor c.RGBA // 背景色
-		fontSize               int    // フォントサイズ
-		fontFace               font.Face
-		emojiFontFace          font.Face
-		charWidth              int
-		charHeight             int
-		emojiDir               string
-		useEmoji               bool
-		lineCount              int
-		useAnimation           bool
-		animationLineCount     int
-		resizeWidth            int
-		resizeHeight           int
-		delay                  int
+		image                     *image.RGBA
+		animationImages           []image.Image
+		x                         int
+		y                         int
+		foregroundColor           c.RGBA // 文字色
+		backgroundColor           c.RGBA // 背景色
+		defaultForegroundColor    c.RGBA // 文字色
+		defaultBackgroundColor    c.RGBA // 背景色
+		fontSize                  int    // フォントサイズ
+		fontFace                  font.Face
+		emojiFontFace             font.Face
+		charWidth                 int
+		charHeight                int
+		emojiDir                  string
+		useEmoji                  bool
+		lineCount                 int
+		useAnimation              bool
+		animationLineCount        int
+		animationImageFlameHeight int
+		resizeWidth               int
+		resizeHeight              int
+		delay                     int
 	}
 	ImageParam struct {
 		BaseWidth          int
@@ -69,30 +71,32 @@ func NewImage(p *ImageParam) *Image {
 		imageHeight = p.BaseHeight * charHeight
 	)
 
+	var animationImageFlameHeight int
 	if p.UseAnimation {
-		imageHeight /= (p.BaseHeight / p.AnimationLineCount)
+		animationImageFlameHeight = imageHeight / (p.BaseHeight / p.AnimationLineCount)
 	}
 
 	image := newImage(imageWidth, imageHeight)
 
 	return &Image{
-		image:                  image,
-		foregroundColor:        p.ForegroundColor,
-		backgroundColor:        p.BackgroundColor,
-		defaultForegroundColor: p.ForegroundColor,
-		defaultBackgroundColor: p.BackgroundColor,
-		fontSize:               p.FontSize,
-		fontFace:               p.FontFace,
-		emojiFontFace:          p.EmojiFontFace,
-		charWidth:              charWidth,
-		charHeight:             charHeight,
-		emojiDir:               p.EmojiDir,
-		useEmoji:               p.UseEmoji,
-		useAnimation:           p.UseAnimation,
-		animationLineCount:     p.AnimationLineCount,
-		resizeWidth:            p.ResizeWidth,
-		resizeHeight:           p.ResizeHeight,
-		delay:                  p.Delay,
+		image:                     image,
+		foregroundColor:           p.ForegroundColor,
+		backgroundColor:           p.BackgroundColor,
+		defaultForegroundColor:    p.ForegroundColor,
+		defaultBackgroundColor:    p.BackgroundColor,
+		fontSize:                  p.FontSize,
+		fontFace:                  p.FontFace,
+		emojiFontFace:             p.EmojiFontFace,
+		charWidth:                 charWidth,
+		charHeight:                charHeight,
+		emojiDir:                  p.EmojiDir,
+		useEmoji:                  p.UseEmoji,
+		useAnimation:              p.UseAnimation,
+		animationLineCount:        p.AnimationLineCount,
+		animationImageFlameHeight: animationImageFlameHeight,
+		resizeWidth:               p.ResizeWidth,
+		resizeHeight:              p.ResizeHeight,
+		delay:                     p.Delay,
 	}
 }
 
@@ -143,6 +147,9 @@ func (i *Image) Draw(tokens token.Tokens) error {
 		}
 	}
 
+	if err := i.setAnimationFlames(); err != nil {
+		return err
+	}
 	i.scale()
 
 	return nil
@@ -219,15 +226,33 @@ func (i *Image) draw(r rune) error {
 	return nil
 }
 
-func (i *Image) nextAnimationFlame() {
-	if i.useAnimation && (i.lineCount+1)%i.animationLineCount == 0 {
-		i.x = 0
-		i.y = 0
-		i.animationImages = append(i.animationImages, i.newScaledImage())
+func (i *Image) setAnimationFlames() error {
+	if i.useAnimation {
 		b := i.image.Bounds().Max
-		i.image = newImage(b.X, b.Y)
-		i.drawBackgroundAll()
+		w, h := b.X, i.animationImageFlameHeight
+		max := b.Y / i.animationImageFlameHeight
+		for rc := 0; rc < max; rc++ {
+			x, y := 0, rc*h
+			pt := image.Pt(x, y)
+			cimg, err := cutter.Crop(i.image, cutter.Config{
+				Width:   w,
+				Height:  h,
+				Anchor:  pt,
+				Mode:    cutter.TopLeft,
+				Options: cutter.Copy,
+			})
+			if err != nil {
+				return err
+			}
+			dist := image.NewRGBA(image.Rectangle{
+				image.Pt(0, 0),
+				image.Pt(w, h),
+			})
+			draw.Draw(dist, dist.Bounds(), cimg, pt, draw.Over)
+			i.animationImages = append(i.animationImages, dist)
+		}
 	}
+	return nil
 }
 
 // rune文字を画像に書き込む。
@@ -293,12 +318,25 @@ func (i *Image) newScaledImage() *image.RGBA {
 	}
 
 	// 呼び出し側で大きさを調整していること
-	rect := i.image.Bounds()
-	dst := newImage(i.resizeWidth, i.resizeHeight)
-	xdraw.CatmullRom.Scale(dst, dst.Bounds(), i.image, rect, draw.Over, nil)
+	dst := scale(i.image, i.resizeWidth, i.resizeHeight)
+	return dst
+}
+
+func scale(img image.Image, w, h int) *image.RGBA {
+	rect := img.Bounds()
+	dst := newImage(w, h)
+	xdraw.CatmullRom.Scale(dst, dst.Bounds(), img, rect, draw.Over, nil)
 	return dst
 }
 
 func (i *Image) scale() {
+	if i.resizeWidth == 0 && i.resizeHeight == 0 {
+		return
+	}
+
 	i.image = i.newScaledImage()
+	for j, img := range i.animationImages {
+		dst := scale(img, i.resizeWidth, i.resizeHeight)
+		i.animationImages[j] = dst
+	}
 }
