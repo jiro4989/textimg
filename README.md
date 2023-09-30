@@ -59,7 +59,7 @@ echo -e '\x1b[31mRED\x1b[0m' | textimg --background black -o out.gif
 ```
 
 Output image format is PNG or JPG or GIF.
-File extention of `-o` option defines output image format.
+File extension of `-o` option defines output image format.
 Default image format is PNG. if you write image file with `>` redirect then
 image file will be saved as PNG file.
 
@@ -377,7 +377,7 @@ echo Test👍 | textimg -o emoji.png
 ### Emoji font (TTF)
 
 textimg can change emoji font with `TEXTIMG_EMOJI_FONT_FILE` environment variables and set `-i` option.
-For example, swicthing emoji font to [Symbola font](https://www.wfonts.com/font/symbola).
+For example, switching emoji font to [Symbola font](https://www.wfonts.com/font/symbola).
 
 ```bash
 export TEXTIMG_EMOJI_FONT_FILE=/usr/share/fonts/TTF/Symbola.ttf
