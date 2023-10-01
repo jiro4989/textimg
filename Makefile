@@ -1,9 +1,9 @@
-textimg: parser/grammer.peg.go *.go */*.go
+textimg: parser/grammar.peg.go *.go */*.go
 	go fmt ./...
 	go build
 
-parser/grammer.peg.go: parser/grammer.peg
-	peg parser/grammer.peg
+parser/grammar.peg.go: parser/grammar.peg
+	peg parser/grammar.peg
 
 .PHONY: help
 help: ## ドキュメントのヘルプを表示する。

@@ -19,7 +19,7 @@ const (
 func log(lvl string, msg interface{}) {
 	_, f, l, ok := runtime.Caller(2)
 	if !ok {
-		fmt.Fprintln(os.Stderr, "something error occured.")
+		fmt.Fprintln(os.Stderr, "something error occurred.")
 		return
 	}
 
