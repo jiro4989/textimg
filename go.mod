@@ -8,7 +8,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.15
 	github.com/spf13/cobra v1.8.0
 	github.com/stretchr/testify v1.8.4
-	golang.org/x/image v0.14.0
+	golang.org/x/image v0.15.0
 	golang.org/x/sys v0.16.0 // indirect
 	golang.org/x/term v0.16.0
 	golang.org/x/text v0.14.0 // indirect
