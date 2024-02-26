@@ -35,6 +35,23 @@ jobs:
       - run: go install
       - run: go test -cover ./...
 
+  build-arm64:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go:
+          - '1.x'
+        os:
+          - 'linux'
+          - 'darwin'
+          - 'windows'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go }}
+      - run: GOOS=${{ matrix.os }} GOARCH=arm64 CGO_ENABLED=1 go build
+
   format:
     runs-on: ubuntu-latest
     steps:
