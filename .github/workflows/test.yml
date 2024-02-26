@@ -50,7 +50,8 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go }}
-      - run: GOOS=${{ matrix.os }} GOARCH=arm64 CGO_ENABLED=1 go build
+      - run: apt-get install -y gcc-aarch64-linux-gnu
+      - run: GOOS=${{ matrix.os }} GOARCH=arm64 CGO_ENABLED=1 CC=aarch64-linux-gnu-gcc go build
 
   format:
     runs-on: ubuntu-latest
