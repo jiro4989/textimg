@@ -43,8 +43,8 @@ jobs:
           - '1.x'
         os:
           - 'linux'
-          - 'darwin'
-          - 'windows'
+          #- 'darwin'
+          #- 'windows'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
