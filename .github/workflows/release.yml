@@ -8,7 +8,7 @@ name: release
 
 env:
   app: textimg
-  goversion: '1.18'
+  goversion: '1.21'
   build_opts: '-ldflags="-s -w -extldflags \"-static\""'
 
 jobs:
@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         os: [linux, windows, darwin]
-        arch: [amd64]
+        arch: [amd64, arm64]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
@@ -144,7 +144,7 @@ jobs:
     strategy:
       matrix:
         os: [linux, windows, darwin]
-        arch: [amd64]
+        arch: [amd64, arm64]
         include:
           - os: windows
             asset_content_type: application/zip

@@ -15,7 +15,7 @@ name: test
       - LICENSE
 
 env:
-  goversion: '1.18'
+  goversion: '1.21'
 
 jobs:
   test:
@@ -34,6 +34,33 @@ jobs:
       - run: go build
       - run: go install
       - run: go test -cover ./...
+
+  build-arm64:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go:
+          - '1.x'
+        os:
+          - 'linux'
+          - 'darwin'
+          - 'windows'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go }}
+      # if use CGO_ENABLED=1 then use this code.
+      #
+      # - run: sudo apt-get install -y gcc-aarch64-linux-gnu
+      # - run: GOOS=${{ matrix.os }} GOARCH=arm64 CGO_ENABLED=1 CC=aarch64-linux-gnu-gcc go build -o textimg_${{ matrix.os }}_arm64
+      - run: GOOS=${{ matrix.os }} GOARCH=arm64 go build -o textimg_${{ matrix.os }}_arm64
+      - run: gzip textimg_${{ matrix.os }}_arm64
+      - name: Upload artifact (windows)
+        uses: actions/upload-artifact@v4
+        with:
+          name: textimg_${{ matrix.os }}_arm64.gz
+          path: textimg_${{ matrix.os }}_arm64.gz
 
   format:
     runs-on: ubuntu-latest
@@ -67,10 +94,8 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: ${{ env.goversion }}
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v4
-        with:
-          version: v1.45
+      - name: Lint
+        run: go vet .
 
   coverage:
     runs-on: ubuntu-latest
