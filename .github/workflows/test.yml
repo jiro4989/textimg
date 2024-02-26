@@ -51,7 +51,13 @@ jobs:
         with:
           go-version: ${{ matrix.go }}
       - run: sudo apt-get install -y gcc-aarch64-linux-gnu
-      - run: GOOS=${{ matrix.os }} GOARCH=arm64 CGO_ENABLED=1 CC=aarch64-linux-gnu-gcc go build
+      - run: GOOS=${{ matrix.os }} GOARCH=arm64 CGO_ENABLED=1 CC=aarch64-linux-gnu-gcc go build -o textimg_${{ matrix.os }}_arm64
+      - run: gzip textimg_${{ matrix.os }}_arm64
+      - name: Upload artifact (windows)
+        uses: actions/upload-artifact@v4
+        with:
+          name: textimg_${{ matrix.os }}_arm64.gz
+          path: textimg_${{ matrix.os }}_arm64.gz
 
   format:
     runs-on: ubuntu-latest
