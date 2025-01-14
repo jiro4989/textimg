@@ -61,7 +61,7 @@ jobs:
         run: |
           mkdir -p .debpkg/usr/bin
           cp -p ./${{ env.app }} .debpkg/usr/bin/
-      - uses: jiro4989/build-deb-action@v3
+      - uses: jiro4989/build-deb-action@v4
         with:
           package: ${{ env.app }}
           package_root: .debpkg
