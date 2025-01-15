@@ -15,11 +15,11 @@ test: textimg ## テストコードを実行する
 
 .PHONY: docker-build
 docker-build: ## Dockerイメージをビルドする
-	docker-compose build
+	docker compose build
 
 .PHONY: docker-test
 docker-test: ## Docker環境でgo testを実行する
-	docker-compose run --rm base go test -tags docker -cover ./...
+	docker compose run --rm base go test -tags docker -cover ./...
 
 .PHONY: docker-push
 docker-push: ## DockerHubにイメージをPushする
