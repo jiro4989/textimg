@@ -284,7 +284,7 @@ sudo yum install https://github.com/jiro4989/textimg/releases/download/v3.1.9/te
 ### With Go
 
 ```bash
-go get -u github.com/jiro4989/textimg/v3
+go install github.com/jiro4989/textimg/v3@latest
 ```
 
 ### Manual
