@@ -20,7 +20,7 @@ RUN go install
 
 ################################################################################
 
-FROM alpine:3.22.0 AS runtime
+FROM alpine:3.22.1 AS runtime
 COPY --from=builder /go/bin/textimg /usr/local/bin/
 COPY --from=builder /tmp/MyricaM.TTC /usr/share/fonts/truetype/myrica/MyricaM.TTC
 COPY --from=builder /usr/local/src/noto-emoji/png/128 /usr/share/emoji-image
