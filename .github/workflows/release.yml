@@ -20,7 +20,7 @@ jobs:
         os: [linux, windows, darwin]
         arch: [amd64, arm64]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-go@v5
         with:
           go-version: ${{ env.goversion }}
@@ -53,7 +53,7 @@ jobs:
   build-debian-packages:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-go@v5
         with:
           go-version: ${{ env.goversion }}
@@ -79,7 +79,7 @@ jobs:
   build-rpm-packages:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-go@v5
         with:
           go-version: ${{ env.goversion }}
@@ -111,7 +111,7 @@ jobs:
       - build-debian-packages
       - build-rpm-packages
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Generate changelog
         run: |
           wget https://github.com/git-chglog/git-chglog/releases/download/0.9.1/git-chglog_linux_amd64
