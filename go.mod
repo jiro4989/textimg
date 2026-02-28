@@ -1,6 +1,8 @@
 module github.com/jiro4989/textimg/v3
 
-go 1.17
+go 1.23.0
+
+toolchain go1.23.4
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
