@@ -362,7 +362,7 @@ func optionColorStringToRGBA(colstr string) (color.RGBA, error) {
 	// カンマ区切りでの指定があれば返す
 	rgba := strings.Split(colstr, ",")
 	if len(rgba) != 4 {
-		return zeroColor, fmt.Errorf("illegal RGBA format: " + colstr)
+		return zeroColor, fmt.Errorf("illegal RGBA format: %s", colstr)
 	}
 
 	var (
