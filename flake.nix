@@ -17,7 +17,7 @@
           pname = "textimg";
           version = "3.2.0";
           src = ./.;
-          vendorHash = pkgs.lib.fakeHash;
+          vendorHash = "sha256-esTGTsar8qahGw625WjTjlFoVmeEL/72yLiHYvhOQi8=";
         };
 
         devShells.default = pkgs.mkShell {
