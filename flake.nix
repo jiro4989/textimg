@@ -18,6 +18,9 @@
           version = "3.2.0";
           src = ./.;
           vendorHash = "sha256-esTGTsar8qahGw625WjTjlFoVmeEL/72yLiHYvhOQi8=";
+
+          # 開発用のツールの scripts/width を除外するため
+          subPackages = ["."];
         };
 
         devShells.default = pkgs.mkShell {
