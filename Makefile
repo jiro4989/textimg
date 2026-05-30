@@ -28,6 +28,7 @@ docker-push: ## DockerHubにイメージをPushする
 .PHONY: setup-tools
 setup-tools: ## 開発時に使うツールをインストールする
 	go install github.com/pointlander/peg@latest
-	wget https://raw.githubusercontent.com/ekalinin/github-markdown-toc/master/gh-md-toc
-	sudo install -m 0755 ./gh-md-toc /usr/local/bin/
-	-rm -f gh-md-toc
+
+.PHONY: update-markdown-toc
+update-markdown-toc: ## Markdown に目次を挿入する
+	nix run nixpkgs#markdown-toc -- -i README.md

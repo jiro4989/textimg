@@ -27,6 +27,7 @@
           packages = [
             pkgs.go_1_26
             pkgs.gopls
+            pkgs.markdown-toc
           ];
 
           shellHook = ''

@@ -5,45 +5,43 @@
 textimg is command to convert from color text (ANSI or 256) to image.
 Drawn image keeps having colors of escape sequence.
 
-* [README on Japanese](./README_ja.md)
-
 Table of contents:
 
-<!--ts-->
-* [textimg](#textimg)
-  * [Usage](#usage)
-    * [Simple examples](#simple-examples)
-    * [With other commands](#with-other-commands)
-    * [Rainbow examples](#rainbow-examples)
-      * [From ANSI color](#from-ansi-color)
-      * [From 256 color](#from-256-color)
-      * [From 256 RGB color](#from-256-rgb-color)
-      * [Animation GIF](#animation-gif)
-      * [Slide animation GIF](#slide-animation-gif)
-    * [Using on Docker](#using-on-docker)
-    * [Saving shortcut](#saving-shortcut)
-  * [Installation](#installation)
-    * [Linux users (Debian base distros)](#linux-users-debian-base-distros)
-    * [Linux users (RHEL compatible distros)](#linux-users-rhel-compatible-distros)
-    * [With Go](#with-go)
-    * [Manual](#manual)
-  * [Help](#help)
-  * [Fonts](#fonts)
-    * [Default font path](#default-font-path)
-    * [Emoji font (image file path)](#emoji-font-image-file-path)
-    * [Emoji font (TTF)](#emoji-font-ttf)
-  * [Tab Completions](#tab-completions)
-    * [Bash](#bash)
-    * [Zsh](#zsh)
-    * [Fish](#fish)
-  * [Development](#development)
-    * [How to build](#how-to-build)
-    * [How to test](#how-to-test)
-  * [See also](#see-also)
+<!-- toc -->
 
-<!-- Added by: jiro4989, at: Sat Jun 19 17:52:14 JST 2021 -->
+- [Usage](#usage)
+  * [Simple examples](#simple-examples)
+  * [With other commands](#with-other-commands)
+  * [Rainbow examples](#rainbow-examples)
+    + [From ANSI color](#from-ansi-color)
+    + [From 256 color](#from-256-color)
+    + [From 256 RGB color](#from-256-rgb-color)
+    + [Animation GIF](#animation-gif)
+    + [Slide animation GIF](#slide-animation-gif)
+  * [Using on Docker](#using-on-docker)
+  * [Saving shortcut](#saving-shortcut)
+- [Installation](#installation)
+  * [Linux users (Debian base distros)](#linux-users-debian-base-distros)
+  * [Linux users (RHEL compatible distros)](#linux-users-rhel-compatible-distros)
+  * [With Go](#with-go)
+  * [With Nix](#with-nix)
+  * [Manual](#manual)
+- [Help](#help)
+- [Fonts](#fonts)
+  * [Default font path](#default-font-path)
+  * [Emoji font (image file path)](#emoji-font-image-file-path)
+  * [Emoji font (TTF)](#emoji-font-ttf)
+- [Tab Completions](#tab-completions)
+  * [Bash](#bash)
+  * [Zsh](#zsh)
+  * [Fish](#fish)
+- [Development](#development)
+  * [How to build](#how-to-build)
+    + [Build with nix](#build-with-nix)
+  * [How to test](#how-to-test)
+- [See also](#see-also)
 
-<!--te-->
+<!-- tocstop -->
 
 ## Usage
 
