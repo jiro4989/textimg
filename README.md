@@ -1,7 +1,6 @@
 # textimg
 
 ![test](https://github.com/jiro4989/textimg/workflows/test/badge.svg)
-[![codecov](https://codecov.io/gh/jiro4989/textimg/branch/master/graph/badge.svg)](https://codecov.io/gh/jiro4989/textimg)
 
 textimg is command to convert from color text (ANSI or 256) to image.
 Drawn image keeps having colors of escape sequence.
@@ -287,6 +286,12 @@ sudo yum install https://github.com/jiro4989/textimg/releases/download/v3.1.10/t
 go install github.com/jiro4989/textimg/v3@latest
 ```
 
+### With Nix
+
+```bash
+nix profile add github:jiro4989/textimg
+```
+
 ### Manual
 
 Download binary from [Releases](https://github.com/jiro4989/textimg/releases).
@@ -419,7 +424,7 @@ ln -sfn completions/fish/textimg.fish $HOME/.config/fish/completions/textimg.fis
 
 ## Development
 
-go version go1.17 linux/amd64
+go version go1.25 linux/amd64
 
 ### How to build
 
@@ -431,6 +436,12 @@ make
 ```
 
 **I didn't test on Windows.**
+
+#### Build with nix
+
+```bash
+nix build
+```
 
 ### How to test
 
