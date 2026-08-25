@@ -3,7 +3,7 @@ module github.com/jiro4989/textimg/v3
 go 1.25.0
 
 require (
-	github.com/mattn/go-runewidth v0.0.27
+	github.com/mattn/go-runewidth v0.0.28
 	github.com/spf13/cobra v1.10.2
 	github.com/stretchr/testify v1.12.1
 	golang.org/x/image v0.45.0
