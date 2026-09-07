@@ -2,7 +2,7 @@ package global
 
 const (
 	AppName = "textimg"
-	Version = `3.1.11
+	Version = `3.1.12
 Copyright (c) 2019 jiro4989
 Released under the MIT License.
 https://github.com/jiro4989/textimg`
