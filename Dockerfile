@@ -1,4 +1,4 @@
-FROM golang:1.26.4-bookworm AS base
+FROM golang:1.27.1-bookworm AS base
 
 RUN go version \
     && echo $GOPATH \
