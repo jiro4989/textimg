@@ -1,14 +1,14 @@
-FROM golang:1.26.4-alpine3.22 AS base
+FROM golang:1.26.4-bookworm AS base
 
 RUN go version \
     && echo $GOPATH \
-    && apk update \
-    && apk add --no-cache git wget unzip fontconfig alpine-sdk bash \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends git wget unzip fontconfig fonts-symbola \
+    && rm -rf /var/lib/apt/lists/* \
     && wget https://github.com/tomokuni/Myrica/raw/master/product/MyricaM.zip -q -O /tmp/MyricaM.zip \
     && (cd /tmp && unzip MyricaM.zip) \
     && git clone https://github.com/googlefonts/noto-emoji /usr/local/src/noto-emoji \
-    && wget https://www.wfonts.com/download/data/2016/04/23/symbola/symbola.zip -q -O /tmp/symbola.zip \
-    && (cd /tmp && unzip symbola.zip)
+    && cp /usr/share/fonts/truetype/ancient-scripts/Symbola_hint.ttf /tmp/
 
 ################################################################################
 
