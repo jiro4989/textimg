@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	"github.com/jiro4989/textimg/v3/config"
+	"github.com/jiro4989/textimg/v3/config/version"
 	"github.com/jiro4989/textimg/v3/image"
-	"github.com/jiro4989/textimg/v3/internal/global"
 	"github.com/jiro4989/textimg/v3/parser"
 
 	"github.com/spf13/cobra"
@@ -67,10 +67,10 @@ ex: t_2.png`)
 }
 
 var RootCommand = &cobra.Command{
-	Use:     global.AppName,
-	Short:   global.AppName + " is command to convert from colored text (ANSI or 256) to image.",
-	Example: global.AppName + ` $'\x1b[31mRED\x1b[0m' -o out.png`,
-	Version: global.Version,
+	Use:     version.AppName,
+	Short:   version.AppName + " is command to convert from colored text (ANSI or 256) to image.",
+	Example: version.AppName + ` $'\x1b[31mRED\x1b[0m' -o out.png`,
+	Version: version.Version,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return RunRootCommand(conf, args, envvars)
 	},

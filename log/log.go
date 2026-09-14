@@ -6,7 +6,7 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/jiro4989/textimg/v3/internal/global"
+	"github.com/jiro4989/textimg/v3/config/version"
 )
 
 const (
@@ -24,7 +24,7 @@ func log(lvl string, msg interface{}) {
 	}
 
 	now := time.Now().Format("2006/01/02 03:04:05")
-	text := fmt.Sprintf("%s %s %s %s:%d %v", now, global.AppName, lvl, f, l, msg)
+	text := fmt.Sprintf("%s %s %s %s:%d %v", now, version.AppName, lvl, f, l, msg)
 	fmt.Fprintln(os.Stderr, text)
 }
 

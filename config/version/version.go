@@ -1,4 +1,4 @@
-package global
+package version
 
 import "runtime/debug"
 
