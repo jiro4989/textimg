@@ -1,3 +1,5 @@
+DOCKER_IMAGE := jiro4989/textimg
+
 textimg: parser/grammar.peg.go *.go */*.go
 	go fmt ./...
 	go build
@@ -14,21 +16,19 @@ test: textimg ## テストコードを実行する
 	go test -cover ./...
 
 .PHONY: docker-build
-docker-build: ## Dockerイメージをビルドする
+docker-build: ## Docker イメージをビルドする
 	docker compose build
 
 .PHONY: docker-test
-docker-test: ## Docker環境でgo testを実行する
+docker-test: ## Docker 環境で go test を実行する
 	docker compose run --rm base go test -tags docker -cover ./...
 
 .PHONY: docker-push
-docker-push: ## DockerHubにイメージをPushする
-	docker push jiro4989/textimg
+docker-push: ## Docker イメージをビルドして DockerHub にイメージを Push する
+	@if [ "$(TAG)" = "" ]; then echo "[ERR] TAG 変数は必須です"; exit 1; fi
+	docker build --no-cache -t $(DOCKER_IMAGE):$(TAG) .
+	docker push $(DOCKER_IMAGE):$(TAG)
 
 .PHONY: setup-tools
 setup-tools: ## 開発時に使うツールをインストールする
 	go install github.com/pointlander/peg@latest
-
-.PHONY: update-markdown-toc
-update-markdown-toc: ## Markdown に目次を挿入する
-	nix run nixpkgs#markdown-toc -- -i README.md
