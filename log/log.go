@@ -16,7 +16,7 @@ const (
 	errorPrefix = "[ERROR]"
 )
 
-func log(lvl string, msg interface{}) {
+func log(lvl string, msg any) {
 	_, f, l, ok := runtime.Caller(2)
 	if !ok {
 		fmt.Fprintln(os.Stderr, "something error occurred.")
@@ -28,23 +28,23 @@ func log(lvl string, msg interface{}) {
 	fmt.Fprintln(os.Stderr, text)
 }
 
-func Debug(msg interface{}) {
+func Debug(msg any) {
 	log(debugPrefix, msg)
 }
 
-func Info(msg interface{}) {
+func Info(msg any) {
 	log(infoPrefix, msg)
 }
 
-func Warn(msg interface{}) {
+func Warn(msg any) {
 	log(warnPrefix, msg)
 }
 
-func Warnf(format string, msg interface{}) {
+func Warnf(format string, msg any) {
 	text := fmt.Sprintf(format, msg)
 	log(warnPrefix, text)
 }
 
-func Error(msg interface{}) {
+func Error(msg any) {
 	log(errorPrefix, msg)
 }
