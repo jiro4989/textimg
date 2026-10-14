@@ -37,14 +37,14 @@ jobs:
           GOARCH: ${{ matrix.arch }}
 
       - name: Upload artifact (windows)
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: artifact-${{ matrix.os }}-${{ matrix.arch }}
           path: ${{ env.app }}-${{ matrix.os }}-${{ matrix.arch }}.zip
         if: matrix.os == 'windows'
 
       - name: Upload artifact (unix)
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: artifact-${{ matrix.os }}-${{ matrix.arch }}
           path: ${{ env.app }}-${{ matrix.os }}-${{ matrix.arch }}.tar.gz
@@ -70,7 +70,7 @@ jobs:
           version: ${{ github.ref }}
           arch: 'amd64'
           desc: ${{ env.description }}
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: artifact-deb
           path: |
@@ -97,7 +97,7 @@ jobs:
           version: ${{ github.ref }}
           arch: 'x86_64'
           desc: ${{ env.description }}
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: artifact-rpm
           path: |
@@ -134,7 +134,7 @@ jobs:
       - name: Write upload_url to file
         run: echo '${{ steps.create-release.outputs.upload_url }}' > upload_url.txt
 
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: create-release
           path: upload_url.txt
