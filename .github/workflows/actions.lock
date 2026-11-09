@@ -44,7 +44,7 @@ dependencies:
         repo_id: 205262760
     'actions/setup-go@v7.0.0':
         ref: 'v7.0.0'
-        commit: 'sha1-b7ad1dad31e06c5925ef5d2fc7ad053ef454303e'
+        commit: 'sha1-b7ad1dad31e06c5925'
         owner_id: 44036562
         repo_id: 192624594
     'actions/upload-artifact@v7.0.2':
