@@ -10,7 +10,7 @@ workflows:
     '.github/workflows/release.yml':
         - 'actions/checkout@v7.0.1'
         - 'actions/create-release@v1.1.4'
-        - 'actions/download-artifact@v8.0.1'
+        - 'actions/download-artifact@v8.0.2'
         - 'actions/setup-go@v7.0.0'
         - 'actions/upload-artifact@v7.0.2'
         - 'actions/upload-release-asset@v1.0.2'
@@ -32,9 +32,9 @@ dependencies:
         commit: 'sha1-0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e'
         owner_id: 44036562
         repo_id: 208154123
-    'actions/download-artifact@v8.0.1':
-        ref: 'v8.0.1'
-        commit: 'sha1-3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c'
+    'actions/download-artifact@v8.0.2':
+        ref: 'v8.0.2'
+        commit: 'sha1-9000827ccba6bdab643e8b6fd33ac0654aef8333'
         owner_id: 44036562
         repo_id: 192626254
     'actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd':
