@@ -370,7 +370,7 @@ For example, run below.
 ```bash
 # You can clone your favorite fonts here.
 sudo git clone https://github.com/googlefonts/noto-emoji /usr/local/src/noto-emoji
-export TEXTIMG_EMOJI_DIR=/usr/local/src/noto-emoji/png/128
+export TEXTIMG_EMOJI_DIR=/usr/local/src/noto-emoji/2D/png/128
 export LANG=ja_JP.UTF-8
 echo Test👍 | textimg -o emoji.png
 ```

@@ -24,7 +24,7 @@ RUN go install
 FROM debian:bookworm AS runtime
 COPY --from=builder /go/bin/textimg /usr/local/bin/
 COPY --from=builder /tmp/MyricaM.TTC /usr/share/fonts/truetype/myrica/MyricaM.TTC
-COPY --from=builder /usr/local/src/noto-emoji/png/128 /usr/share/emoji-image
+COPY --from=builder /usr/local/src/noto-emoji/2D/png/128 /usr/share/emoji-image
 COPY --from=builder /tmp/Symbola_hint.ttf /usr/share/fonts/truetype/symbola/
 COPY --from=builder /tmp/Symbola_hint.ttf /usr/share/fonts/truetype/ancient-scripts/
 
