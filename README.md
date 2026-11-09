@@ -422,7 +422,7 @@ ln -sfn completions/fish/textimg.fish $HOME/.config/fish/completions/textimg.fis
 
 ## Development
 
-go version go1.25 linux/amd64
+go version go1.26 linux/amd64
 
 ### How to build
 
