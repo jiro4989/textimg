@@ -8,6 +8,7 @@ RUN go version \
     && wget https://github.com/tomokuni/Myrica/raw/master/product/MyricaM.zip -q -O /tmp/MyricaM.zip \
     && (cd /tmp && unzip MyricaM.zip) \
     && git clone https://github.com/googlefonts/noto-emoji /usr/local/src/noto-emoji \
+    && (cd /usr/local/src/noto-emoji && git checkout e20cbc2bbec1926686be9f9bee7d1d2cfa1fea0e) \
     && cp /usr/share/fonts/truetype/ancient-scripts/Symbola_hint.ttf /tmp/
 
 ################################################################################
