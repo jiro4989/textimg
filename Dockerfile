@@ -8,6 +8,7 @@ RUN go version \
     && wget https://github.com/tomokuni/Myrica/raw/master/product/MyricaM.zip -q -O /tmp/MyricaM.zip \
     && (cd /tmp && unzip MyricaM.zip) \
     && git clone https://github.com/googlefonts/noto-emoji /usr/local/src/noto-emoji \
+    && (cd /usr/local/src/noto-emoji && git checkout e20cbc2bbec1926686be9f9bee7d1d2cfa1fea0e) \
     && cp /usr/share/fonts/truetype/ancient-scripts/Symbola_hint.ttf /tmp/
 
 ################################################################################
@@ -23,7 +24,7 @@ RUN go install
 FROM debian:bookworm AS runtime
 COPY --from=builder /go/bin/textimg /usr/local/bin/
 COPY --from=builder /tmp/MyricaM.TTC /usr/share/fonts/truetype/myrica/MyricaM.TTC
-COPY --from=builder /usr/local/src/noto-emoji/png/128 /usr/share/emoji-image
+COPY --from=builder /usr/local/src/noto-emoji/2D/png/128 /usr/share/emoji-image
 COPY --from=builder /tmp/Symbola_hint.ttf /usr/share/fonts/truetype/symbola/
 COPY --from=builder /tmp/Symbola_hint.ttf /usr/share/fonts/truetype/ancient-scripts/
 

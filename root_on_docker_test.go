@@ -18,7 +18,7 @@ func TestRunRootCommandOnDocker(t *testing.T) {
 	var (
 		outDockerDir  = "testdata/out_docker"
 		fontFile      = "/tmp/MyricaM.TTC"
-		emojiDir      = "/usr/local/src/noto-emoji/png/128"
+		emojiDir      = "/usr/local/src/noto-emoji/2D/png/128"
 		emojiFontFile = "/tmp/Symbola_hint.ttf"
 	)
 

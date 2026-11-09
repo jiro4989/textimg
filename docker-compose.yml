@@ -17,7 +17,7 @@ services:
       - "$PWD/images:/images"
     environment:
       TEXTIMG_FONT_FILE: /tmp/MyricaM.TTC
-      TEXTIMG_EMOJI_DIR: /usr/local/src/noto-emoji/png/128
+      TEXTIMG_EMOJI_DIR: /usr/local/src/noto-emoji/2D/png/128
       TEXTIMG_EMOJI_FONT_FILE: /tmp/Symbola_hint.ttf
 
   textimg:

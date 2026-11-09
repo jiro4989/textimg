@@ -15,7 +15,7 @@ name: test
       - LICENSE
 
 env:
-  goversion: '1.25'
+  goversion: '1.27'
 
 jobs:
   test:
@@ -23,11 +23,12 @@ jobs:
     strategy:
       matrix:
         go:
-          - '1.25'
+          - '1.26'
+          - '1.27'
           - '1.x'
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-go@v7.0.0
         with:
           go-version: ${{ matrix.go }}
       - run: go build
@@ -45,8 +46,8 @@ jobs:
           - 'darwin'
           - 'windows'
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-go@v7.0.0
         with:
           go-version: ${{ matrix.go }}
       # if use CGO_ENABLED=1 then use this code.
@@ -56,7 +57,7 @@ jobs:
       - run: GOOS=${{ matrix.os }} GOARCH=arm64 go build -o textimg_${{ matrix.os }}_arm64
       - run: gzip textimg_${{ matrix.os }}_arm64
       - name: Upload artifact (windows)
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: textimg_${{ matrix.os }}_arm64.gz
           path: textimg_${{ matrix.os }}_arm64.gz
@@ -64,8 +65,8 @@ jobs:
   format:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-go@v7.0.0
         with:
           go-version: ${{ env.goversion }}
       - name: Check code format
@@ -80,7 +81,7 @@ jobs:
   docker-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@v7.0.1
       - name: Tests
         run: |
           make docker-build
@@ -89,8 +90,8 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-go@v7.0.0
         with:
           go-version: ${{ env.goversion }}
       - name: Lint
@@ -99,9 +100,9 @@ jobs:
   coverage:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-go@v7.0.0
         with:
           go-version: ${{ env.goversion }}
       - run: go test -coverprofile=coverage.out ./...
-      - uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
+      - uses: codecov/codecov-action@v7.1.1
