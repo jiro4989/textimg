@@ -6,10 +6,10 @@ require (
 	github.com/mattn/go-runewidth v0.0.31
 	github.com/spf13/cobra v1.10.2
 	github.com/stretchr/testify v1.12.1
-	golang.org/x/image v0.47.0
+	golang.org/x/image v0.48.0
 	golang.org/x/sys v0.50.0 // indirect
 	golang.org/x/term v0.48.0
-	golang.org/x/text v0.43.0 // indirect
+	golang.org/x/text v0.44.0 // indirect
 )
 
 require github.com/oliamb/cutter v0.2.2
