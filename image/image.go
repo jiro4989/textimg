@@ -114,14 +114,6 @@ func (i *Image) Draw(tokens token.Tokens) error {
 			i.updateColor(t.ColorType, t.Color)
 		case token.KindText:
 			i.drawBackground(t.Text)
-			for _, r := range t.Text {
-				if isLinefeed(r) {
-					i.moveDown()
-					continue
-				}
-
-				i.moveRight(r)
-			}
 		}
 	}
 	i.resetColor()
@@ -288,17 +280,24 @@ func (i *Image) drawEmoji(r rune, path string) error {
 }
 
 func (i *Image) drawBackground(s string) {
-	var (
-		tw     = runewidth.StringWidth(s)
-		width  = tw * i.charWidth
-		height = i.charHeight
-		posX   = i.x
-		posY   = i.y
-	)
-	for x := posX; x < posX+width; x++ {
-		for y := posY; y < posY+height; y++ {
-			i.image.Set(x, y, c.RGBA(i.backgroundColor))
+	for _, r := range s {
+		if isLinefeed(r) {
+			i.moveDown()
+			continue
 		}
+
+		var (
+			width  = runewidth.RuneWidth(r) * i.charWidth
+			height = i.charHeight
+			posX   = i.x
+			posY   = i.y
+		)
+		for x := posX; x < posX+width; x++ {
+			for y := posY; y < posY+height; y++ {
+				i.image.Set(x, y, c.RGBA(i.backgroundColor))
+			}
+		}
+		i.moveRight(r)
 	}
 }
 
